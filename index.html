@@ -6,84 +6,140 @@
     <title>Admin Menu | Arizona RP Helper</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* СТИЛИ БЕЗ ИЗМЕНЕНИЙ */
-        :root { --primary: #6366f1; --primary-glow: rgba(99, 102, 241, 0.5); --bg-grad-1: #1e293b; --bg-grad-2: #0f172a; --card-bg: rgba(30, 41, 59, 0.7); --text-main: #f1f5f9; --text-muted: #94a3b8; --danger: #ef4444; --danger-bg: rgba(239, 68, 68, 0.1); }
-        [data-theme="light"] { --bg-grad-1: #e2e8f0; --bg-grad-2: #f8fafc; --card-bg: rgba(255, 255, 255, 0.8); --text-main: #0f172a; --text-muted: #64748b; --primary-glow: rgba(99, 102, 241, 0.2); }
-        [data-theme="black"] { --bg-grad-1: #000000; --bg-grad-2: #050505; --card-bg: rgba(20, 20, 20, 0.9); --text-main: #ffffff; --text-muted: #a3a3a3; }
+        /* --- 1. ПЕРЕМЕННЫЕ И ТЕМЫ --- */
+        :root { 
+            --primary: #6366f1; 
+            --primary-glow: rgba(99, 102, 241, 0.5); 
+            --bg-grad-1: #1e293b; 
+            --bg-grad-2: #0f172a; 
+            --card-bg: rgba(30, 41, 59, 0.7); 
+            --text-main: #f1f5f9; 
+            --text-muted: #94a3b8; 
+            --danger: #ef4444; 
+            --danger-bg: rgba(239, 68, 68, 0.1); 
+        }
+
+        [data-theme="light"] { 
+            --bg-grad-1: #e2e8f0; --bg-grad-2: #f8fafc; 
+            --card-bg: rgba(255, 255, 255, 0.8); 
+            --text-main: #0f172a; --text-muted: #64748b; 
+            --primary-glow: rgba(99, 102, 241, 0.2); 
+        }
+
+        [data-theme="black"] { 
+            --bg-grad-1: #000000; --bg-grad-2: #050505; 
+            --card-bg: rgba(20, 20, 20, 0.9); 
+            --text-main: #ffffff; --text-muted: #a3a3a3; 
+        }
+
+        /* --- 2. ОБЩИЕ СТИЛИ --- */
         ::-webkit-scrollbar { width: 0; background: transparent; }
         html { scrollbar-width: none; }
-        body { -ms-overflow-style: none; font-family: 'Inter', sans-serif; background: radial-gradient(circle at top, var(--bg-grad-1), var(--bg-grad-2)); background-attachment: fixed; background-size: cover; color: var(--text-main); margin: 0; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; transition: background 0.5s ease, color 0.5s ease; }
+        body { 
+            -ms-overflow-style: none; 
+            font-family: 'Inter', sans-serif; 
+            background: radial-gradient(circle at top, var(--bg-grad-1), var(--bg-grad-2)); 
+            background-attachment: fixed; 
+            background-size: cover; 
+            color: var(--text-main); 
+            margin: 0; padding: 20px; 
+            min-height: 100vh; 
+            display: flex; flex-direction: column; align-items: center; 
+            transition: background 0.5s ease, color 0.5s ease; 
+        }
+
+        /* --- 3. ЭКРАН ВХОДА (ИСПРАВЛЕННЫЙ) --- */
+        #login-screen { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 80vh; width: 100%; z-index: 100; 
+        }
+
+        .login-box { 
+            background: var(--card-bg); 
+            padding: 40px; 
+            border-radius: 24px; 
+            border: 1px solid var(--primary); 
+            box-shadow: 0 0 50px var(--primary-glow); 
+            backdrop-filter: blur(15px); 
+            text-align: center; 
+            max-width: 400px; width: 90%; 
+            display: flex; flex-direction: column; align-items: center; /* Центровка */
+        }
+
+        /* Иконка замка */
+        .lock-icon {
+            width: 60px; height: 60px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .key-input { 
+            width: 100%; padding: 15px; margin: 20px 0; 
+            background: rgba(0,0,0,0.2); border: 2px solid #334155; 
+            color: var(--text-main); border-radius: 10px; font-size: 1rem; 
+            outline: none; text-align: center; font-family: monospace; 
+            box-sizing: border-box; /* Чтобы не вылезало за границы */
+        }
+
+        .login-btn { 
+            background: var(--primary); color: white; border: none; 
+            padding: 12px 30px; border-radius: 10px; font-weight: bold; 
+            cursor: pointer; font-size: 1rem; transition: 0.2s; width: 100%; 
+        }
+
+        /* --- 4. КОНТЕНТ ПРИЛОЖЕНИЯ --- */
         #app-content { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.6s ease-out; position: relative; z-index: 2; }
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; width: 100%; z-index: 100; }
-        .login-box { background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid var(--primary); box-shadow: 0 0 50px var(--primary-glow); backdrop-filter: blur(15px); text-align: center; max-width: 400px; width: 90%; }
-        .key-input { width: 100%; padding: 15px; margin: 20px 0; background: rgba(0,0,0,0.2); border: 2px solid #334155; color: var(--text-main); border-radius: 10px; font-size: 1rem; outline: none; text-align: center; font-family: monospace; }
-        .key-input:focus { border-color: var(--primary); }
-        .login-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; width: 100%; }
-        .login-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--primary-glow); }
-        .error-msg { color: var(--danger); margin-top: 15px; display: none; font-size: 0.9rem; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         h1 { text-align: center; font-weight: 800; font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
         [data-theme="light"] h1 { background: linear-gradient(90deg, #475569, #0f172a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .alert-box { background: var(--danger-bg); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 20px; margin: 20px auto 40px auto; text-align: center; max-width: 700px; backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .alert-title { color: #ff6b6b; font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; display: block; text-transform: uppercase; }
-        .alert-text { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin: 0; }
-        .sub-text { display: block; margin-bottom: 15px; font-size: 0.85rem; opacity: 0.7; }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
         .menu-btn { background: var(--card-bg); border: 1px solid rgba(128, 128, 128, 0.1); padding: 40px 25px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .menu-btn:hover { transform: translateY(-5px); background: rgba(99, 102, 241, 0.15); border-color: var(--primary); box-shadow: 0 10px 25px -5px var(--primary-glow); }
-        .btn-icon { font-size: 3rem; display: block; margin-bottom: 15px; }
-        .btn-title { font-size: 1.25rem; font-weight: 600; color: var(--text-main); }
+        
+        /* Модальные окна */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
         .settings-panel { background: var(--bg-grad-2); border: 1px solid var(--primary); width: 90%; max-width: 500px; padding: 30px; border-radius: 20px; box-shadow: 0 0 40px var(--primary-glow); position: relative; }
-        .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-        .close-btn { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-        .close-btn:hover { color: var(--danger); }
-        .theme-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .theme-btn { padding: 15px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; text-align: center; font-weight: 600; transition: 0.2s; }
-        .theme-btn.active { border-color: var(--primary); transform: scale(1.05); }
-        .t-default { background: #1e293b; color: #fff; }
-        .t-light { background: #f1f5f9; color: #0f172a; }
-        .t-black { background: #000000; color: #fff; }
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #475569; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(22px); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="margin-top:0;">Доступ к системе</h2>
-            <p style="color:var(--text-muted);">Введите лицензионный ключ для входа</p>
+            <div class="lock-icon">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h2 style="margin:0;">Доступ к системе</h2>
+            <p style="color:var(--text-muted); margin-top:10px;">Введите лицензионный ключ для входа</p>
             <input type="text" id="access-key" class="key-input" placeholder="Введите ключ..." autocomplete="off">
             <button class="login-btn" onclick="checkKey()">Войти</button>
-            <p id="error-message" class="error-msg">Неверный ключ или срок истек!</p>
+            <p id="error-message" style="color:var(--danger); margin-top:15px; display:none; font-size:0.9rem;">Неверный ключ доступа!</p>
         </div>
     </div>
 
-    <div id="app-content" class="container">
-        <h1>ARISHelper</h1>
+    <div id="app-content">
+        <h1>Admin Helper</h1>
         <div class="alert-box">
-            <span class="sub-text">Любые махинации влекут за собой дисквалификацию и блокировку аккаунта.</span>
-            <span class="alert-title">⚠️ ВНИМАНИЕ!</span>
-            <p class="alert-text">Использование данного функционала может нарушать правила сервера. <br> Администрация сайта не несет ответственности за блокировки.</p>
+            <span style="display:block; margin-bottom:15px; font-size:0.85rem; opacity:0.7;">Любые махинации влекут за собой дисквалификацию и блокировку аккаунта.</span>
+            <span style="color:#ff6b6b; font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;">⚠️ ВНИМАНИЕ!</span>
+            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">Использование данного функционала может нарушать правила сервера. <br> Администрация сайта не несет ответственности за блокировки.</p>
         </div>
-        <div id="main-menu" class="menu-grid">
+        <div class="menu-grid">
             <div class="menu-btn" onclick="window.location.href='adm.html'">
-                <span class="btn-icon">🛡️</span>
-                <span class="btn-title">Обзвон на Админки</span>
+                <span style="font-size:3rem; display:block; margin-bottom:15px;">🛡️</span>
+                <span style="font-size:1.25rem; font-weight:600;">Обзвон на Админки</span>
             </div>
             <div class="menu-btn" onclick="alert('Раздел в разработке')">
-                <span class="btn-icon">⛓️</span>
-                <span class="btn-title">Обзвон на ТСР 9-10</span>
+                <span style="font-size:3rem; display:block; margin-bottom:15px;">⛓️</span>
+                <span style="font-size:1.25rem; font-weight:600;">Обзвон на ТСР 9-10</span>
             </div>
             <div class="menu-btn" onclick="openSettings()">
-                <span class="btn-icon">🔧</span>
-                <span class="btn-title">Настройки сайта</span>
+                <span style="font-size:3rem; display:block; margin-bottom:15px;">🔧</span>
+                <span style="font-size:1.25rem; font-weight:600;">Настройки сайта</span>
             </div>
         </div>
         <p id="expiry-date" style="text-align:center; color:var(--text-muted); margin-top:30px; font-size:0.8rem;"></p>
@@ -91,9 +147,9 @@
 
     <div id="settings-modal" class="modal-overlay">
         <div class="settings-panel">
-            <div class="settings-header">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:15px;">
                 <h2 style="margin:0;">Настройки</h2>
-                <button class="close-btn" onclick="closeSettings()">&times;</button>
+                <button style="background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;" onclick="closeSettings()">&times;</button>
             </div>
             <p style="color:var(--text-muted); margin-bottom:10px;">Выберите тему:</p>
             <div class="theme-options">
@@ -101,27 +157,28 @@
                 <div class="theme-btn t-black" onclick="setTheme('black')">Night</div>
                 <div class="theme-btn t-light" onclick="setTheme('light')">Light</div>
             </div>
-            <div class="toggle-row">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
                 <span>Эффект свечения</span>
                 <label class="switch">
                     <input type="checkbox" id="glow-toggle" checked onchange="toggleGlow()">
                     <span class="slider"></span>
                 </label>
             </div>
-            <button onclick="logout()" style="width:100%; margin-top:20px; padding:10px; background:var(--danger-bg); color:var(--danger); border:1px solid var(--danger); border-radius:10px; cursor:pointer;">Сбросить лицензию (Выход)</button>
+            <button onclick="logout()" style="width:100%; margin-top:20px; padding:10px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid #ef4444; border-radius:10px; cursor:pointer;">Выход (Сброс ключа)</button>
         </div>
     </div>
 
 <script>
-    // --- КОНФИГУРАЦИЯ ---
-    const VALID_KEY = ""; 
-    const LICENSE_DAYS = 1; 
-    
-    // !!! ВАЖНО: ЧТОБЫ ОБНУЛИТЬ ВСЕХ, ПОМЕНЯЙ ЦИФРУ НИЖЕ (например, на "1.1") !!!
-    const SESSION_VERSION = "1.1"; 
+// --- КОНФИГУРАЦИЯ ---
+    const VALID_KEY = "EgauGoT2d8UoWT8ZrwatlVb9cWXC3S3V2HzGhgl6"; 
+    const SESSION_VERSION = "1.2"; // Мы подняли версию, чтобы сбросить старые ошибки
 
+    // НАСТРОЙКА СРОКА
+    const LICENSE_DAYS = 0;    
+    const LICENSE_HOURS = 0;   
+    const LICENSE_MINUTES = 10; 
 
-    // --- ЛОГИКА АВТОРИЗАЦИИ ---
+    // --- ЛОГИКА ---
     function checkAuth() {
         const savedAuth = localStorage.getItem('authData');
         if (savedAuth) {
@@ -129,43 +186,38 @@
                 const authData = JSON.parse(savedAuth);
                 const now = new Date().getTime();
                 
-                // Проверяем: 1. Не истек ли срок? 2. Совпадает ли версия сессии?
+                // Если версия совпадает и время не вышло — пускаем
                 if (now < authData.expiry && authData.version === SESSION_VERSION) {
                     showApp(authData.expiry);
                     return;
-                } else {
-                    localStorage.removeItem('authData'); // Удаляем старую сессию
                 }
-            } catch (e) {
-                localStorage.removeItem('authData');
-            }
+            } catch (e) { console.error("Ошибка данных"); }
         }
+        // Если что-то не так — показываем экран входа
         document.getElementById('login-screen').style.display = 'flex';
         document.getElementById('app-content').style.display = 'none';
     }
 
     function checkKey() {
-        const input = document.getElementById('access-key').value.trim();
+        const inputField = document.getElementById('access-key');
+        const input = inputField.value.trim();
         const errorMsg = document.getElementById('error-message');
         
-        if (input && input === VALID_KEY) {
-            const now = new Date();
-            const expiry = now.getTime() + (LICENSE_DAYS * 24 * 60 * 60 * 1000); 
+        if (input === VALID_KEY) {
+            const now = new Date().getTime();
+            const expiry = now + (LICENSE_DAYS * 24 * 60 * 60 * 1000) + (LICENSE_HOURS * 60 * 60 * 1000) + (LICENSE_MINUTES * 60 * 1000);
             
-            const authData = {
-                key: input,
-                expiry: expiry,
-                version: SESSION_VERSION // Запоминаем текущую версию
-            };
+            // Сохраняем новые данные
+            localStorage.setItem('authData', JSON.stringify({ expiry, version: SESSION_VERSION }));
             
-            localStorage.setItem('authData', JSON.stringify(authData));
+            // Скрываем ошибку и показываем сайт
+            errorMsg.style.display = 'none';
             showApp(expiry);
         } else {
+            // Если ключ неверный
             errorMsg.style.display = 'block';
-            errorMsg.innerText = "Неверный ключ доступа!";
-            
-            const inputField = document.getElementById('access-key');
-            inputField.style.borderColor = 'var(--danger)';
+            inputField.style.borderColor = '#ef4444';
+            // Тряска для уведомления об ошибке
             inputField.animate([
                 { transform: 'translateX(0)' },
                 { transform: 'translateX(-10px)' },
@@ -178,52 +230,31 @@
     function showApp(expiryTime) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
-        const date = new Date(expiryTime);
-        document.getElementById('expiry-date').innerText = `Лицензия активна до: ${date.toLocaleString()}`;
+        const options = { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+        const dateStr = new Date(expiryTime).toLocaleString('ru-RU', options);
+        document.getElementById('expiry-date').innerText = `Лицензия активна до: ${dateStr}`;
     }
 
     function logout() {
-        if(confirm("Вы уверены? Вам снова потребуется ввести ключ.")) {
+        if(confirm("Сбросить сессию?")) {
             localStorage.removeItem('authData');
             location.reload();
         }
     }
 
-    // --- ЛОГИКА НАСТРОЕК ---
+    // Запуск при старте
     document.addEventListener('DOMContentLoaded', () => {
         checkAuth();
-        const savedTheme = localStorage.getItem('siteTheme') || 'default';
-        applyTheme(savedTheme);
-        const isGlow = localStorage.getItem('glowEffect') !== 'false';
-        document.getElementById('glow-toggle').checked = isGlow;
-        toggleGlow(false);
+        // Применяем тему и свечение
+        const theme = localStorage.getItem('siteTheme') || 'default';
+        document.body.setAttribute('data-theme', theme);
+        const glow = localStorage.getItem('glowEffect') !== 'false';
+        document.documentElement.style.setProperty('--primary-glow', glow ? 'rgba(99, 102, 241, 0.5)' : 'rgba(0,0,0,0)');
     });
 
-    document.getElementById('access-key').addEventListener('keypress', function (e) {
+    // Вход по нажатию Enter
+    document.getElementById('access-key').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') checkKey();
-    });
-
-    function applyTheme(themeName) {
-        document.body.setAttribute('data-theme', themeName);
-        document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-        if(themeName === 'default') document.querySelector('.t-default').classList.add('active');
-        if(themeName === 'black') document.querySelector('.t-black').classList.add('active');
-        if(themeName === 'light') document.querySelector('.t-light').classList.add('active');
-    }
-    function setTheme(themeName) { applyTheme(themeName); localStorage.setItem('siteTheme', themeName); }
-    function toggleGlow(save = true) {
-        const checkbox = document.getElementById('glow-toggle');
-        const root = document.documentElement;
-        if (checkbox.checked) { root.style.setProperty('--primary-glow', 'rgba(99, 102, 241, 0.5)'); } 
-        else { root.style.setProperty('--primary-glow', 'rgba(0, 0, 0, 0)'); }
-        if(save) localStorage.setItem('glowEffect', checkbox.checked);
-    }
-    function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
-    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
-    document.getElementById('settings-modal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('settings-modal')) closeSettings();
-    });
-</script>
+    });</script>
 </body>
-
 </html>
