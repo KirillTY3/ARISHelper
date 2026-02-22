@@ -221,22 +221,50 @@
         const inputField = document.getElementById('access-key');
         const input = inputField.value.trim();
         const errorMsg = document.getElementById('error-message');
+        const now = new Date().getTime();
+
+        // --- 1. ПРОВЕРКА НА БАН (КД 24 ЧАСА) ---
+        const cooldownEnd = localStorage.getItem('activationCooldown');
         
-        // ИСПРАВЛЕНИЕ: Добавили проверку (VALID_KEY !== ""), 
-        // теперь если ключ не задан, войти нельзя.
+        if (cooldownEnd && now < parseInt(cooldownEnd)) {
+            // Если КД еще не прошло — считаем сколько осталось
+            const remaining = parseInt(cooldownEnd) - now;
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            
+            // Показываем ошибку и блокируем вход
+            errorMsg.style.display = 'block';
+            errorMsg.innerText = `⛔ Лимит активаций! Повтор через: ${hours} ч. ${minutes} мин.`;
+            inputField.style.borderColor = '#ef4444';
+            // Тряска поля
+            inputField.animate([
+                { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, 
+                { transform: 'translateX(10px)' }, { transform: 'translateX(0)' }
+            ], { duration: 300 });
+            return; // ПРЕРЫВАЕМ ФУНКЦИЮ, ДАЛЬШЕ НЕ ИДЕМ
+        }
+
+        // --- 2. ПРОВЕРКА КЛЮЧА ---
+        // (Проверка VALID_KEY !== "" защищает от пустого ключа админа)
         if (VALID_KEY !== "" && input === VALID_KEY) {
             
-            const now = new Date().getTime();
+            // Расчет конца лицензии (доступа к сайту)
             const expiry = now + (LICENSE_DAYS * 24 * 60 * 60 * 1000) + (LICENSE_HOURS * 60 * 60 * 1000) + (LICENSE_MINUTES * 60 * 1000);
             
+            // !!! СТАВИМ БАН НА АКТИВАЦИЮ НА 24 ЧАСА !!!
+            const nextActivationTime = now + (24 * 60 * 60 * 1000); 
+            localStorage.setItem('activationCooldown', nextActivationTime);
+
+            // Сохраняем успешный вход
             localStorage.setItem('authData', JSON.stringify({ expiry, version: SESSION_VERSION }));
+            
             errorMsg.style.display = 'none';
             showApp(expiry);
         } else {
-            // Ошибка, если ключ неверный ИЛИ если он вообще не задан в коде
+            // Ошибка, если ключ неверный
             errorMsg.style.display = 'block';
             if (VALID_KEY === "") {
-                errorMsg.innerText = "Вход закрыт администратором (ключ не установлен)";
+                errorMsg.innerText = "Вход закрыт администратором.";
             } else {
                 errorMsg.innerText = "Неверный ключ доступа!";
             }
@@ -322,6 +350,7 @@
 </script>
 </body>
 </html>
+
 
 
 
