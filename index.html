@@ -187,7 +187,7 @@
     </div>
 
     <div id="app-content" class="container">
-        <h1>ARISHelper</h1>
+        <h1>Admin Helper</h1>
         
         <div class="alert-box">
             <span class="sub-text">Любые махинации влекут за собой дисквалификацию и блокировку аккаунта.</span>
@@ -246,8 +246,9 @@
 
 <script>
     // --- КОНФИГУРАЦИЯ ---
-    const VALID_KEY = ""; // ВАШ КЛЮЧ
-    const LICENSE_DAYS = 3; // Срок действия (дней)
+    // Укажите ключ в кавычках. Если кавычки пустые "", то пустит без ключа.
+    const VALID_KEY = "EgauGoT2d8UoWT8ZrwatlVb9cWXC3S3V2HzGhgl6"; // Сюда вставляйте ключ
+    const LICENSE_DAYS = 7; // Срок действия (дней)
 
     // --- ЛОГИКА АВТОРИЗАЦИИ ---
     function checkAuth() {
@@ -273,7 +274,8 @@
         const input = document.getElementById('access-key').value.trim();
         const errorMsg = document.getElementById('error-message');
         
-        if (input === VALID_KEY) {
+        // ВАЖНО: Проверка, что ключ не пустой и совпадает с заданным
+        if (input && input === VALID_KEY) {
             const now = new Date();
             const expiry = now.getTime() + (LICENSE_DAYS * 24 * 60 * 60 * 1000); // Текущее время + 7 дней
             
@@ -287,6 +289,19 @@
         } else {
             errorMsg.style.display = 'block';
             errorMsg.innerText = "Неверный ключ доступа!";
+            
+            // Анимация тряски для поля ввода (визуальный эффект ошибки)
+            const inputField = document.getElementById('access-key');
+            inputField.style.borderColor = 'var(--danger)';
+            inputField.animate([
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(-10px)' },
+                { transform: 'translateX(10px)' },
+                { transform: 'translateX(0)' }
+            ], {
+                duration: 300,
+                iterations: 1
+            });
         }
     }
 
@@ -305,7 +320,7 @@
         }
     }
 
-    // --- ЛОГИКА НАСТРОЕК (как раньше) ---
+    // --- ЛОГИКА НАСТРОЕК ---
     document.addEventListener('DOMContentLoaded', () => {
         checkAuth(); // Проверка входа при загрузке
 
@@ -314,6 +329,13 @@
         const isGlow = localStorage.getItem('glowEffect') !== 'false';
         document.getElementById('glow-toggle').checked = isGlow;
         toggleGlow(false);
+    });
+
+    // Обработка нажатия Enter в поле ввода
+    document.getElementById('access-key').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkKey();
+        }
     });
 
     function applyTheme(themeName) {
@@ -348,5 +370,3 @@
 </script>
 </body>
 </html>
-
-
