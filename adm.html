@@ -62,6 +62,8 @@
             padding: 0;
             min-height: 100vh;
             transition: background 0.5s ease, color 0.5s ease;
+            /* Скрываем контент до проверки авторизации, чтобы не мигал */
+            display: none; 
         }
 
         .container {
@@ -299,14 +301,42 @@
 <body>
 
 <script>
-    // --- ВАЖНЫЙ СКРИПТ ЗАГРУЗКИ ТЕМЫ ---
-    // Он считывает настройки из памяти браузера и применяет их сразу при загрузке.
+    // --- ЗАЩИТА СТРАНИЦЫ (Auth Guard) ---
+    // Этот код выполняется ПЕРВЫМ, до отрисовки чего-либо
     (function() {
-        // 1. Тема (Фон, цвета)
+        const savedAuth = localStorage.getItem('authData');
+        
+        // 1. Если ключа нет в памяти
+        if (!savedAuth) {
+            window.location.href = 'index.html'; // Редирект на вход
+            return;
+        }
+        
+        // 2. Если ключ есть, проверяем срок
+        try {
+            const authData = JSON.parse(savedAuth);
+            const now = new Date().getTime();
+            
+            if (now > authData.expiry) {
+                // Срок истек
+                localStorage.removeItem('authData'); // Удаляем просрочку
+                window.location.href = 'index.html'; // Редирект
+                return;
+            }
+        } catch (e) {
+            // Если данные повреждены
+            localStorage.removeItem('authData');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Если всё ок - показываем страницу
+        document.body.style.display = 'block';
+
+        // --- Загрузка темы ---
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         document.body.setAttribute('data-theme', savedTheme);
 
-        // 2. Свечение
         const isGlow = localStorage.getItem('glowEffect') !== 'false';
         if (!isGlow) {
             document.documentElement.style.setProperty('--primary-glow', 'rgba(0, 0, 0, 0)');
@@ -719,5 +749,4 @@
 </script>
 
 </body>
-
 </html>
