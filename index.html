@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helper | Arizona RP</title>
+    <title>Admin Menu | Arizona RP Helper</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. ПЕРЕМЕННЫЕ И ТЕМЫ --- */
+        /* --- СТИЛИ БЕЗ ИЗМЕНЕНИЙ --- */
         :root { 
             --primary: #6366f1; 
             --primary-glow: rgba(99, 102, 241, 0.5); 
@@ -32,7 +32,6 @@
             --text-main: #ffffff; --text-muted: #a3a3a3; 
         }
 
-        /* --- 2. ОБЩИЕ СТИЛИ --- */
         ::-webkit-scrollbar { width: 0; background: transparent; }
         html { scrollbar-width: none; }
         body { 
@@ -48,7 +47,6 @@
             transition: background 0.5s ease, color 0.5s ease; 
         }
 
-        /* --- 3. ЭКРАН ВХОДА --- */
         #login-screen { 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             height: 80vh; width: 100%; z-index: 100; 
@@ -91,7 +89,6 @@
         }
         .login-btn:hover { transform: scale(1.02); }
 
-        /* --- 4. КОНТЕНТ ПРИЛОЖЕНИЯ --- */
         #app-content { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.6s ease-out; position: relative; z-index: 2; }
         h1 { text-align: center; font-weight: 800; font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
         [data-theme="light"] h1 { background: linear-gradient(90deg, #475569, #0f172a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -101,7 +98,6 @@
         .menu-btn { background: var(--card-bg); border: 1px solid rgba(128, 128, 128, 0.1); padding: 40px 25px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .menu-btn:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 25px -5px var(--primary-glow); }
 
-        /* --- 5. МОДАЛЬНОЕ ОКНО НАСТРОЕК --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
         .settings-panel { background: var(--bg-grad-2); border: 1px solid var(--primary); width: 90%; max-width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0 0 40px var(--primary-glow); position: relative; }
         .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
@@ -131,7 +127,7 @@
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </div>
             <h2 style="margin:0;">Доступ к системе</h2>
-            <p style="color:var(--text-muted); margin-top:10px;">Введите лицензионный ключ для входа</p>
+            <p style="color:var(--text-muted); margin-top:10px;">Введите ключ доступа</p>
             <input type="text" id="access-key" class="key-input" placeholder="Введите ключ..." autocomplete="off">
             <button class="login-btn" onclick="checkKey()">Войти</button>
             <p id="error-message" style="color:var(--danger); margin-top:15px; display:none; font-size:0.9rem;">Неверный ключ доступа!</p>
@@ -139,7 +135,7 @@
     </div>
 
     <div id="app-content">
-        <h1>ARISHelper</h1>
+        <h1>Admin Helper</h1>
         <div class="alert-box">
             <span style="display:block; margin-bottom:15px; font-size:0.85rem; opacity:0.7;">Любые махинации влекут за собой дисквалификацию и блокировку аккаунта.</span>
             <span style="color:#ff6b6b; font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;">⚠️ ВНИМАНИЕ!</span>
@@ -189,57 +185,76 @@
     </div>
 
 <script>
-    // --- КОНФИГУРАЦИЯ ---
-    const VALID_KEY = ""; 
-    const SESSION_VERSION = "1.2"; 
+    // --- НАСТРОЙКИ ---
+    const SESSION_VERSION = "1.4"; // Обновил версию, чтобы сбросить старые сессии
+    const LICENSE_DAYS = 0;     
+    const LICENSE_HOURS = 0;    
+    const LICENSE_MINUTES = 1;  
 
-    // НАСТРОЙКА СРОКА
-    const LICENSE_DAYS = 0;    
-    const LICENSE_HOURS = 0;   
-    const LICENSE_MINUTES = 0; 
-
-    // --- 1. ЛОГИКА АВТОРИЗАЦИИ ---
+    // --- 1. ПРОВЕРКА ПРИ ВХОДЕ ---
     function checkAuth() {
         const savedAuth = localStorage.getItem('authData');
+        
         if (savedAuth) {
             try {
                 const authData = JSON.parse(savedAuth);
                 const now = new Date().getTime();
-                // Проверяем срок и версию
-                if (now < authData.expiry && authData.version === SESSION_VERSION) {
+                
+                // Проверяем версию и срок действия
+                if (authData.version === SESSION_VERSION && now < authData.expiry) {
                     showApp(authData.expiry);
-                    return;
+                } else {
+                    document.getElementById('login-screen').style.display = 'flex';
+                    document.getElementById('app-content').style.display = 'none';
                 }
-            } catch (e) { console.error("Ошибка данных"); }
+            } catch (e) {
+                localStorage.removeItem('authData'); 
+            }
+        } else {
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('app-content').style.display = 'none';
         }
-        // Если что-то не так — показываем вход
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('app-content').style.display = 'none';
     }
 
-    function checkKey() {
+    // --- 2. ПРОВЕРКА КЛЮЧА (SHA-256) ---
+    async function checkKey() {
         const inputField = document.getElementById('access-key');
         const input = inputField.value.trim();
         const errorMsg = document.getElementById('error-message');
-        
-        // ИСПРАВЛЕНИЕ: Добавили проверку (VALID_KEY !== ""), 
-        // теперь если ключ не задан, войти нельзя.
-        if (VALID_KEY !== "" && input === VALID_KEY) {
-            
-            const now = new Date().getTime();
-            const expiry = now + (LICENSE_DAYS * 24 * 60 * 60 * 1000) + (LICENSE_HOURS * 60 * 60 * 1000) + (LICENSE_MINUTES * 60 * 1000);
-            
-            localStorage.setItem('authData', JSON.stringify({ expiry, version: SESSION_VERSION }));
-            errorMsg.style.display = 'none';
-            showApp(expiry);
-        } else {
-            // Ошибка, если ключ неверный ИЛИ если он вообще не задан в коде
-            errorMsg.style.display = 'block';
-            if (VALID_KEY === "") {
-                errorMsg.innerText = "Вход закрыт администратором (ключ не установлен)";
+
+
+
+        const CORRECT_HASH = "14c2f4067a8c3786306bfedb7afb44d3ff0d861d54fac76025af58f0f14837ed"; 
+
+        if (!input) return; // Пустой ввод игнорируем
+
+        try {
+            // Превращаем ввод пользователя в хеш
+            const msgBuffer = new TextEncoder().encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            // Сравниваем хеши
+            if (inputHash === CORRECT_HASH) {
+                
+                const now = new Date().getTime();
+                const expiry = now + (LICENSE_DAYS * 24 * 60 * 60 * 1000) + (LICENSE_HOURS * 60 * 60 * 1000) + (LICENSE_MINUTES * 60 * 1000);
+                
+                localStorage.setItem('authData', JSON.stringify({ 
+                    expiry: expiry, 
+                    version: SESSION_VERSION 
+                }));
+                
+                errorMsg.style.display = 'none';
+                showApp(expiry);
+                
             } else {
-                errorMsg.innerText = "Неверный ключ доступа!";
+                throw new Error("Wrong key");
             }
+        } catch (e) {
+            errorMsg.style.display = 'block';
+            errorMsg.innerText = "Неверный ключ доступа!";
             
             inputField.style.borderColor = '#ef4444';
             inputField.animate([
@@ -248,60 +263,49 @@
             ], { duration: 300 });
         }
     }
-    
+
     function showApp(expiryTime) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
+        
         const options = { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
         const dateStr = new Date(expiryTime).toLocaleString('ru-RU', options);
         document.getElementById('expiry-date').innerText = `Лицензия активна до: ${dateStr}`;
     }
 
     function logout() {
-        if(confirm("Сбросить сессию? Вам снова потребуется ввести ключ.")) {
+        if(confirm("Выйти из системы?")) {
             localStorage.removeItem('authData');
             location.reload();
         }
     }
 
-    // --- 2. ЛОГИКА НАСТРОЕК (ИНТЕРФЕЙС) ---
-    function openSettings() { 
-        document.getElementById('settings-modal').style.display = 'flex'; 
-    }
-    
-    function closeSettings() { 
-        document.getElementById('settings-modal').style.display = 'none'; 
-    }
+    // --- 3. UI ЛОГИКА ---
+    function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
+    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
-    // Смена темы
     function setTheme(themeName) {
         document.body.setAttribute('data-theme', themeName);
         localStorage.setItem('siteTheme', themeName);
-        
-        // Подсветка активной кнопки
         document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.querySelector(`.t-${themeName === 'default' ? 'default' : themeName}`);
         if (activeBtn) activeBtn.classList.add('active');
     }
 
-    // Тумблер свечения
     function toggleGlow(save = true) {
         const checkbox = document.getElementById('glow-toggle');
         const root = document.documentElement;
-        // Включаем/выключаем переменную CSS
         root.style.setProperty('--primary-glow', checkbox.checked ? 'rgba(99, 102, 241, 0.5)' : 'rgba(0,0,0,0)');
         if (save) localStorage.setItem('glowEffect', checkbox.checked);
     }
 
-    // --- 3. ИНИЦИАЛИЗАЦИЯ ---
+    // --- ЗАПУСК ---
     document.addEventListener('DOMContentLoaded', () => {
         checkAuth();
         
-        // Восстановление темы
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         setTheme(savedTheme);
         
-        // Восстановление свечения
         const isGlow = localStorage.getItem('glowEffect') !== 'false';
         const glowToggle = document.getElementById('glow-toggle');
         if (glowToggle) {
@@ -310,30 +314,13 @@
         }
     });
 
-    // Закрытие настроек по клику вне окна
     document.getElementById('settings-modal').addEventListener('click', (e) => {
         if (e.target.id === 'settings-modal') closeSettings();
     });
 
-    // Вход по Enter
     document.getElementById('access-key').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') checkKey();
     });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
