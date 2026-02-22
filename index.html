@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Menu | Arizona RP Helper</title>
+    <title>Helper | Arizona RP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         /* --- 1. ПЕРЕМЕННЫЕ И ТЕМЫ --- */
@@ -139,7 +139,7 @@
     </div>
 
     <div id="app-content">
-        <h1>Admin Helper</h1>
+        <h1>ARISHelper</h1>
         <div class="alert-box">
             <span style="display:block; margin-bottom:15px; font-size:0.85rem; opacity:0.7;">Любые махинации влекут за собой дисквалификацию и блокировку аккаунта.</span>
             <span style="color:#ff6b6b; font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;">⚠️ ВНИМАНИЕ!</span>
@@ -190,66 +190,56 @@
 
 <script>
     // --- КОНФИГУРАЦИЯ ---
-    
-    // ХЕШ ТВОЕГО КЛЮЧА (SHA-256) для пароля "jsdkfdslk"
-    const CORRECT_HASH = "anNka2Zkc2xr"; 
-    
+    const VALID_KEY = ""; 
     const SESSION_VERSION = "1.2"; 
 
-    // НАСТРОЙКА СРОКА ЛИЦЕНЗИИ
+    // НАСТРОЙКА СРОКА
     const LICENSE_DAYS = 0;    
-    const LICENSE_HOURS = 1;   
+    const LICENSE_HOURS = 0;   
     const LICENSE_MINUTES = 0; 
 
-    // --- 1. ЛОГИКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ ---
+    // --- 1. ЛОГИКА АВТОРИЗАЦИИ ---
     function checkAuth() {
         const savedAuth = localStorage.getItem('authData');
         if (savedAuth) {
             try {
                 const authData = JSON.parse(savedAuth);
                 const now = new Date().getTime();
-                // Если версия совпадает и время не вышло — пускаем
+                // Проверяем срок и версию
                 if (now < authData.expiry && authData.version === SESSION_VERSION) {
                     showApp(authData.expiry);
                     return;
                 }
             } catch (e) { console.error("Ошибка данных"); }
         }
-        // Иначе показываем вход
+        // Если что-то не так — показываем вход
         document.getElementById('login-screen').style.display = 'flex';
         document.getElementById('app-content').style.display = 'none';
     }
 
-    // --- 2. НОВАЯ ФУНКЦИЯ ПРОВЕРКИ (С ХЕШИРОВАНИЕМ) ---
-    async function checkKey() {
+    function checkKey() {
         const inputField = document.getElementById('access-key');
         const input = inputField.value.trim();
         const errorMsg = document.getElementById('error-message');
         
-        // Превращаем введенный текст в хеш
-        const msgBuffer = new TextEncoder().encode(input);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        // Сравниваем полученный хеш с правильным
-        if (inputHash === CORRECT_HASH) {
+        // ИСПРАВЛЕНИЕ: Добавили проверку (VALID_KEY !== ""), 
+        // теперь если ключ не задан, войти нельзя.
+        if (VALID_KEY !== "" && input === VALID_KEY) {
             
-            // Если совпало — рассчитываем время действия
             const now = new Date().getTime();
             const expiry = now + (LICENSE_DAYS * 24 * 60 * 60 * 1000) + (LICENSE_HOURS * 60 * 60 * 1000) + (LICENSE_MINUTES * 60 * 1000);
             
-            // Сохраняем вход
             localStorage.setItem('authData', JSON.stringify({ expiry, version: SESSION_VERSION }));
-            
-            // Убираем ошибку и пускаем
             errorMsg.style.display = 'none';
             showApp(expiry);
-            
         } else {
-            // Если хеши не совпали
+            // Ошибка, если ключ неверный ИЛИ если он вообще не задан в коде
             errorMsg.style.display = 'block';
-            errorMsg.innerText = "Неверный ключ доступа!";
+            if (VALID_KEY === "") {
+                errorMsg.innerText = "Вход закрыт администратором (ключ не установлен)";
+            } else {
+                errorMsg.innerText = "Неверный ключ доступа!";
+            }
             
             inputField.style.borderColor = '#ef4444';
             inputField.animate([
@@ -258,7 +248,7 @@
             ], { duration: 300 });
         }
     }
-
+    
     function showApp(expiryTime) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
@@ -274,30 +264,44 @@
         }
     }
 
-    // --- 3. ЛОГИКА ИНТЕРФЕЙСА (ТЕМЫ И НАСТРОЙКИ) ---
-    function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
-    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
+    // --- 2. ЛОГИКА НАСТРОЕК (ИНТЕРФЕЙС) ---
+    function openSettings() { 
+        document.getElementById('settings-modal').style.display = 'flex'; 
+    }
+    
+    function closeSettings() { 
+        document.getElementById('settings-modal').style.display = 'none'; 
+    }
 
+    // Смена темы
     function setTheme(themeName) {
         document.body.setAttribute('data-theme', themeName);
         localStorage.setItem('siteTheme', themeName);
+        
+        // Подсветка активной кнопки
         document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.querySelector(`.t-${themeName === 'default' ? 'default' : themeName}`);
         if (activeBtn) activeBtn.classList.add('active');
     }
 
+    // Тумблер свечения
     function toggleGlow(save = true) {
         const checkbox = document.getElementById('glow-toggle');
         const root = document.documentElement;
+        // Включаем/выключаем переменную CSS
         root.style.setProperty('--primary-glow', checkbox.checked ? 'rgba(99, 102, 241, 0.5)' : 'rgba(0,0,0,0)');
         if (save) localStorage.setItem('glowEffect', checkbox.checked);
     }
 
-    // Инициализация при запуске
+    // --- 3. ИНИЦИАЛИЗАЦИЯ ---
     document.addEventListener('DOMContentLoaded', () => {
         checkAuth();
+        
+        // Восстановление темы
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         setTheme(savedTheme);
+        
+        // Восстановление свечения
         const isGlow = localStorage.getItem('glowEffect') !== 'false';
         const glowToggle = document.getElementById('glow-toggle');
         if (glowToggle) {
@@ -306,14 +310,30 @@
         }
     });
 
+    // Закрытие настроек по клику вне окна
     document.getElementById('settings-modal').addEventListener('click', (e) => {
         if (e.target.id === 'settings-modal') closeSettings();
     });
 
+    // Вход по Enter
     document.getElementById('access-key').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') checkKey();
     });
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
