@@ -276,7 +276,8 @@
             ], { duration: 300 });
         }
     }
-
+localStorage.removeItem('activationCooldown'); location.reload();
+    
     function showApp(expiryTime) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
@@ -350,6 +351,7 @@
 </script>
 </body>
 </html>
+
 
 
 
