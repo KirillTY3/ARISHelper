@@ -141,19 +141,45 @@
             <span style="color:#ff6b6b; font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;">⚠️ ВНИМАНИЕ!</span>
             <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">Использование данного функционала может нарушать правила сервера. <br> Администрация сайта не несет ответственности за блокировки.</p>
         </div>
-        <div class="menu-grid">
-            <div class="menu-btn" onclick="window.location.href='adm.html'">
-                <span style="font-size:3rem; display:block; margin-bottom:15px;">🛡️</span>
-                <span style="font-size:1.25rem; font-weight:600;">Обзвон на админку</span>
+        
+<div class="menu-grid">
+    <div class="menu-btn" onclick="window.location.href='adm.html'" style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+        <div>
+            <span style="font-size:3rem; display:block; margin-bottom:10px;">🛡️</span>
+            <span style="font-size:1.25rem; font-weight:600;">Обзвон на Админки</span>
+        </div>
+        
+        <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
+                🔄 Обновлено: <b style="color: var(--text-main);">23.02.2026</b>
             </div>
-            <div class="menu-btn" onclick="alert('Раздел в разработке')">
-                <span style="font-size:3rem; display:block; margin-bottom:15px;">⛓️</span>
-                <span style="font-size:1.25rem; font-weight:600;">Обзвон на ТСР 9-10</span>
+            <div style="font-size: 0.85rem; font-weight: 800; color: #4ade80; background: rgba(74, 222, 128, 0.1); padding: 4px; border-radius: 6px;">
+                ✅ New Rules v3.0
             </div>
-            <div class="menu-btn" onclick="openSettings()">
-                <span style="font-size:3rem; display:block; margin-bottom:15px;">🔧</span>
-                <span style="font-size:1.25rem; font-weight:600;">Настройки сайта</span>
-            </div>
+        </div>
+    </div>
+
+    <div class="menu-btn" onclick="alert('Раздел в разработке')" style="opacity: 0.8;">
+        <span style="font-size:3rem; display:block; margin-bottom:10px;">⛓️</span>
+        <span style="font-size:1.25rem; font-weight:600;">Обзвон на ТСР 9-10</span>
+        <span style="display:inline-block; margin-top:10px; font-size: 0.75rem; color: var(--danger); border: 1px solid var(--danger); padding: 2px 8px; border-radius: 4px; font-weight: bold;">
+            🛠️ В РАЗРАБОТКЕ
+        </span>
+    </div>
+
+    <div class="menu-btn" onclick="alert('Раздел в разработке')" style="opacity: 0.8;">
+        <span style="font-size:3rem; display:block; margin-bottom:10px;">🎖️</span>
+        <span style="font-size:1.25rem; font-weight:600;">Обзвон на Армию 9-10</span>
+        <span style="display:inline-block; margin-top:10px; font-size: 0.75rem; color: var(--danger); border: 1px solid var(--danger); padding: 2px 8px; border-radius: 4px; font-weight: bold;">
+            🛠️ В РАЗРАБОТКЕ
+        </span>
+    </div>
+
+    <div class="menu-btn" onclick="openSettings()">
+        <span style="font-size:3rem; display:block; margin-bottom:15px;">🔧</span>
+        <span style="font-size:1.25rem; font-weight:600;">Настройки сайта</span>
+    </div>
+    
         </div>
         <p id="expiry-date" style="text-align:center; color:var(--text-muted); margin-top:30px; font-size:0.8rem;"></p>
     </div>
@@ -324,6 +350,7 @@
 </script>
 </body>
 </html>
+
 
 
 
