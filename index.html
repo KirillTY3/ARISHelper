@@ -213,56 +213,52 @@
 <script>
     // --- НАСТРОЙКИ ---
     const SESSION_VERSION = "1.3"; 
-    const LICENSE_DAYS = 0;     
+    const LICENSE_DAYS = 0;      
     const LICENSE_HOURS = 0;    
     const LICENSE_MINUTES = 5;  
 
-    // --- 1. ПРОВЕРКА ПРИ ВХОДЕ ---
+
+    const CORRECT_HASH = "f673859664539655f4144070081d431c360980c65793e89a35e4060855217835"; 
+    const EXTRA_KEY = "admin123";
+
+
+    // --- 1. ПРОВЕРКА ПРИ ВХОДЕ НА САЙТ ---
     function checkAuth() {
         const savedAuth = localStorage.getItem('authData');
-        
         if (savedAuth) {
             try {
                 const authData = JSON.parse(savedAuth);
                 const now = new Date().getTime();
-                
-                // Проверяем версию и срок действия
                 if (authData.version === SESSION_VERSION && now < authData.expiry) {
                     showApp(authData.expiry);
                 } else {
                     document.getElementById('login-screen').style.display = 'flex';
                     document.getElementById('app-content').style.display = 'none';
                 }
-            } catch (e) {
-                localStorage.removeItem('authData'); 
-            }
+            } catch (e) { localStorage.removeItem('authData'); }
         } else {
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('app-content').style.display = 'none';
         }
     }
 
-    // --- 2. ПРОВЕРКА КЛЮЧА (SHA-256) ---
+    // --- 2. ПРОВЕРКА КЛЮЧА (ТОЛЬКО ДЛЯ САЙТА) ---
     async function checkKey() {
         const inputField = document.getElementById('access-key');
         const input = inputField.value.trim();
         const errorMsg = document.getElementById('error-message');
 
-
-
-        const CORRECT_HASH = "09530b292c177a0342be4a7b9dc9888ff9e82bdca27465b5a8ada74bbe619daa"; 
-        const EXTRA_KEY = "admin123";
-
-        if (!input) return; // Пустой ввод игнорируем
+        if (!input) return;
 
         try {
-            // Превращаем ввод пользователя в хеш
+            // Превращаем ввод в хеш
             const msgBuffer = new TextEncoder().encode(input);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // Сравниваем хеши
+            // ПРОВЕРКА: Сравниваем ТОЛЬКО с основным хешем (kirillxevc)
+            // Второй ключ (admin123) здесь ИГНОРИРУЕТСЯ
             if (inputHash === CORRECT_HASH) {
                 
                 const now = new Date().getTime();
@@ -282,7 +278,6 @@
         } catch (e) {
             errorMsg.style.display = 'block';
             errorMsg.innerText = "Неверный ключ доступа!";
-            
             inputField.style.borderColor = '#ef4444';
             inputField.animate([
                 { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, 
@@ -294,7 +289,6 @@
     function showApp(expiryTime) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
-        
         const options = { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
         const dateStr = new Date(expiryTime).toLocaleString('ru-RU', options);
         document.getElementById('expiry-date').innerText = `Лицензия активна до: ${dateStr}`;
@@ -307,7 +301,6 @@
         }
     }
 
-    // --- 3. UI ЛОГИКА ---
     function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
     function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
@@ -326,19 +319,13 @@
         if (save) localStorage.setItem('glowEffect', checkbox.checked);
     }
 
-    // --- ЗАПУСК ---
     document.addEventListener('DOMContentLoaded', () => {
         checkAuth();
-        
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         setTheme(savedTheme);
-        
         const isGlow = localStorage.getItem('glowEffect') !== 'false';
         const glowToggle = document.getElementById('glow-toggle');
-        if (glowToggle) {
-            glowToggle.checked = isGlow;
-            toggleGlow(false);
-        }
+        if (glowToggle) { glowToggle.checked = isGlow; toggleGlow(false); }
     });
 
     document.getElementById('settings-modal').addEventListener('click', (e) => {
@@ -351,6 +338,7 @@
 </script>
 </body>
 </html>
+
 
 
 
