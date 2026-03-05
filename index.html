@@ -725,6 +725,7 @@ async function verifyAdminKey() {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
+    // Панель управление
     if (hashHex === "b23be4f06e614470bb8b009ea09fe4154a0b0ec91b9d55da6722691c5fdbdeb7") {
         closeAdminAuth();
         openCMS();
@@ -985,4 +986,5 @@ document.addEventListener('DOMContentLoaded', checkAuth);
 
 </body></html>
 </html>
+
 
