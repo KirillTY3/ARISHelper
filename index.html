@@ -233,10 +233,10 @@
         <div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
-                <div class="timer-box"><span class="t-val" id="t-d">29</span><span class="t-label">DAYS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-h">23</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">59</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">18</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-d">0</span><span class="t-label">DAYS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-h">00</span><span class="t-label">HOURS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">00</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">13</span><span class="t-label">SECS</span></div>
             </div>
         </div>
 
@@ -320,7 +320,7 @@
                             
                             <div id="cms-keys-list"><div class="cms-group-row key-row" style="margin-bottom: 10px;">
         <div class="cms-group-col" style="flex: 2;">
-            <input type="text" class="cms-input k-hash" value="9d5287aae44052592213c8e1f93ab35f2afa292cb7eaa0d6eb1feec8b16eeb75" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly="">
+            <input type="text" class="cms-input k-hash" value="91b39451614cc30404bfbb1184fc99a3c07c770b169cfcf3cb263d26586fc17f" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly="">
         </div>
         <div class="cms-group-col" style="flex: 0 0 70px;">
             <input type="number" class="cms-input k-days" value="30" style="margin:0; text-align:center;" placeholder="Дни">
@@ -468,8 +468,8 @@ let siteDB = {
         "timerTitle": "Лицензия действительна",
         "accessKeys": [
             {
-                "hash": "9d5287aae44052592213c8e1f93ab35f2afa292cb7eaa0d6eb1feec8b16eeb75",
-                "days": 25,
+                "hash": "91b39451614cc30404bfbb1184fc99a3c07c770b169cfcf3cb263d26586fc17f",
+                "days": 5,
                 "hours": 0,
                 "mins": 0
             }
@@ -565,9 +565,7 @@ async function checkKey() {
 
         let matchedKey = null;
 
-        const keys = siteDB.settings.accessKeys || [
-            { hash: "3806233f22144d8227e82c8749359da02322209706ad0ea127c05dcfb4e8fa0d", days: 30, hours: 0, mins: 0 }
-        ];
+        const keys = siteDB.settings.accessKeys || [];
 
         for (let i = 0; i < keys.length; i++) {
             if (keys[i].hash && keys[i].hash.toLowerCase() === inputHash.toLowerCase()) {
@@ -725,7 +723,7 @@ async function verifyAdminKey() {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // Панель управление
+   // Панель управление
     if (hashHex === "b23be4f06e614470bb8b009ea09fe4154a0b0ec91b9d55da6722691c5fdbdeb7") {
         closeAdminAuth();
         openCMS();
@@ -827,9 +825,7 @@ function buildCMSInterface() {
     
     const keysList = document.getElementById('cms-keys-list');
     keysList.innerHTML = '';
-    const keys = siteDB.settings.accessKeys || [
-        { hash: "3806233f22144d8227e82c8749359da02322209706ad0ea127c05dcfb4e8fa0d", days: 30, hours: 0, mins: 0 }
-    ];
+    const keys = siteDB.settings.accessKeys || [];
     keys.forEach(k => renderKeyRow(k.hash, k.days, k.hours, k.mins));
 
     document.getElementById('cms-site-font').value = siteDB.settings.font || "'Inter', sans-serif";
@@ -983,8 +979,5 @@ document.addEventListener('DOMContentLoaded', checkAuth);
 
 
 
-
 </body></html>
 </html>
-
-
