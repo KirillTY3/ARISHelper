@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
-<html lang="ru"><head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARIS Helper | 2026 Edition</title>
@@ -148,37 +148,37 @@
 
         /* --- NEXUS OS CONTROL PANEL (MEGA BUILDER) --- */
         .cms-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); z-index: 1000; align-items: center; justify-content: center; animation: fadeIn 0.2s; }
-        .cms-panel { background: #0f172a; width: 95%; max-width: 1400px; height: 90vh; border-radius: 24px; border: 1px solid var(--primary); box-shadow: 0 30px 80px rgba(0,0,0,0.8); display: flex; overflow: hidden; }
+        .cms-panel { background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2)); color: var(--text-main); width: 95%; max-width: 1400px; height: 90vh; border-radius: 24px; border: 1px solid var(--primary); box-shadow: 0 30px 80px rgba(0,0,0,0.8); display: flex; overflow: hidden; }
         
-        .cms-sidebar { width: 280px; background: rgba(0,0,0,0.6); border-right: 1px solid rgba(255,255,255,0.1); padding: 20px; display: flex; flex-direction: column; gap: 10px;}
-        .cms-logo { font-size: 1.2rem; font-weight: 900; color: #fff; margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;}
+        .cms-sidebar { width: 280px; background: rgba(0,0,0,0.2); border-right: 1px solid var(--card-border); padding: 20px; display: flex; flex-direction: column; gap: 10px;}
+        .cms-logo { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 30px; text-align: center; border-bottom: 1px solid var(--card-border); padding-bottom: 20px;}
         .cms-tab-btn { background: transparent; color: var(--text-muted); border: 1px solid transparent; padding: 15px; border-radius: 12px; text-align: left; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px;}
-        .cms-tab-btn:hover { background: rgba(255,255,255,0.05); }
-        .cms-tab-btn.active { background: var(--primary); color: white; box-shadow: 0 5px 15px var(--primary-glow); border-color: rgba(255,255,255,0.2);}
+        .cms-tab-btn:hover { background: var(--card-border); }
+        .cms-tab-btn.active { background: var(--primary); color: white; box-shadow: 0 5px 15px var(--primary-glow); border-color: var(--card-border);}
         
         .cms-content { flex: 1; display: flex; flex-direction: column; overflow: hidden;}
-        .cms-header { padding: 20px 30px; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;}
+        .cms-header { padding: 20px 30px; background: rgba(0,0,0,0.1); border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;}
         .cms-body { padding: 30px; overflow-y: auto; flex: 1; }
-        .cms-footer { padding: 20px 30px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between;}
+        .cms-footer { padding: 20px 30px; background: rgba(0,0,0,0.1); border-top: 1px solid var(--card-border); display: flex; justify-content: space-between;}
 
-        .cms-group { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 16px; margin-bottom: 20px; }
+        .cms-group { background: rgba(0,0,0,0.05); border: 1px solid var(--card-border); padding: 25px; border-radius: 16px; margin-bottom: 20px; }
         .cms-group-row { display: flex; gap: 20px; }
         .cms-group-col { flex: 1; }
         
         .cms-label { display: block; color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 10px; letter-spacing: 1px;}
-        .cms-input { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 12px; outline: none; font-family: 'Inter'; font-size: 1rem; margin-bottom: 15px; box-sizing: border-box; transition: 0.2s;}
+        .cms-input { width: 100%; padding: 15px; background: var(--bg-grad-2); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 12px; outline: none; font-family: 'Inter'; font-size: 1rem; margin-bottom: 15px; box-sizing: border-box; transition: 0.2s;}
         .cms-input:focus { border-color: var(--primary); }
-        .cms-textarea { width: 100%; min-height: 150px; background: #050505; color: #4ade80; padding: 15px; font-family: monospace; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; resize: vertical; outline: none; box-sizing: border-box;}
+        .cms-textarea { width: 100%; min-height: 150px; background: var(--bg-grad-2); color: var(--text-main); padding: 15px; font-family: monospace; border: 1px solid var(--card-border); border-radius: 12px; resize: vertical; outline: none; box-sizing: border-box;}
         
         /* Цвета */
         .color-picker { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 50px; background: transparent; border: none; cursor: pointer; margin-bottom: 15px;}
-        .color-picker::-webkit-color-swatch { border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
+        .color-picker::-webkit-color-swatch { border-radius: 12px; border: 1px solid var(--card-border); }
         
         /* Тумблеры */
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);}
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--card-border);}
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .4s; border-radius: 34px; border: 1px solid rgba(255,255,255,0.1); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .4s; border-radius: 34px; border: 1px solid var(--card-border); }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;}
         input:checked + .slider { background-color: var(--success); }
         input:checked + .slider:before { transform: translateX(22px); }
@@ -190,9 +190,11 @@
         .btn-del { background: var(--danger-bg); border: 1px solid rgba(244,63,94,0.3); color: var(--danger); padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-del:hover { background: var(--danger); color: white; }
 
-        .cat-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 16px; margin-bottom: 25px; }
-        .btn-box { display: grid; grid-template-columns: 1fr 2fr 2fr 2fr 1fr auto; gap: 10px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; margin-bottom: 10px; align-items: center;}
-        .cms-select { padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; outline: none; }
+        .cat-box { background: rgba(0,0,0,0.05); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; margin-bottom: 25px; }
+        .btn-box { display: grid; grid-template-columns: 1fr 2fr 2fr 2fr 1fr auto; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 10px; align-items: center;}
+        .cms-select { padding: 12px; background: var(--bg-grad-2); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; outline: none; }
+        .settings-btn { border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; font-size: 1rem; }
+        .settings-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 </head>
 <body class="grid-bg anim-on" data-theme="default">
@@ -210,8 +212,6 @@
         </div>
     </div>
 
-<div class="fab-cms" id="nexus-settings-btn" onclick="requestAdminAccess()" title="Nexus Control Panel" style="display: flex;">⚙️</div>
-
     <div id="app-content" style="display: block;">
         <div class="sys-header">
             <div>
@@ -228,19 +228,34 @@
             </div>
         </div>
 
-        <div id="dashboard-container"><div class="menu-label">Система</div><div class="menu-grid"><a class="menu-btn" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-green">New</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта</span></div></a></div></div>
+        <div id="dashboard-container"><div class="menu-label">Система</div><div class="menu-grid"><a class="menu-btn" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-green">New</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" href="#"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc"></span></div></a><a class="menu-btn" href="javascript:requestAdminAccess()"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div>
 
         <div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
                 <div class="timer-box"><span class="t-val" id="t-d">0</span><span class="t-label">DAYS</span></div>
                 <div class="timer-box"><span class="t-val" id="t-h">00</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">00</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">13</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">49</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">27</span><span class="t-label">SECS</span></div>
             </div>
         </div>
 
         <div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div>
+    </div>
+
+    <!-- USER SETTINGS MODAL -->
+    <div id="user-settings-modal" class="cms-overlay" style="display: none; z-index: 2000;">
+        <div class="login-box" style="position: relative; max-width: 450px; text-align: left; align-items: stretch;">
+            <button onclick="closeUserSettings()" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer;">✕</button>
+            
+            <h2 style="margin:0 0 25px 0; font-size: 1.5rem; font-weight: 900; text-align: center;">Настройки Темы</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                <button onclick="setUserTheme('default')" class="settings-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">Standard</button>
+                <button onclick="setUserTheme('light')" class="settings-btn" style="background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1;">White</button>
+                <button onclick="setUserTheme('black')" class="settings-btn" style="background: #000; border: 1px solid #333;">Dark</button>
+            </div>
+        </div>
     </div>
 
     <!-- ADMIN AUTH MODAL -->
@@ -254,7 +269,7 @@
             <p style="color:var(--text-muted); margin-top:5px; font-size: 0.85rem;">Подтвердите права доступа</p>
             <input type="password" id="admin-key-input" class="key-input" placeholder="Пароль..." autocomplete="off" style="margin: 20px 0; font-size: 1.2rem;">
             <button class="login-btn" onclick="verifyAdminKey()" style="background: linear-gradient(135deg, var(--danger), #be123c); box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.5);">РАЗБЛОКИРОВАТЬ</button>
-            <p id="admin-error" style="color: var(--danger); margin-top: 15px; display: block; font-weight: 700; font-size: 0.9rem;">⛔ ДОСТУП ЗАПРЕЩЕН</p>
+            <p id="admin-error" style="color: var(--danger); margin-top: 15px; display: none; font-weight: 700; font-size: 0.9rem;">⛔ ДОСТУП ЗАПРЕЩЕН</p>
         </div>
     </div>
 
@@ -262,25 +277,25 @@
         <div class="cms-panel">
             <div class="cms-sidebar">
                 <div class="cms-logo">NEXUS PANEL</div>
-                <button class="cms-tab-btn" onclick="switchCmsTab('tab-buttons')" id="btn-tab-buttons">📱 Редактор Кнопок</button>
-                <button class="cms-tab-btn active" onclick="switchCmsTab('tab-site')" id="btn-tab-site">🎨 Дизайн и Сайт</button>
+                <button class="cms-tab-btn active" onclick="switchCmsTab('tab-buttons')" id="btn-tab-buttons">📱 Редактор Кнопок</button>
+                <button class="cms-tab-btn" onclick="switchCmsTab('tab-site')" id="btn-tab-site">🎨 Дизайн и Сайт</button>
                 <button class="cms-tab-btn" onclick="switchCmsTab('tab-code')" id="btn-tab-code">👨‍💻 База и Скрипты</button>
             </div>
 
             <div class="cms-content">
                 <div class="cms-header">
                     <h2 id="cms-tab-title" style="margin:0; font-weight: 800;">📱 Редактор Кнопок и Меню</h2>
-                    <button style="background:transparent; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeCMS()">✕</button>
+                    <button style="background:transparent; border:none; color:var(--text-main); font-size:1.5rem; cursor:pointer;" onclick="closeCMS()">✕</button>
                 </div>
 
                 <div class="cms-body">
                     
-                    <div id="tab-buttons" class="cms-tab-content" style="display: none;">
-                        <div id="cms-categories-list"><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" class="cms-input cat-name" value="Система" style="margin:0; font-weight:bold; font-size:1.1rem;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><input type="text" class="cms-input b-icon" value="🛡️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Справочник" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="Правила проекта" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="adm.html" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="New" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green" selected="">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div></div>
+                    <div id="tab-buttons" class="cms-tab-content" style="display: block;">
+                        <div id="cms-categories-list"><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" class="cms-input cat-name" value="Система" style="margin:0; font-weight:bold; font-size:1.1rem;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><input type="text" class="cms-input b-icon" value="🛡️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Справочник" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="Правила проекта" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="adm.html" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="New" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green" selected="">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" class="cms-input cat-name" value="Настройки Сайта" style="margin:0; font-weight:bold; font-size:1.1rem;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><input type="text" class="cms-input b-icon" value="🔧" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Темы" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:openUserSettings()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div><div class="btn-box"><input type="text" class="cms-input b-icon" value="🛠️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="ADMIN" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:requestAdminAccess()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div></div>
                         <button class="btn-add" onclick="addCMSCategory()" style="margin-top: 20px; padding: 25px; font-size: 1.1rem;">➕ СОЗДАТЬ НОВЫЙ БЛОК МЕНЮ</button>
                     </div>
 
-                    <div id="tab-site" class="cms-tab-content" style="display: block;">
+                    <div id="tab-site" class="cms-tab-content" style="display: none;">
                         
                         <div class="cms-group">
                             <span class="cms-label">📝 Тексты Главного Экрана</span>
@@ -323,7 +338,7 @@
             <input type="text" class="cms-input k-hash" value="91b39451614cc30404bfbb1184fc99a3c07c770b169cfcf3cb263d26586fc17f" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly="">
         </div>
         <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-days" value="30" style="margin:0; text-align:center;" placeholder="Дни">
+            <input type="number" class="cms-input k-days" value="5" style="margin:0; text-align:center;" placeholder="Дни">
         </div>
         <div class="cms-group-col" style="flex: 0 0 70px;">
             <input type="number" class="cms-input k-hours" value="0" style="margin:0; text-align:center;" placeholder="Часы">
@@ -509,6 +524,27 @@ let siteDB = {
                     "badgeColor": "green"
                 }
             ]
+        },
+        {
+            "name": "Настройки Сайта",
+            "buttons": [
+                {
+                    "icon": "🔧",
+                    "title": "Темы",
+                    "desc": "",
+                    "link": "javascript:openUserSettings()",
+                    "badge": "Настройки",
+                    "badgeColor": "blue"
+                },
+                {
+                    "icon": "🛠️",
+                    "title": "ADMIN",
+                    "desc": "",
+                    "link": "javascript:requestAdminAccess()",
+                    "badge": "Настройки",
+                    "badgeColor": "blue"
+                }
+            ]
         }
     ]
 };
@@ -595,6 +631,9 @@ async function checkKey() {
 
 // === 3. РАННИЕ НАСТРОЙКИ ===
 function applyEarlySettings() {
+    const userTheme = localStorage.getItem('siteTheme');
+    const activeTheme = userTheme || siteDB.settings.theme || 'default';
+
     document.getElementById('render-login-title').innerText = siteDB.settings.loginTitle || "Доступ к системе";
     document.getElementById('render-login-sub').innerText = siteDB.settings.loginSub || "Введите ключ доступа";
     document.getElementById('render-login-btn').innerText = siteDB.settings.loginBtn || "ВОЙТИ";
@@ -603,6 +642,7 @@ function applyEarlySettings() {
     if (keyInput) keyInput.placeholder = siteDB.settings.loginPlaceholder || "Введите ключ...";
 
     document.body.setAttribute('data-theme', siteDB.settings.theme);
+    document.body.setAttribute('data-theme', activeTheme);
     if(siteDB.settings.showGrid) document.body.classList.add('grid-bg'); else document.body.classList.remove('grid-bg');
     if(siteDB.settings.showAnim) document.body.classList.add('anim-on'); else document.body.classList.remove('anim-on');
 
@@ -615,6 +655,7 @@ function applyEarlySettings() {
             --bg-grad-3: ${siteDB.settings.colors?.bg3 || '#020617'};
             --card-blur: ${siteDB.settings.cardBlur || 20}px;
             --card-bg: rgba(${siteDB.settings.theme === 'light' ? '255,255,255' : '20,25,40'}, ${siteDB.settings.cardOpacity || 0.4});
+            --card-bg: rgba(${activeTheme === 'light' ? '255,255,255' : '20,25,40'}, ${siteDB.settings.cardOpacity || 0.4});
             --site-width: ${siteDB.settings.maxWidth || '1200px'};
             --card-radius: ${siteDB.settings.borderRadius || '28px'};
             ${!(siteDB.settings.showGlow ?? true) ? '--primary-glow: transparent;' : ''}
@@ -690,6 +731,15 @@ function showApp(expiryTime) {
     } else {
         document.getElementById('timer-container').style.display = 'none';
     }
+}
+
+// === USER SETTINGS LOGIC ===
+function openUserSettings() { document.getElementById('user-settings-modal').style.display = 'flex'; }
+function closeUserSettings() { document.getElementById('user-settings-modal').style.display = 'none'; }
+
+function setUserTheme(theme) {
+    localStorage.setItem('siteTheme', theme);
+    applyEarlySettings();
 }
 
 // === 5. NEXUS CONTROL PANEL ===
@@ -975,6 +1025,7 @@ function importJson() {
 
 document.addEventListener('DOMContentLoaded', checkAuth);
 </script>
+
 
 
 
