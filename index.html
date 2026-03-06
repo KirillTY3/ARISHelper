@@ -285,8 +285,8 @@
     // --- НАСТРОЙКИ ---
     const SESSION_VERSION = "1.3"; 
     const LICENSE_DAYS = 0;      
-    const LICENSE_HOURS = 0;    
-    const LICENSE_MINUTES = 5;   
+    const LICENSE_HOURS = 20;    
+    const LICENSE_MINUTES = 0;   
 
     let timerInterval = null; // Глобальная переменная для таймера
 
@@ -321,7 +321,7 @@
         const input = inputField.value.trim();
         const errorMsg = document.getElementById('error-message');
 
-        const CORRECT_HASH = "e57ad57a254efccd1e464806a61c3151a2774d3d2b2d162d56284fcd29df5c3d"; 
+        const CORRECT_HASH = "91b39451614cc30404bfbb1184fc99a3c07c770b169cfcf3cb263d26586fc17f"; 
 
         if (!input) return; // Пустой ввод игнорируем
 
@@ -453,3 +453,4 @@
 </script>
 
 </body></html>
+
