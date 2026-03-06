@@ -4,45 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Helper: Справочник</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. ПЕРЕМЕННЫЕ И ТЕМЫ (2026 EDITION) --- */
-        :root { 
-            --primary: #6366f1; 
-            --primary-hover: #4f46e5;
-            --primary-glow: rgba(99, 102, 241, 0.6); 
-            --bg-grad-1: #09090b; 
-            --bg-grad-2: #1e1b4b; 
-            --bg-grad-3: #020617;
-            --card-bg: rgba(20, 25, 40, 0.5); 
-            --card-hover: rgba(30, 40, 60, 0.7);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 10px 30px -10px rgba(0,0,0,0.5);
-            --text-main: #f8fafc; 
-            --text-muted: #94a3b8; 
+        /* --- 1. ПЕРЕМЕННЫЕ И ТЕМЫ --- */
+        :root {
+            /* Стандартная тема (Dark Blue) */
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --bg-grad-1: #1e293b;
+            --bg-grad-2: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-hover: rgba(51, 65, 85, 0.8);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
             --warning: #fbbf24;
             --warning-bg: rgba(251, 191, 36, 0.15);
-            --danger: #f43f5e; 
-            --danger-bg: rgba(244, 63, 94, 0.15); 
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.15);
         }
 
-        [data-theme="light"] { 
-            --bg-grad-1: #f1f5f9; --bg-grad-2: #e2e8f0; --bg-grad-3: #cbd5e1;
-            --card-bg: rgba(255, 255, 255, 0.7); 
+        /* Светлая тема */
+        [data-theme="light"] {
+            --bg-grad-1: #e2e8f0;
+            --bg-grad-2: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.8);
             --card-hover: #ffffff;
-            --card-border: rgba(0, 0, 0, 0.05);
-            --card-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 10px 30px -10px rgba(0,0,0,0.1);
-            --text-main: #0f172a; --text-muted: #64748b; 
-            --primary-glow: rgba(99, 102, 241, 0.25); 
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-glow: rgba(99, 102, 241, 0.2);
             --warning: #d97706;
             --warning-bg: rgba(217, 119, 6, 0.1);
         }
 
-        [data-theme="black"] { 
-            --bg-grad-1: #000000; --bg-grad-2: #000000; --bg-grad-3: #050505;
-            --card-bg: rgba(10, 10, 10, 0.8); 
-            --card-hover: #1a1a1a;
-            --text-main: #ffffff; --text-muted: #737373; 
+        /* Черная тема (AMOLED) */
+        [data-theme="black"] {
+            --bg-grad-1: #000000;
+            --bg-grad-2: #050505;
+            --card-bg: rgba(20, 20, 20, 0.9);
+            --card-hover: #262626;
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
         }
 
         /* --- 2. СКРЫВАЕМ ПОЛОСУ ПРОКРУТКИ --- */
@@ -50,206 +51,250 @@
         html { scrollbar-width: none; }
         body { -ms-overflow-style: none; }
 
-        /* --- 3. АНИМИРОВАННЫЙ ФОН --- */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: linear-gradient(-45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3));
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: var(--text-main); 
-            margin: 0; padding: 0; 
-            min-height: 100vh; 
-            transition: color 0.5s ease; 
-            position: relative;
-            display: none; /* Скрыто до проверки авторизации */
-        }
-
-        body::before {
-            content: "";
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1; pointer-events: none;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- 3. ОСНОВНЫЕ СТИЛИ --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, var(--bg-grad-1), var(--bg-grad-2));
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background 0.5s ease, color 0.5s ease;
+            /* Скрываем контент до проверки авторизации, чтобы не мигал */
+            display: none; 
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 40px 20px;
-            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 0.8s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        /* --- 4. ШАПКА И ТЕКСТ --- */
-        .page-header {
-            display: flex; flex-direction: column; align-items: center; margin-bottom: 40px;
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            font-weight: 900;
-            font-size: 3rem;
-            margin: 0 0 10px 0;
-            background: linear-gradient(135deg, #fff, var(--primary), #94a3b8);
+            text-align: center;
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            color: var(--text-main); 
             text-transform: uppercase;
-            letter-spacing: -1px;
-            text-align: center;
+            letter-spacing: 1px;
         }
         
         [data-theme="light"] h1 {
-            background: linear-gradient(135deg, #0f172a, var(--primary));
+            background: linear-gradient(135deg, #475569 0%, #0f172a 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .subtitle { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
 
         kbd {
-            background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2); font-family: monospace;
-            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3); font-weight: bold;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-family: monospace;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.5);
         }
-        [data-theme="light"] kbd { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1); }
-
-        /* Кнопка Назад */
-        .back-btn {
-            background: var(--card-bg); color: var(--text-main);
-            border: 1px solid var(--card-border); padding: 12px 24px;
-            border-radius: 14px; cursor: pointer; font-weight: 700;
-            transition: all 0.3s; margin-bottom: 30px; align-self: flex-start;
-            backdrop-filter: blur(10px); box-shadow: var(--card-shadow);
+        
+        [data-theme="light"] kbd {
+             background: rgba(0,0,0,0.05);
+             border-color: rgba(0,0,0,0.1);
+             box-shadow: none;
         }
-        .back-btn:hover { background: var(--primary); border-color: var(--primary); transform: translateX(-5px); color: white; }
 
         /* Предупреждение */
         .alert-box {
-            background: var(--danger-bg); border: 1px solid rgba(244, 63, 94, 0.3);
-            border-radius: 20px; padding: 25px; margin-bottom: 50px;
-            text-align: left; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex; gap: 20px; align-items: center;
+            background: var(--danger-bg);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+            backdrop-filter: blur(5px);
         }
-        .alert-icon { font-size: 2.5rem; background: rgba(244, 63, 94, 0.2); padding: 15px; border-radius: 16px; }
-        .alert-box strong { color: var(--danger); font-weight: 900; text-transform: uppercase; font-size: 1.1rem; display: block; margin-bottom: 5px;}
-        .alert-box p { margin: 0; font-size: 0.9em; color: var(--text-muted); line-height: 1.5; }
+        .alert-box strong { color: #ff6b6b; letter-spacing: 0.5px; }
+        .alert-box p { margin: 5px 0 0; font-size: 0.9em; color: var(--text-muted); }
 
-        /* --- 5. КАТЕГОРИИ И ПРАВИЛА --- */
-        .category-block { 
-            margin-bottom: 50px; 
-            background: rgba(0,0,0,0.1);
-            padding: 30px;
-            border-radius: 32px;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
+        /* Категории */
+        .category-block { margin-bottom: 50px; }
 
         .category-title {
-            color: var(--text-main);
-            font-size: 1.4rem;
-            font-weight: 900;
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .category-title::before {
-            content: ""; display: block; width: 12px; height: 12px;
-            background: var(--primary); border-radius: 50%;
-            box-shadow: 0 0 15px var(--primary-glow);
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-glow);
+            display: inline-block;
+            text-shadow: 0 0 20px var(--primary-glow);
         }
 
+        /* Карточка правила */
         .rule-row {
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--card-bg); margin-bottom: 12px;
-            border-radius: 16px; padding: 18px 24px;
-            border: 1px solid var(--card-border); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(15px); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
         }
         
+        [data-theme="light"] .rule-row { border-color: rgba(0,0,0,0.05); }
+
         .rule-row:hover {
-            transform: translateY(-3px) scale(1.01);
+            transform: translateX(5px);
             background: var(--card-hover);
-            border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.4);
-            z-index: 10; position: relative;
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .rule-name { flex: 1; padding-right: 20px; font-weight: 600; line-height: 1.5; font-size: 0.95rem; }
+        .rule-name {
+            flex: 1;
+            padding-right: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
 
         .rule-punishment {
-            flex: 0 0 auto; text-align: right; color: var(--warning);
-            font-size: 0.85rem; font-weight: 800; background: var(--warning-bg);
-            padding: 8px 16px; border-radius: 10px; white-space: pre-wrap; max-width: 40%;
-            border: 1px solid rgba(251, 191, 36, 0.2);
+            flex: 0 0 auto;
+            text-align: right;
+            color: var(--warning);
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: var(--warning-bg);
+            padding: 6px 12px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            max-width: 40%;
         }
 
         .severe {
-            color: var(--danger); background: var(--danger-bg);
-            border-color: rgba(244, 63, 94, 0.3);
-            box-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
+            color: #f87171;
+            background: var(--danger-bg);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
         }
 
-        /* --- 6. ПОИСК --- */
+        /* Кнопка Назад */
+        .back-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid rgba(128,128,128, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-main); }
+        [data-theme="light"] .back-btn:hover { background: rgba(0,0,0,0.05); }
+
+
+        /* Модальное окно поиска */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 80px;
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 100px;
             animation: fadeIn 0.2s;
         }
 
         .modal-content {
-            background: var(--card-bg); width: 90%; max-width: 700px;
-            border-radius: 24px; border: 1px solid var(--card-border);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
-            overflow: hidden; display: flex; flex-direction: column; max-height: 75vh;
-            backdrop-filter: blur(25px);
+            background: var(--bg-grad-1);
+            width: 90%;
+            max-width: 700px;
+            border-radius: 16px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 40px var(--primary-glow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 70vh;
         }
 
-        .search-header { padding: 25px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--card-border); position: relative;}
-        
+        .search-header { padding: 20px; background: rgba(0,0,0,0.1); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
         input#search-input {
-            width: 100%; background: transparent; border: none; color: var(--text-main);
-            font-size: 1.5rem; outline: none; font-family: 'Inter', sans-serif; font-weight: 800;
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            outline: none;
+            font-family: 'Inter', sans-serif;
         }
-        input#search-input::placeholder { color: var(--text-muted); opacity: 0.5; font-weight: 600;}
+        input#search-input::placeholder { color: var(--text-muted); }
 
-        .search-results { overflow-y: auto; padding: 10px; }
+        .search-results { overflow-y: auto; padding: 0; }
 
         .result-item {
-            padding: 18px 25px; border-radius: 16px; margin-bottom: 5px;
-            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .result-item:hover { background: rgba(255,255,255,0.05); border-color: var(--card-border); transform: translateX(5px);}
-        .result-category { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; margin-bottom: 6px; font-weight: 800; letter-spacing: 1px;}
+        .result-item:hover { background: var(--card-hover); }
+        .result-category { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
         
-        .result-highlight { background: rgba(99, 102, 241, 0.4); color: #fff; border-radius: 4px; padding: 0 4px; }
+        .result-highlight {
+            background: rgba(99, 102, 241, 0.3);
+            color: #fff;
+            border-radius: 2px;
+            padding: 0 2px;
+        }
         [data-theme="light"] .result-highlight { color: #000; }
 
-        .empty-state { padding: 40px; text-align: center; color: var(--text-muted); font-weight: 600; }
+        .empty-state { padding: 30px; text-align: center; color: var(--text-muted); }
         
-        /* Кнопка FAB */
+        /* Кнопка поиска для мобильных */
         .fab-search {
-            position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px var(--primary-glow); cursor: pointer; z-index: 900;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px var(--primary-glow);
+            cursor: pointer;
+            z-index: 900;
+            transition: 0.2s;
+            color: #fff;
         }
-        .fab-search:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 15px 40px var(--primary-glow); }
-        .fab-icon { font-size: 26px; }
+        .fab-search:hover { transform: scale(1.1); }
+        .fab-icon { font-size: 24px; }
 
     </style>
 </head>
@@ -257,37 +302,38 @@
 
 <script>
     // --- ЗАЩИТА СТРАНИЦЫ (Auth Guard) ---
-    // Версия должна совпадать с index.html
-    const SESSION_VERSION = "1.3"; 
-
+    // Этот код выполняется ПЕРВЫМ, до отрисовки чего-либо
     (function() {
         const savedAuth = localStorage.getItem('authData');
         
+        // 1. Если ключа нет в памяти
         if (!savedAuth) {
-            window.location.href = 'index.html'; 
+            window.location.href = 'index.html'; // Редирект на вход
             return;
         }
         
+        // 2. Если ключ есть, проверяем срок
         try {
             const authData = JSON.parse(savedAuth);
             const now = new Date().getTime();
             
-            // Сверяем версию и время
-            if (authData.version !== SESSION_VERSION || now > authData.expiry) {
-                localStorage.removeItem('authData');
-                window.location.href = 'index.html';
+            if (now > authData.expiry) {
+                // Срок истек
+                localStorage.removeItem('authData'); // Удаляем просрочку
+                window.location.href = 'index.html'; // Редирект
                 return;
             }
         } catch (e) {
+            // Если данные повреждены
             localStorage.removeItem('authData');
             window.location.href = 'index.html';
             return;
         }
 
-        // Показываем страницу
+        // Если всё ок - показываем страницу
         document.body.style.display = 'block';
 
-        // Загрузка темы
+        // --- Загрузка темы ---
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         document.body.setAttribute('data-theme', savedTheme);
 
@@ -295,47 +341,34 @@
         if (!isGlow) {
             document.documentElement.style.setProperty('--primary-glow', 'rgba(0, 0, 0, 0)');
         }
-
-        // --- АВТОМАТИЧЕСКИЙ ВЫБРОС (Real-time Check) ---
-        setInterval(() => {
-            try {
-                const checkAuth = JSON.parse(localStorage.getItem('authData'));
-                if (!checkAuth || new Date().getTime() > checkAuth.expiry) {
-                    localStorage.removeItem('authData');
-                    window.location.href = 'index.html';
-                }
-            } catch (e) { window.location.href = 'index.html'; }
-        }, 2000); // Проверка каждые 2 секунды
     })();
 </script>
 
     <div class="container">
-        
-        <button class="back-btn" onclick="window.location.href='index.html'">⬅ Меню</button>
+        <button class="back-btn" onclick="window.location.href='index.html'">← В меню</button>
 
-        <div class="page-header">
-            <h1>Админ Регламент</h1>
-            <div class="subtitle">Используйте <kbd>Ctrl</kbd> + <kbd>F</kbd> для вызова умного поиска</div>
-        </div>
+        <h1>Справочник Администратора</h1>
+        <div class="subtitle">Используйте <kbd>Ctrl</kbd> + <kbd>F</kbd> для быстрого поиска</div>
 
         <div class="alert-box">
-            <div class="alert-icon">⚠️</div>
-            <div>
-                <strong>Критическое предупреждение</strong>
-                <p>Использование данного функционала может нарушать правила проекта. Вы действуете на свой страх и риск. Администрация не несет ответственности.</p>
-            </div>
+            <strong>⚠️ ВНИМАНИЕ!</strong>
+            <p>Использование данного функционала может нарушать правила сервера. Администрация сайта не несет ответственности за возможные блокировки. Вы действуете на свой страх и риск.</p>
         </div>
         
         <div id="rules-container"></div>
     </div>
 
+    <div class="fab-search" onclick="openSearch()">
+        <span class="fab-icon">🔍</span>
+    </div>
+
     <div id="search-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="search-header">
-                <input type="text" id="search-input" placeholder="Поиск по базе данных..." autocomplete="off">
+                <input type="text" id="search-input" placeholder="Введите название нарушения..." autocomplete="off">
             </div>
             <div id="search-results" class="search-results">
-                <div class="empty-state">Введите запрос для поиска...</div>
+                <div class="empty-state">Начните вводить текст...</div>
             </div>
         </div>
     </div>
@@ -580,6 +613,7 @@
             const row = document.createElement('div');
             row.className = 'rule-row';
             
+            // Проверка на жесткие наказания для красного стиля
             const isSevere = item[1].toLowerCase().includes('2000') || 
                              item[1].toLowerCase().includes('бан') || 
                              item[1].toLowerCase().includes('чс') ||
@@ -610,7 +644,7 @@
     function performSearch(query) {
         resultsContainer.innerHTML = '';
         if (!query) {
-            resultsContainer.innerHTML = '<div class="empty-state">Введите запрос для поиска...</div>';
+            resultsContainer.innerHTML = '<div class="empty-state">Начните вводить текст...</div>';
             return;
         }
 
@@ -622,10 +656,12 @@
                 const name = item[0];
                 const punish = item[1];
                 
+                // ВАЖНОЕ ИЗМЕНЕНИЕ: ИЩЕМ ТОЛЬКО ПО ИМЕНИ ПРАВИЛА
                 if (name.toLowerCase().includes(lowerQuery)) {
                     const el = document.createElement('div');
                     el.className = 'result-item';
                     
+                    // Подсветка найденного текста
                     const highlight = (text) => {
                         const regex = new RegExp(`(${query})`, 'gi');
                         return text.replace(regex, '<span class="result-highlight">$1</span>');
@@ -634,23 +670,20 @@
                     el.innerHTML = `
                         <div class="result-category">${cat.category}</div>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-weight:600; margin-right:15px; font-size: 0.95rem;">${highlight(name)}</span>
-                            <span style="color:var(--warning); font-size:0.85rem; font-weight:800;">${punish}</span>
+                            <span style="font-weight:500; margin-right:15px;">${highlight(name)}</span>
+                            <span style="color:var(--warning); font-size:0.85em;">${punish}</span>
                         </div>
                     `;
                     
+                    // Прокрутка к правилу при клике
                     el.onclick = () => {
                         modal.style.display = 'none';
                         const elements = document.querySelectorAll('.rule-name');
                         for (let elem of elements) {
                             if (elem.innerText === name) {
                                 elem.scrollIntoView({behavior: "smooth", block: "center"});
-                                elem.parentElement.style.borderColor = 'var(--primary)';
-                                elem.parentElement.style.boxShadow = '0 0 30px var(--primary-glow)';
-                                setTimeout(() => {
-                                    elem.parentElement.style.borderColor = 'rgba(255,255,255,0.08)';
-                                    elem.parentElement.style.boxShadow = 'inset 0 1px 1px rgba(255, 255, 255, 0.05)';
-                                }, 2000);
+                                elem.parentElement.style.border = '2px solid var(--primary)';
+                                setTimeout(() => elem.parentElement.style.border = '1px solid rgba(255,255,255,0.05)', 2000);
                                 break;
                             }
                         }
@@ -663,7 +696,7 @@
         });
 
         if (count === 0) {
-            resultsContainer.innerHTML = '<div class="empty-state">По вашему запросу ничего не найдено</div>';
+            resultsContainer.innerHTML = '<div class="empty-state">Ничего не найдено</div>';
         }
     }
 
@@ -689,3 +722,8 @@
 
 </body>
 </html>
+
+
+
+
+
