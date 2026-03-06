@@ -237,15 +237,15 @@
             </div>
         </div>
 
-        <div id="dashboard-container"><div class="menu-label">Система</div><div class="menu-grid"><a class="menu-btn" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-green">updata 03.02.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" onclick="openUserSettings()"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc"></span></div></a><a class="menu-btn" onclick="requestAdminAccess()"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div>
+        <div id="dashboard-container"><div class="menu-label">Популярные правила</div><div class="menu-grid"><a class="menu-btn" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-green">updata 03.02.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" onclick="openUserSettings()"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc"></span></div></a><a class="menu-btn" onclick="requestAdminAccess()"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div>
 
         <div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
                 <div class="timer-box"><span class="t-val" id="t-d">29</span><span class="t-label">DAYS</span></div>
                 <div class="timer-box"><span class="t-val" id="t-h">10</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">16</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">04</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">13</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">56</span><span class="t-label">SECS</span></div>
             </div>
         </div>
 
@@ -278,7 +278,7 @@
             <p style="color:var(--text-muted); margin-top:5px; font-size: 0.85rem;">Подтвердите права доступа</p>
             <input type="password" id="admin-key-input" class="key-input" placeholder="Пароль..." autocomplete="off" style="margin: 20px 0; font-size: 1.2rem;">
             <button class="login-btn" onclick="verifyAdminKey()" style="background: linear-gradient(135deg, var(--danger), #be123c); box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.5);">РАЗБЛОКИРОВАТЬ</button>
-            <p id="admin-error" style="color: var(--danger); margin-top: 15px; display: none; font-weight: 700; font-size: 0.9rem;">⛔ ДОСТУП ЗАПРЕЩЕН</p>
+            <p id="admin-error" style="color: var(--danger); margin-top: 15px; display: block; font-weight: 700; font-size: 0.9rem;">⛔ ДОСТУП ЗАПРЕЩЕН</p>
         </div>
     </div>
 
@@ -286,8 +286,8 @@
         <div class="cms-panel">
             <div class="cms-sidebar">
                 <div class="cms-logo">NEXUS PANEL</div>
-                <button class="cms-tab-btn" onclick="switchCmsTab('tab-buttons')" id="btn-tab-buttons">📱 Редактор Кнопок</button>
-                <button class="cms-tab-btn active" onclick="switchCmsTab('tab-site')" id="btn-tab-site">🎨 Дизайн и Сайт</button>
+                <button class="cms-tab-btn active" onclick="switchCmsTab('tab-buttons')" id="btn-tab-buttons">📱 Редактор Кнопок</button>
+                <button class="cms-tab-btn" onclick="switchCmsTab('tab-site')" id="btn-tab-site">🎨 Дизайн и Сайт</button>
                 <button class="cms-tab-btn" onclick="switchCmsTab('tab-code')" id="btn-tab-code">👨‍💻 База и Скрипты</button>
             </div>
 
@@ -299,12 +299,12 @@
 
                 <div class="cms-body">
                     
-                    <div id="tab-buttons" class="cms-tab-content" style="display: none;">
-                        <div id="cms-categories-list"><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" class="cms-input cat-name" value="Система" style="margin:0; font-weight:bold; font-size:1.1rem;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><input type="text" class="cms-input b-icon" value="🛡️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Справочник" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="Правила проекта" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="adm.html" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="updata 03.02.2026" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green" selected="">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" class="cms-input cat-name" value="Настройки Сайта" style="margin:0; font-weight:bold; font-size:1.1rem;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><input type="text" class="cms-input b-icon" value="🔧" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Темы" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:openUserSettings()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div><div class="btn-box"><input type="text" class="cms-input b-icon" value="🛠️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="ADMIN" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:requestAdminAccess()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div></div>
+                    <div id="tab-buttons" class="cms-tab-content" style="display: block;">
+                        <div id="cms-categories-list"><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" class="cms-input cat-name" value="Популярные правила" style="margin:0; font-weight:bold; font-size:1.1rem;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><input type="text" class="cms-input b-icon" value="🛡️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Справочник" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="Правила проекта" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="adm.html" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="updata 03.02.2026" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green" selected="">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" class="cms-input cat-name" value="Настройки Сайта" style="margin:0; font-weight:bold; font-size:1.1rem;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><input type="text" class="cms-input b-icon" value="🔧" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Темы" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:openUserSettings()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div><div class="btn-box"><input type="text" class="cms-input b-icon" value="🛠️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="ADMIN" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:requestAdminAccess()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div></div>
                         <button class="btn-add" onclick="addCMSCategory()" style="margin-top: 20px; padding: 25px; font-size: 1.1rem;">➕ СОЗДАТЬ НОВЫЙ БЛОК МЕНЮ</button>
                     </div>
 
-                    <div id="tab-site" class="cms-tab-content" style="display: block;">
+                    <div id="tab-site" class="cms-tab-content" style="display: none;">
                         
                         <div class="cms-group">
                             <span class="cms-label">📝 Тексты Главного Экрана</span>
@@ -522,7 +522,7 @@ let siteDB = {
     },
     "categories": [
         {
-            "name": "Система",
+            "name": "Популярные правила",
             "buttons": [
                 {
                     "icon": "🛡️",
@@ -1034,10 +1034,6 @@ function importJson() {
 
 document.addEventListener('DOMContentLoaded', checkAuth);
 </script>
-
-
-
-
 
 
 
