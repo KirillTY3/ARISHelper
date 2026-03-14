@@ -1080,7 +1080,7 @@ async function pushToGitHub() {
 
     try {
         // 3. Отправляем данные в наш Vercel API (SHA теперь генерируется на сервере!)
-        const response = await fetch('https://aris-helper.vercel.app/api/save', {
+        const response = await fetch('/api/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -1091,6 +1091,7 @@ async function pushToGitHub() {
 
         if (response.ok) {
             showNotification('✅ УСПЕХ! Данные сохранены на сервере. Сайт обновится через 30 сек.');
+            showNotification('✅ УСПЕХ! Код отправлен на GitHub. Сайт обновится для всех через 2-3 минуты.');
             setTimeout(() => location.reload(), 2000);
         } else {
             let errorText = response.statusText;
