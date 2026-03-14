@@ -1,44 +1,45 @@
 export default async function handler(req, res) {
-    // 1. РАЗРЕШАЕМ CORS
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // 1. РАЗРЕШАЕМ CORS (Чтобы браузер не выдавал ошибку "Failed to fetch")
+    res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
-    // Отвечаем на Preflight запрос (ПАРАМЕТРЫ / OPTIONS)
+    // Обработка "Preflight" запроса браузера
     if (req.method === 'OPTIONS') {
-        return res.status(200).json({ status: 'OK' });
+        res.status(200).end();
+        return;
     }
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ message: `Метод ${req.method} не разрешен` });
+        return res.status(405).json({ message: 'Разрешен только POST запрос' });
     }
 
     try {
-        console.log('[API] Получен POST запрос');
+        const { content, path } = req.body;
 
-        // Защита: гарантируем, что body читается правильно
-        let body = req.body;
-        if (typeof body === 'string') {
-            try { body = JSON.parse(body); } catch (e) { }
-        }
-
-        const { content, path, sha } = body || {};
-
-        if (!content || !path || !sha) {
-            console.error('[API] Ошибка: нет обязательных данных (content, path, sha)');
-            return res.status(400).json({ message: 'Отсутствуют необходимые данные (content, path, sha)' });
+        if (!content || !path) {
+            return res.status(400).json({ message: 'Отсутствуют необходимые данные (content, path)' });
         }
 
         // 2. ПОЛУЧАЕМ ТОКЕН ИЗ НАСТРОЕК VERCEL
         const GITHUB_TOKEN = process.env.GITHUB_TOKEN; 
         if (!GITHUB_TOKEN) {
-            console.error('[API] ОШИБКА: GITHUB_TOKEN отсутствует в Vercel');
-            return res.status(500).json({ message: 'GITHUB_TOKEN не найден! Убедитесь, что вы сделали НОВЫЙ ДЕПЛОЙ (Redeploy) в Vercel после добавления токена.' });
+            return res.status(500).json({ message: 'Ошибка сервера: GITHUB_TOKEN не настроен в Vercel' });
         }
 
+        // 2.5. ПОЛУЧАЕМ SHA ФАЙЛА НА СЕРВЕРЕ
+        const getFileRes = await fetch(`https://api.github.com/repos/KirillTY3/ARISHelper/contents/${path}`, {
+            headers: {
+                'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        const fileData = await getFileRes.json();
+        const sha = fileData.sha;
+
         // 3. ОТПРАВЛЯЕМ КОД НА GITHUB
-        console.log(`[API] Отправка файла ${path} на GitHub...`);
+        // Переводим текст в Base64 (требование GitHub)
         const contentEncoded = Buffer.from(content, 'utf8').toString('base64');
 
         const githubResponse = await fetch(`https://api.github.com/repos/KirillTY3/ARISHelper/contents/${path}`, {
@@ -51,23 +52,20 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 message: 'Обновление базы данных через Admin Panel',
                 content: contentEncoded,
-                sha: sha
+                ...(sha && { sha: sha })
             })
         });
 
         const data = await githubResponse.json();
 
         if (!githubResponse.ok) {
-            console.error('[API] GitHub вернул ошибку:', data);
-            return res.status(githubResponse.status).json({ message: `Ошибка GitHub: ${data.message}` });
+            return res.status(githubResponse.status).json({ message: data.message || 'Ошибка GitHub API' });
         }
 
-        console.log('[API] Успешно сохранено на GitHub!');
         return res.status(200).json({ success: true, message: 'Успешно сохранено' });
 
     } catch (error) {
-        console.error('[API] КРИТИЧЕСКАЯ ОШИБКА:', error);
-        // Выводим саму суть ошибки прямо на сайт
-        return res.status(500).json({ message: `Системная ошибка: ${error.message}` });
+        console.error(error);
+        return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
     }
 }
