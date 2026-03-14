@@ -476,7 +476,7 @@
                     <button style="background:transparent; color:var(--text-muted); border:1px solid var(--card-border); padding:12px 20px; border-radius:10px; cursor:pointer;" onclick="closeCMS()">Отмена</button>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-action" style="background: var(--primary); box-shadow: 0 5px 15px var(--primary-glow);" onclick="testCMSChanges()">👁️ ТЕСТ</button>
-                        <button class="btn-action" style="background: var(--success); box-shadow: 0 5px 15px rgba(16,185,129,0.3);" onclick="saveToLocalAndReload()">💾 СОХРАНИТЬ</button>
+                        <button id="save-server-btn" class="btn-action" style="background: var(--success); box-shadow: 0 5px 15px rgba(16,185,129,0.3);" onclick="saveToGitHub()">💾 СОХРАНИТЬ НА СЕРВЕР</button>
                         <button class="btn-action" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="generateAndDownloadCMS()">⬇️ СКАЧАТЬ ИСХОДНИК</button>
                     </div>
                 </div>
@@ -1031,15 +1031,51 @@ function testCMSChanges() {
     closeCMS();
 }
 
-function saveToLocalAndReload() {
+async function saveToGitHub() {
+    // 1. Синхронизируем настройки
     if(currentMode === 'tab-code') { 
         try { siteDB = JSON.parse(document.getElementById('cms-raw-json').value); } 
         catch(e) { return alert('Ошибка в JSON: ' + e.message); } 
     } else { 
         syncCMStoDB(); 
     }
+    
+    // Локально тоже сохраняем (для мгновенного обновления у админа без ожидания деплоя)
     localStorage.setItem('nexusSiteDB', JSON.stringify(siteDB));
-    location.reload();
+
+    // 2. Готовим HTML код
+    let htmlContent = document.documentElement.outerHTML;
+    const newScriptData = `let siteDB = ${JSON.stringify(siteDB, null, 4)};`;
+    const regex = /(<script[^>]+id="nexus-db"[^>]*>)[\s\S]*?(<\/script>)/;
+    htmlContent = htmlContent.replace(regex, `$1\n${newScriptData}\n$2`);
+
+    const btn = document.getElementById('save-server-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ ЗАГРУЗКА...';
+    btn.style.opacity = '0.7';
+    btn.style.pointerEvents = 'none';
+
+    try {
+        const res = await fetch('/api/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: 'index.html', content: '<!DOCTYPE html>\n' + htmlContent })
+        });
+
+        if (res.ok) {
+            alert('✅ Успешно! Файл обновлен на GitHub.\nИзменения вступят в силу для всех пользователей после завершения деплоя Vercel (около 1-2 минут).');
+            location.reload();
+        } else {
+            const err = await res.json();
+            alert('❌ Ошибка сохранения GitHub: ' + (err.message || JSON.stringify(err)));
+        }
+    } catch(e) {
+        alert('❌ Ошибка запроса к API: ' + e.message);
+    } finally {
+        btn.innerHTML = originalText;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+    }
 }
 
 function generateAndDownloadCMS() {
