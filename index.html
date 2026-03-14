@@ -476,7 +476,7 @@
                     <button style="background:transparent; color:var(--text-muted); border:1px solid var(--card-border); padding:12px 20px; border-radius:10px; cursor:pointer;" onclick="closeCMS()">Отмена</button>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-action" style="background: var(--primary); box-shadow: 0 5px 15px var(--primary-glow);" onclick="testCMSChanges()">👁️ ТЕСТ</button>
-                        <button id="save-server-btn" class="btn-action" style="background: var(--success); box-shadow: 0 5px 15px rgba(16,185,129,0.3);" onclick="saveToGitHub()">💾 СОХРАНИТЬ НА СЕРВЕР</button>
+                        <button id="save-server-btn" class="btn-action" style="background: var(--success); box-shadow: 0 5px 15px rgba(16,185,129,0.3);" onclick="pushToGitHub()">💾 СОХРАНИТЬ НА СЕРВЕР</button>
                         <button class="btn-action" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="generateAndDownloadCMS()">⬇️ СКАЧАТЬ ИСХОДНИК</button>
                     </div>
                 </div>
@@ -1031,7 +1031,7 @@ function testCMSChanges() {
     closeCMS();
 }
 
-async function saveToGitHub() {
+async function pushToGitHub() {
     // 1. Синхронизируем настройки
     if(currentMode === 'tab-code') { 
         try { siteDB = JSON.parse(document.getElementById('cms-raw-json').value); } 
@@ -1043,11 +1043,14 @@ async function saveToGitHub() {
     // Локально тоже сохраняем (для мгновенного обновления у админа без ожидания деплоя)
     localStorage.setItem('nexusSiteDB', JSON.stringify(siteDB));
 
+    const fileName = 'index.html';
+
     // 2. Готовим HTML код
     let htmlContent = document.documentElement.outerHTML;
     const newScriptData = `let siteDB = ${JSON.stringify(siteDB, null, 4)};`;
     const regex = /(<script[^>]+id="nexus-db"[^>]*>)[\s\S]*?(<\/script>)/;
     htmlContent = htmlContent.replace(regex, `$1\n${newScriptData}\n$2`);
+    const newContent = '<!DOCTYPE html>\n' + htmlContent;
 
     const btn = document.getElementById('save-server-btn');
     const originalText = btn.innerHTML;
@@ -1056,21 +1059,35 @@ async function saveToGitHub() {
     btn.style.pointerEvents = 'none';
 
     try {
-        const res = await fetch('/api/save', {
+        // 3. Получаем свежий SHA файла (без него GitHub не примет файл)
+        const resSha = await fetch(`https://api.github.com/repos/KirillTY3/ARISHelper/contents/${fileName}`);
+        const dataSha = await resSha.json();
+        
+        if (!dataSha.sha) {
+            alert('Ошибка: не удалось получить SHA. Проверь доступ к репозиторию.');
+            return;
+        }
+
+        // 4. Отправляем всё это в наш Vercel API
+        const response = await fetch('/api/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ path: 'index.html', content: '<!DOCTYPE html>\n' + htmlContent })
+            body: JSON.stringify({ 
+                content: newContent, 
+                path: fileName,
+                sha: dataSha.sha 
+            })
         });
 
-        if (res.ok) {
-            alert('✅ Успешно! Файл обновлен на GitHub.\nИзменения вступят в силу для всех пользователей после завершения деплоя Vercel (около 1-2 минут).');
+        if (response.ok) {
+            alert('✅ УСПЕХ! Данные улетели на GitHub. Через 30 сек сайт обновится для всех.');
             location.reload();
         } else {
-            const err = await res.json();
-            alert('❌ Ошибка сохранения GitHub: ' + (err.message || JSON.stringify(err)));
+            const err = await response.json();
+            alert('❌ Ошибка сохранения: ' + (err.message || response.statusText));
         }
     } catch(e) {
-        alert('❌ Ошибка запроса к API: ' + e.message);
+        alert('❌ Ошибка: ' + e.message);
     } finally {
         btn.innerHTML = originalText;
         btn.style.opacity = '1';
