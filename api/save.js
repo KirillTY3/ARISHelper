@@ -1,7 +1,8 @@
 export default async function handler(req, res) {
     // 1. РАЗРЕШАЕМ CORS (Чтобы браузер не выдавал ошибку "Failed to fetch")
+    const allowedOrigin = 'https://aris-helper.vercel.app';
     res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
@@ -37,11 +38,16 @@ export default async function handler(req, res) {
         });
         const fileData = await getFileRes.json();
         
+        let sha;
         if (!getFileRes.ok) {
-            return res.status(getFileRes.status).json({ message: `GitHub отклонил токен (нет прав): ${fileData.message}. Убедитесь, что токен имеет права "Contents: Read and write".` });
+            if (getFileRes.status === 404) {
+                sha = undefined;
+            } else {
+                return res.status(getFileRes.status).json({ message: `GitHub API Error: ${fileData.message || 'Ошибка проверки файла'}` });
+            }
+        } else {
+            sha = fileData.sha;
         }
-
-        const sha = fileData.sha;
 
         // 3. ОТПРАВЛЯЕМ КОД НА GITHUB
         // Переводим текст в Base64 (требование GitHub)
