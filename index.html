@@ -685,6 +685,11 @@ function applyEarlySettings() {
         }
         body { font-family: ${siteDB.settings.font || "'Inter', sans-serif"}; }
     `;
+    
+    const customCssTag = document.getElementById('custom-css');
+    if (customCssTag) {
+        customCssTag.innerHTML = siteDB.settings.customCSS || '';
+    }
 }
 
 // === 4. РЕНДЕР ГЛАВНОГО МЕНЮ ===
@@ -832,6 +837,16 @@ function openCMS() {
 function closeCMS() { document.getElementById('cms-modal').style.display = 'none'; }
 
 function switchCmsTab(tabId) {
+    if (currentMode === 'tab-code' && tabId !== 'tab-code') {
+        try { 
+            siteDB = JSON.parse(document.getElementById('cms-raw-json').value); 
+            buildCMSInterface(); 
+        } catch(e) { 
+            alert('Ошибка в JSON. Пожалуйста, исправьте код перед переключением вкладки:\n' + e.message);
+            return;
+        }
+    }
+
     document.querySelectorAll('.cms-tab-content').forEach(t => t.style.display = 'none');
     document.querySelectorAll('.cms-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).style.display = 'block';
@@ -840,9 +855,6 @@ function switchCmsTab(tabId) {
     if(tabId === 'tab-code') {
         syncCMStoDB();
         document.getElementById('cms-raw-json').value = JSON.stringify(siteDB, null, 4);
-    } else if (currentMode === 'tab-code') {
-        try { siteDB = JSON.parse(document.getElementById('cms-raw-json').value); buildCMSInterface(); } 
-        catch(e) { switchCmsTab('tab-code'); }
     }
     currentMode = tabId;
 }
@@ -919,7 +931,9 @@ function buildCMSInterface() {
     document.getElementById('cms-color-bg2').value = siteDB.settings.colors?.bg2 || "#1e1b4b";
     document.getElementById('cms-color-bg3').value = siteDB.settings.colors?.bg3 || "#020617";
     document.getElementById('cms-blur-range').value = siteDB.settings.cardBlur || 20;
+    document.getElementById('blur-val').innerText = siteDB.settings.cardBlur || 20;
     document.getElementById('cms-opacity-range').value = siteDB.settings.cardOpacity || 0.4;
+    document.getElementById('op-val').innerText = siteDB.settings.cardOpacity || 0.4;
     document.getElementById('cms-toggle-grid').checked = siteDB.settings.showGrid ?? true;
     document.getElementById('cms-toggle-glow').checked = siteDB.settings.showGlow ?? true;
     document.getElementById('cms-toggle-anim').checked = siteDB.settings.showAnim ?? true;
@@ -1151,4 +1165,3 @@ document.addEventListener('DOMContentLoaded', checkAuth);
 </script>
 
 </body></html>
-</html>
