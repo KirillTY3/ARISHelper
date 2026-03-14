@@ -28,7 +28,7 @@ export default async function handler(req, res) {
             return res.status(500).json({ message: 'Ошибка сервера: GITHUB_TOKEN не настроен в Vercel' });
         }
 
-        // 2.5. ПОЛУЧАЕМ SHA ФАЙЛА НА СЕРВЕРЕ
+        // 2.5. ПОЛУЧАЕМ SHA ФАЙЛА НА СЕРВЕРЕ (ОБХОД ЛИМИТОВ GITHUB)
         const getFileRes = await fetch(`https://api.github.com/repos/KirillTY3/ARISHelper/contents/${path}`, {
             headers: {
                 'Authorization': `Bearer ${GITHUB_TOKEN}`,
@@ -36,6 +36,11 @@ export default async function handler(req, res) {
             }
         });
         const fileData = await getFileRes.json();
+        
+        if (!getFileRes.ok) {
+            return res.status(getFileRes.status).json({ message: `GitHub отклонил токен (нет прав): ${fileData.message}. Убедитесь, что токен имеет права "Contents: Read and write".` });
+        }
+
         const sha = fileData.sha;
 
         // 3. ОТПРАВЛЯЕМ КОД НА GITHUB
