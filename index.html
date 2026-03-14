@@ -964,6 +964,8 @@ function moveCMSItem(btn, dir) {
 }
 
 function syncCMStoDB() {
+    if (!siteDB.settings) siteDB.settings = {};
+    if (!siteDB.settings.colors) siteDB.settings.colors = {};
     siteDB.settings.title = document.getElementById('cms-site-title').value.trim();
     siteDB.settings.subtitle = document.getElementById('cms-site-subtitle').value.trim();
     siteDB.settings.footerText = document.getElementById('cms-footer-text').value.trim();
@@ -1059,24 +1061,13 @@ async function pushToGitHub() {
     btn.style.pointerEvents = 'none';
 
     try {
-        // 3. Получаем свежий SHA файла (без него GitHub не примет файл)
-        const resSha = await fetch(`https://api.github.com/repos/KirillTY3/ARISHelper/contents/${fileName}`);
-        const dataSha = await resSha.json();
-        
-        if (!dataSha.sha) {
-            alert('Ошибка: не удалось получить SHA. Проверь доступ к репозиторию.');
-            return;
-        }
-
-        // 4. Отправляем всё это в наш Vercel API
-        // ВАЖНО: Замените URL на реальный адрес вашего приложения в Vercel!
+        // 3. Отправляем данные в наш Vercel API (SHA теперь генерируется на сервере!)
         const response = await fetch('https://aris-helper.vercel.app/api/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 content: newContent, 
-                path: fileName,
-                sha: dataSha.sha 
+                path: fileName
             })
         });
 
