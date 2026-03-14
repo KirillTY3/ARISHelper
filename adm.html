@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Helper: Справочник</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. ПЕРЕМЕННЫЕ И ТЕМЫ (2026 EDITION) --- */
+        :root { 
+            --primary: #6366f1; 
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.6); 
+            --bg-grad-1: #09090b; 
+            --bg-grad-2: #1e1b4b; 
+            --bg-grad-3: #020617;
+            --card-bg: rgba(20, 25, 40, 0.5); 
+            --card-hover: rgba(30, 40, 60, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 10px 30px -10px rgba(0,0,0,0.5);
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --warning: #fbbf24;
+            --warning-bg: rgba(251, 191, 36, 0.15);
+            --danger: #f43f5e; 
+            --danger-bg: rgba(244, 63, 94, 0.15); 
+        }
+
+        [data-theme="light"] { 
+            --bg-grad-1: #f1f5f9; --bg-grad-2: #e2e8f0; --bg-grad-3: #cbd5e1;
+            --card-bg: rgba(255, 255, 255, 0.7); 
+            --card-hover: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.05);
+            --card-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 10px 30px -10px rgba(0,0,0,0.1);
+            --text-main: #0f172a; --text-muted: #64748b; 
+            --primary-glow: rgba(99, 102, 241, 0.25); 
+            --warning: #d97706;
+            --warning-bg: rgba(217, 119, 6, 0.1);
+        }
+
+        [data-theme="black"] { 
+            --bg-grad-1: #000000; --bg-grad-2: #000000; --bg-grad-3: #050505;
+            --card-bg: rgba(10, 10, 10, 0.8); 
+            --card-hover: #1a1a1a;
+            --text-main: #ffffff; --text-muted: #737373; 
+        }
+
+        /* --- 2. СКРЫВАЕМ ПОЛОСУ ПРОКРУТКИ --- */
+        ::-webkit-scrollbar { width: 0; background: transparent; }
+        html { scrollbar-width: none; }
+        body { -ms-overflow-style: none; }
+
+        /* --- 3. АНИМИРОВАННЫЙ ФОН --- */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(-45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main); 
+            margin: 0; padding: 0; 
+            min-height: 100vh; 
+            transition: color 0.5s ease; 
+            position: relative;
+            display: none; /* Скрыто до проверки авторизации */
+        }
+
+        body::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1; pointer-events: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        /* --- 4. ШАПКА И ТЕКСТ --- */
+        .page-header {
+            display: flex; flex-direction: column; align-items: center; margin-bottom: 40px;
+        }
+
+        h1 {
+            font-weight: 900;
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, #fff, var(--primary), #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+        
+        [data-theme="light"] h1 {
+            background: linear-gradient(135deg, #0f172a, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+
+        kbd {
+            background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2); font-family: monospace;
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3); font-weight: bold;
+        }
+        [data-theme="light"] kbd { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1); }
+
+        /* Кнопка Назад */
+        .back-btn {
+            background: var(--card-bg); color: var(--text-main);
+            border: 1px solid var(--card-border); padding: 12px 24px;
+            border-radius: 14px; cursor: pointer; font-weight: 700;
+            transition: all 0.3s; margin-bottom: 30px; align-self: flex-start;
+            backdrop-filter: blur(10px); box-shadow: var(--card-shadow);
+        }
+        .back-btn:hover { background: var(--primary); border-color: var(--primary); transform: translateX(-5px); color: white; }
+
+        /* Предупреждение */
+        .alert-box {
+            background: var(--danger-bg); border: 1px solid rgba(244, 63, 94, 0.3);
+            border-radius: 20px; padding: 25px; margin-bottom: 50px;
+            text-align: left; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; gap: 20px; align-items: center;
+        }
+        .alert-icon { font-size: 2.5rem; background: rgba(244, 63, 94, 0.2); padding: 15px; border-radius: 16px; }
+        .alert-box strong { color: var(--danger); font-weight: 900; text-transform: uppercase; font-size: 1.1rem; display: block; margin-bottom: 5px;}
+        .alert-box p { margin: 0; font-size: 0.9em; color: var(--text-muted); line-height: 1.5; }
+
+        /* --- 5. КАТЕГОРИИ И ПРАВИЛА --- */
+        .category-block { 
+            margin-bottom: 50px; 
+            background: rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .category-title {
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .category-title::before {
+            content: ""; display: block; width: 12px; height: 12px;
+            background: var(--primary); border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .rule-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); margin-bottom: 12px;
+            border-radius: 16px; padding: 18px 24px;
+            border: 1px solid var(--card-border); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(15px); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        
+        .rule-row:hover {
+            transform: translateY(-3px) scale(1.01);
+            background: var(--card-hover);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.4);
+            z-index: 10; position: relative;
+        }
+
+        .rule-name { flex: 1; padding-right: 20px; font-weight: 600; line-height: 1.5; font-size: 0.95rem; }
+
+        .rule-punishment {
+            flex: 0 0 auto; text-align: right; color: var(--warning);
+            font-size: 0.85rem; font-weight: 800; background: var(--warning-bg);
+            padding: 8px 16px; border-radius: 10px; white-space: pre-wrap; max-width: 40%;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .severe {
+            color: var(--danger); background: var(--danger-bg);
+            border-color: rgba(244, 63, 94, 0.3);
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
+        }
+
+        /* --- 6. ПОИСК --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 80px;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-content {
+            background: var(--card-bg); width: 90%; max-width: 700px;
+            border-radius: 24px; border: 1px solid var(--card-border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+            overflow: hidden; display: flex; flex-direction: column; max-height: 75vh;
+            backdrop-filter: blur(25px);
+        }
+
+        .search-header { padding: 25px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--card-border); position: relative;}
+        
+        input#search-input {
+            width: 100%; background: transparent; border: none; color: var(--text-main);
+            font-size: 1.5rem; outline: none; font-family: 'Inter', sans-serif; font-weight: 800;
+        }
+        input#search-input::placeholder { color: var(--text-muted); opacity: 0.5; font-weight: 600;}
+
+        .search-results { overflow-y: auto; padding: 10px; }
+
+        .result-item {
+            padding: 18px 25px; border-radius: 16px; margin-bottom: 5px;
+            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+        }
+        .result-item:hover { background: rgba(255,255,255,0.05); border-color: var(--card-border); transform: translateX(5px);}
+        .result-category { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; margin-bottom: 6px; font-weight: 800; letter-spacing: 1px;}
+        
+        .result-highlight { background: rgba(99, 102, 241, 0.4); color: #fff; border-radius: 4px; padding: 0 4px; }
+        [data-theme="light"] .result-highlight { color: #000; }
+
+        .empty-state { padding: 40px; text-align: center; color: var(--text-muted); font-weight: 600; }
+        
+        /* Кнопка FAB */
+        .fab-search {
+            position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px var(--primary-glow); cursor: pointer; z-index: 900;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .fab-search:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 15px 40px var(--primary-glow); }
+        .fab-icon { font-size: 26px; }
+
+    </style>
+</head>
+<body>
+
+<script>
+    // --- ЗАЩИТА СТРАНИЦЫ (Auth Guard) ---
+    // Версия должна совпадать с index.html
+    const SESSION_VERSION = "1.3"; 
+
+    (function() {
+        const savedAuth = localStorage.getItem('authData');
+        
+        if (!savedAuth) {
+            window.location.href = 'index.html'; 
+            return;
+        }
+        
+        try {
+            const authData = JSON.parse(savedAuth);
+            const now = new Date().getTime();
+            
+            // Сверяем версию и время
+            if (authData.version !== SESSION_VERSION || now > authData.expiry) {
+                localStorage.removeItem('authData');
+                window.location.href = 'index.html';
+                return;
+            }
+        } catch (e) {
+            localStorage.removeItem('authData');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Показываем страницу
+        document.body.style.display = 'block';
+
+        // Загрузка темы
+        const savedTheme = localStorage.getItem('siteTheme') || 'default';
+        document.body.setAttribute('data-theme', savedTheme);
+
+        const isGlow = localStorage.getItem('glowEffect') !== 'false';
+        if (!isGlow) {
+            document.documentElement.style.setProperty('--primary-glow', 'rgba(0, 0, 0, 0)');
+        }
+
+        // --- АВТОМАТИЧЕСКИЙ ВЫБРОС (Real-time Check) ---
+        setInterval(() => {
+            try {
+                const checkAuth = JSON.parse(localStorage.getItem('authData'));
+                if (!checkAuth || new Date().getTime() > checkAuth.expiry) {
+                    localStorage.removeItem('authData');
+                    window.location.href = 'index.html';
+                }
+            } catch (e) { window.location.href = 'index.html'; }
+        }, 2000); // Проверка каждые 2 секунды
+    })();
+</script>
+
+    <div class="container">
+        
+        <button class="back-btn" onclick="window.location.href='index.html'">⬅ Меню</button>
+
+        <div class="page-header">
+            <h1>Админ Регламент</h1>
+            <div class="subtitle">Используйте <kbd>Ctrl</kbd> + <kbd>F</kbd> для вызова умного поиска</div>
+        </div>
+
+        <div class="alert-box">
+            <div class="alert-icon">⚠️</div>
+            <div>
+                <strong>Критическое предупреждение</strong>
+                <p>Использование данного функционала может нарушать правила проекта. Вы действуете на свой страх и риск. Администрация не несет ответственности.</p>
+            </div>
+        </div>
+        
+        <div id="rules-container"></div>
+    </div>
+
+    <div id="search-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="Поиск по базе данных..." autocomplete="off">
+            </div>
+            <div id="search-results" class="search-results">
+                <div class="empty-state">Введите запрос для поиска...</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // БАЗА ДАННЫХ ПРАВИЛ
+    const rulesData = [
+        {
+            category: "Правила взаимодействия администрации с игроками",
+            items: [
+                ["Потеря имущества (взлом/софт)", "Администрация не несет ответственности"],
+                ["Запрос пароля от аккаунта", "Строго запрещено (Снятие / ЧС)"],
+                ["Игнор репорта при наличии очереди", "Выговор / Снятие"],
+                ["Нарушение правил сервера (в т.ч. чатов)", "Выговор / Снятие"],
+                ["Игнорирование требований ГА/ЗГА", "Выговор / Снятие"],
+                ["Назначение на пост (Обзвон / Лидерка 15-25 дней)", "Согласно правилам"],
+                ["Восстановление (от 30 до 150 дней после ухода)", "Согласно условиям ГА"],
+                ["Решение ГА по составу (снятие/отказ без причин)", "Право Главной Администрации"],
+                ["Уход ПСЖ сразу / Серьезные нарушения", "Бан / ЧС Администрации"],
+                ["Неуважительное отношение к игрокам", "Выговор / Снятие"],
+                ["Помеха РП процессу (админ — нонРП персонаж)", "Выговор"],
+                ["Использование функционала в личных целях", "Снятие / ЧС"],
+                ["Участие в слетах имущества", "Снятие / ЧС"],
+                ["Владение имуществом (кроме транспорта)", "Снятие / Изъятие"],
+                ["Экономическое взаимодействие с игроками", "Строгий выговор / Снятие"],
+                ["Получение подарков от игроков", "Только с одобрения ГА / Снятие"],
+                ["Описание персонажа и АФК-описание", "Очистка / Выговор"],
+                ["Игра с твинков на своем сервере", "Снятие / ЧС"],
+                ["Провокационные реакции на форуме", "Беседа / Выговор"],
+                ["Превышение нормы АФК / АФК при очереди", "Выговор"],
+                ["Прохождение праздничных квестов (при репорте)", "Выговор"],
+                ["Выпрашивание поощрений у игроков", "Выговор / Снятие"],
+                ["Выдача ХП/Транспорта/Денег без причины", "Запрещено / Выговор"],
+                ["Выбор меры наказания", "В пределах нормы / Выговор"],
+                ["Срок наказания игрока (жалоба)", "До 3-х дней"],
+                ["Хранение доказательств (опры)", "В течение срока подачи жалобы"]
+            ]
+        },
+        {
+            category: "Основные положения",
+            items: [
+                ["Использование читов, модов, скриптов с преимуществом", "Бан от 1 до 2000 дней"],
+                ["Распространение читов, модов, скриптов", "Бан от 1 до 2000 дней"],
+                ["Соучастие с читером (в т.ч. Discord)", "Бан от 1 до 2000 дней"],
+                ["Игра на 2 аккаунтах (песок)", "Устное / Бан от 1 до 15 дней"],
+                ["Уход от наказания (офф, смена ника)", "Варн / Бан от 1 до 15 дней"],
+                ["Выдача себя за администратора", "Мут 30-300 мин / Бан 1-5 дней"],
+                ["Помеха игрокам или администрации", "Спавн / Кик / ДМГ до 60 мин"],
+                ["Использование багов и недоработок", "ДМГ 10 мин – Бан до 2000 дней"],
+                ["НонРП описание персонажа (реклама/афк)", "Очистка / Бан от 1 до 3 дней"],
+                ["Запрещенный контент в кинотеатрах", "Бан от 1 до 30 дней"],
+                ["Участие во внеигровых рулетках", "Бан от 7 до 30 дней"],
+                ["Неадекватный тюнинг / аксессуары", "Очистка / Бан от 1 до 5 дней"],
+                ["Взаимодействие с ЧСниками", "Бан 30-2000 дней / Обнуление"],
+                ["Деанон игроков проекта", "Бан 30-2000 дней / Обнуление"],
+                ["Угрозы расправой в реальной жизни", "Бан от 15 до 2000 дней"],
+                ["Передача или взлом аккаунта", "Бан на 2000 дней"],
+                ["Обход систем мода с выгодой", "Бан 1-2000 дней (Решение ГА)"],
+                ["Накрутка ценностей (рефы/голоса)", "Бан от 30 до 2000 дней"],
+                ["Вредительство в любом виде", "Бан от 15 до 2000 дней"],
+                ["Мультиаккаунт (более 3-х аккаунтов)", "Бан 15-2000 дней / Обнуление"],
+                ["Слив админ-команд (/demoute и т.п.)", "Варн / Бан 5-30 дней"],
+                ["Форумная война / Спам жалобами", "Беседа / Наказание от ГА"],
+                ["Монополизация / Шантаж игроков", "ДМГ 300-600 мин / Бан 1-10 дней"],
+                ["Абуз рейтингов (накрутка топа)", "Изъятие приза / Бан"],
+                ["Уход от проигрыша (офф из игры/капта)", "Варн / Решение ГА"]
+            ]
+        },
+        {
+            category: "Правила игровых ников",
+            items: [
+                ["Никнейм не в формате Имя_Фамилия / Non-RP", "Отказ во вступлении / повышении"],
+                ["Никнейм с оскорблениями или матами", "Смена / При отказе — Бан"],
+                ["Оскорбительное искажение ников", "Смена / При отказе — Бан"],
+                ["Фейк ники администрации / ютуберов", "Принудительная смена / Бан"]
+            ]
+        },
+        {
+            category: "Игровой процесс",
+            items: [
+                ["ДМ (Deathmatch) — урон без причины", "ДМГ 120–240 мин"],
+                ["ДБ (DriveBy) — урон машиной", "ДМГ 120–240 мин"],
+                ["СК (Spawn Kill) — урон на респауне", "ДМГ 120–240 мин"],
+                ["ТК (Team Kill) — урон своим", "ДМГ 120–240 мин"],
+                ["ПГ (Power Gaming) — преувеличение возможностей", "ДМГ 120–240 мин"],
+                ["Массовый ДМ/ДБ/СК/ТК (от 3 пострадавших)", "Бан 3–7 дн + Ганбан 3–10 дн"],
+                ["НонРП поведение (без фракции)", "ДМГ 20–240 мин"],
+                ["НонРП поведение (во фракции)", "ДМГ 20–1200 мин / Варн"],
+                ["ОФФ / АФК / Отказ от РП", "ДМГ 120–240 мин"],
+                ["Уход от смерти (инта / ЗЗ / аксы / офф)", "ДМГ 120–240 мин"],
+                ["Уход от ареста (инта / ЗЗ / аксы / офф)", "Варн"],
+                ["Сбив системных анимаций", "ДМГ 60–240 мин"],
+                ["Сбив анимации выстрела (+С, отводы)", "ДМГ 120–240 мин / Варн"],
+                ["Хил / Броня в бою", "ДМГ 120–240 мин / Варн"],
+                ["Серьёзные нарушения в ТСР (ДМ, ПГ, сбивы)", "Варн / Увеличение срока"],
+                ["Дубинка / Тазер / Cuff в бою", "ДМГ 360–600 мин / Варн"],
+                ["Маскировка не по назначению", "Мут 60–300 мин / Бан"],
+                ["НонРП выгон/ЧС в казино (для руководства)", "ДМГ 120–240 мин"]
+            ]
+        },
+        {
+            category: "Правила игровых чатов",
+            items: [
+                ["МГ — использование OOC-инфы в РП чатах", "Мут 10–30 мин"],
+                ["Капс — заглавные буквы в сообщении", "Мут 10–30 минут"],
+                ["Флуд — 3+ одинаковых строк за 60 секунд", "Мут 20–120 минут"],
+                ["Организованный флуд / схожие сообщения", "Мут 20–120 минут"],
+                ["Злоупотребление матом в нонРП чатах", "Мут 30–120 минут"],
+                ["Злоупотребление символами (спам)", "Мут 10–120 минут"],
+                ["Розжиг межнациональной вражды", "Мут 120–300 мин / Бан 1–5 дн"],
+                ["Реклама пабликов, серверов, промокодов", "Мут 60–300 минут"],
+                ["Реклама сайтов, продажи валюты/акков", "Бан 2000 дней"],
+                ["Упоминание родных", "Мут 300 мин / Бан 1–30 дн"],
+                ["Оскорбление родных (в т.ч. скрытое)", "Бан 10–30 дней"],
+                ["Пожелание смерти родным", "Бан 10–30 дней"],
+                ["Оффтоп в /report", "Мут репорта 10–30 минут"],
+                ["Оскорбление сервера / проекта", "Мут 60–300 мин / Бан 1–3 дн"],
+                ["Оскорбление игроков / администрации", "Мут 30–300 минут"],
+                ["Неадекватное поведение / неуважение", "Мут 20–120 минут"],
+                ["Призыв к нарушению правил", "Мут 60–300 мин / Бан"],
+                ["Торги / реклама / неадекват в /d", "Мут 60–120 минут"],
+                ["Упоминание соцсетей в /vr (DS, VK, TG)", "Мут 60–120 минут"],
+                ["Реклама / торги в /vr в обход системы", "Мут 60–120 минут"],
+                ["Нарушение интервала рекламы в /vr", "Мут 40–120 минут"],
+                ["Реклама / услуги в /j, /jb (вне темы)", "Мут 60–120 минут"],
+                ["Нарушение интервала рекламы в /j, /jb", "Мут 40–120 минут"],
+                ["Изнасилование / действия секс. характера", "Бан 7–30 дней"],
+                ["НонРП билборды", "Удаление / ДМГ / Бан 1–5 дн"],
+                ["Ошибки редактирования объявлений (СМИ)", "Мут 60–120 мин / Варн"],
+                ["Нарушение правил эфиров (СМИ)", "Мут 60–120 мин / Варн"],
+                ["Нацистские лозунги / символика", "Мут 300 мин / Бан 15–30 дн"],
+                ["Распространение boosty-контента", "Устное / Мут / Бан 1–7 дн"],
+                ["Агитация во время голосования", "Мут 20 минут"]
+            ]
+        },
+        {
+            category: "Правила голосового (Voice) чата",
+            items: [
+                ["Передача ООС-информации при отсутствии RP игроков рядом", "Разрешено"],
+                ["Отыгровка действий через Voice (/me)", "Разрешено"],
+                ["Отыгровка состояний через Voice (/do)", "Запрещено"],
+                ["Нецензурная отыгровка действий", "Запрещено"],
+                ["Не отключён Voice при молчании", "Устное / Мут 10–30 минут"],
+                ["Громкие звуки / помехи (треск, шорох)", "Мут 30–60 минут"],
+                ["Включение музыки в общественных местах", "Мут 30–120 минут"],
+                ["Записанные голоса / фразы блогеров", "Мут 30–60 минут"],
+                ["Крики без причины", "Мут 30–120 минут"],
+                ["Неадекватное вмешательство в RP", "Мут 30–120 минут"],
+                ["Использование софта для изменения голоса", "Мут 30–120 минут"]
+            ]
+        },
+        {
+            category: "Экономика и Бизнесы",
+            items: [
+                ["Продажа/покупка/обсуждение валюты, услуг, акк за реал", "Бан 2000 дн"],
+                ["Обмен имущества между серверами (обход)", "Бан 2000 дней"],
+                ["Передача ценностей перед блокировкой", "Бан 30–2000 дней"],
+                ["РП и НонРП развод (обман игрока)", "Бан 30–2000 дней"],
+                ["Передача >10 млрд через VC (без ГА/ЗГА)", "Изъятие / Бан 1–2000 дн"],
+                ["Фейк конкурсы и розыгрыши", "Бан 30–2000 дней"],
+                ["Обход официального доната (мимо /donate)", "Бан 1–2000 дней"],
+                ["Обход игровых систем и комиссий", "Бан 1–2000 дней"],
+                ["Оплата налогов за заблокированных игроков", "Бан от 1 до 30 дней"],
+                ["Владение бизнесом на твинке", "Изъятие / Бан 2000 дн"],
+                ["Назначение замов на нефтевышке за плату", "Изъятие / Бан 5–2000 дн"],
+                ["Нарушение работы бизнеса более 7 дней", "Изъятие / Бан 5–2000 дн"],
+                ["Более 1 частной фракции (без ГА)", "Изъятие / Бан 2000 дн"],
+                ["Взаимодействие с махинаторами", "Бан / Изъятие / Соучастие"],
+                ["Сделки через мусорки, багажники, шкафы", "Риск ошибочного бана"],
+                ["Получение ценностей от неизвестных лиц", "Сообщить ГА (для проверки)"]
+            ]
+        },
+        {
+            category: "Правила слетов и аукционов",
+            items: [
+                ["Нарушение, повлиявшее на исход слета", "Отказ верификации"],
+                ["Помеха 75% участников (рванка, масс ДМ)", "Переслет / Недействительно"],
+                ["Отсутствие опры (дом, биз, авто, билет)", "Бан от 5 до 2000 дней"],
+                ["Покупка имущества, долго стоящего в госе", "Разрешено без опровержения"],
+                ["Опра с монтажом / без /time / без капчи", "Отказ в рассмотрении"],
+                ["Непредоставление опры в течение 24ч", "Бан от 5 до 2000 дней"],
+                ["Помеха игрокам (обмены, отвлечение)", "ДМГ 60–300 мин / Бан 1–3 дн"],
+                ["Нанесение урона (в т.ч. транспортом)", "Деморган 300 минут"],
+                ["Убийство игроков на слете", "Бан 3–7 дней"],
+                ["Соучастие с нарушителем (рванщиком и т.д.)", "Аналогично нарушителю"],
+                ["Багоюз с преимуществом (шифт на ловле)", "Бан 3–30 дней"],
+                ["Использование чекеров / ботов / скриптов", "Бан 30–2000 дней"]
+            ]
+        },
+        {
+            category: "Правила кастомизации имущества",
+            items: [
+                ["Неоднократное нарушение правил раздела", "Системный запрет маппинга"],
+                ["НонРП / бредовое название дома или бизнеса", "Устное / ДМГ 60–120 мин / Удаление"],
+                ["Реклама в названии (бизнес/семья/промо)", "Удаление / ДМГ 60–120 мин"],
+                ["Маппинг в непредназначенных местах", "Устное / Удаление маппинга"],
+                ["Помеха проходу игроков маппингом", "Устное / Удаление маппинга"],
+                ["Маппинг на дорогах / подъездах", "Устное / Удаление маппинга"],
+                ["Маппинг для взбирания (лестницы в небо)", "Устное / Удаление маппинга"],
+                ["Более одного массивного объекта (здания/елки)", "Устное / Удаление маппинга"],
+                ["Неестественное размещение объектов", "Устное / Удаление маппинга"],
+                ["Объекты в людных местах (ЦР, ЦБ, АБ и т.д.)", "Устное / Удаление / Запрет"],
+                ["Необычные объекты (сердце, шар) в проходах", "Устное / Удаление / Запрет"],
+                ["Неестественный тюнинг (доска вместо бампера)", "Устное / Удаление тюнинга"],
+                ["Тюнинг, наносящий вред игрокам", "ДМГ 120–300 мин + Запрет авто 3–7 дн"]
+            ]
+        },
+        {
+            category: "Правила поведения вне сервера",
+            items: [
+                ["Неадекватное поведение на официальных ресурсах", "Устное / Бан 1–30 дн"],
+                ["Оскорбление администрации или проекта", "Устное / Бан 1–30 дн"],
+                ["Упоминание или оскорбление родных", "Бан 1–30 дн"],
+                ["Намёк на продажу вирт / вредительство (рванка, ddos)", "Бан 2000 дн"]
+            ]
+        },
+        {
+            category: "Правила ограблений и похищений",
+            items: [
+                ["Похищение/ограбление в ЗЗ или на спавне", "Деморган 300 мин"],
+                ["Выжидание жертвы в AFK / AFK без ESC", "ДМГ 60–300 мин / Варн"],
+                ["Нанесение увечий жертве / убийство", "Деморган 120–300 минут"],
+                ["Забор аксессуаров / ценностей у жертвы", "Бан на 29 дней"],
+                ["Похищение в меньшинстве (менее 3-х)", "Деморган 60–120 минут"]
+            ]
+        }
+    ];
+
+    // ГЕНЕРАЦИЯ СПИСКА
+    const container = document.getElementById('rules-container');
+    
+    rulesData.forEach(cat => {
+        const catDiv = document.createElement('div');
+        catDiv.className = 'category-block';
+        
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.textContent = cat.category;
+        catDiv.appendChild(title);
+
+        cat.items.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'rule-row';
+            
+            const isSevere = item[1].toLowerCase().includes('2000') || 
+                             item[1].toLowerCase().includes('бан') || 
+                             item[1].toLowerCase().includes('чс') ||
+                             item[1].toLowerCase().includes('снятие');
+                             
+            const punishClass = isSevere ? 'rule-punishment severe' : 'rule-punishment';
+
+            row.innerHTML = `
+                <div class="rule-name">${item[0]}</div>
+                <div class="${punishClass}">${item[1]}</div>
+            `;
+            catDiv.appendChild(row);
+        });
+
+        container.appendChild(catDiv);
+    });
+
+    // ПОИСК
+    const modal = document.getElementById('search-modal');
+    const input = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('search-results');
+
+    function openSearch() {
+        modal.style.display = 'flex';
+        input.focus();
+    }
+
+    function performSearch(query) {
+        resultsContainer.innerHTML = '';
+        if (!query) {
+            resultsContainer.innerHTML = '<div class="empty-state">Введите запрос для поиска...</div>';
+            return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+        let count = 0;
+
+        rulesData.forEach(cat => {
+            cat.items.forEach(item => {
+                const name = item[0];
+                const punish = item[1];
+                
+                if (name.toLowerCase().includes(lowerQuery)) {
+                    const el = document.createElement('div');
+                    el.className = 'result-item';
+                    
+                    const highlight = (text) => {
+                        const regex = new RegExp(`(${query})`, 'gi');
+                        return text.replace(regex, '<span class="result-highlight">$1</span>');
+                    };
+
+                    el.innerHTML = `
+                        <div class="result-category">${cat.category}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:600; margin-right:15px; font-size: 0.95rem;">${highlight(name)}</span>
+                            <span style="color:var(--warning); font-size:0.85rem; font-weight:800;">${punish}</span>
+                        </div>
+                    `;
+                    
+                    el.onclick = () => {
+                        modal.style.display = 'none';
+                        const elements = document.querySelectorAll('.rule-name');
+                        for (let elem of elements) {
+                            if (elem.innerText === name) {
+                                elem.scrollIntoView({behavior: "smooth", block: "center"});
+                                elem.parentElement.style.borderColor = 'var(--primary)';
+                                elem.parentElement.style.boxShadow = '0 0 30px var(--primary-glow)';
+                                setTimeout(() => {
+                                    elem.parentElement.style.borderColor = 'rgba(255,255,255,0.08)';
+                                    elem.parentElement.style.boxShadow = 'inset 0 1px 1px rgba(255, 255, 255, 0.05)';
+                                }, 2000);
+                                break;
+                            }
+                        }
+                    };
+
+                    resultsContainer.appendChild(el);
+                    count++;
+                }
+            });
+        });
+
+        if (count === 0) {
+            resultsContainer.innerHTML = '<div class="empty-state">По вашему запросу ничего не найдено</div>';
+        }
+    }
+
+    input.addEventListener('input', (e) => performSearch(e.target.value));
+
+    // Hotkeys
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'а' || e.key === 'F')) {
+            e.preventDefault();
+            openSearch();
+        }
+        if (e.key === 'Escape') {
+            modal.style.display = 'none';
+            input.value = '';
+            performSearch('');
+        }
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
