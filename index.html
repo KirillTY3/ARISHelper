@@ -232,7 +232,7 @@
 
     </style>
 <meta name="description"><meta name="keywords"></head>
-<body class="grid-bg anim-on" data-theme="default" style="animation: 15s ease 0s infinite normal none running gradientBG;">
+<body class="" data-theme="default" style="animation: 15s ease 0s 1 normal none running none; --primary-glow: transparent !important;">
 
     <div id="login-screen" style="display: none;">
         <div class="login-box">
@@ -267,8 +267,8 @@
             <div class="timer-wrapper">
                 <div class="timer-box"><span class="t-val" id="t-d">4</span><span class="t-label">DAYS</span></div>
                 <div class="timer-box"><span class="t-val" id="t-h">20</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">42</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">01</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">37</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">57</span><span class="t-label">SECS</span></div>
             </div>
         </div></div><div id="block-footer"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
 
@@ -494,15 +494,15 @@
                             <div class="cms-group-row" style="flex-wrap: wrap;">
                                 <div class="toggle-row" style="flex: 1; min-width: 200px;">
                                     <span style="font-weight: bold; font-size: 0.9rem;">Сетка на фоне (Grid)</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-grid" checked=""><span class="slider"></span></label>
+                                    <label class="switch"><input type="checkbox" id="cms-toggle-grid"><span class="slider"></span></label>
                                 </div>
                                 <div class="toggle-row" style="flex: 1; min-width: 200px;">
                                     <span style="font-weight: bold; font-size: 0.9rem;">Свечение (Glow)</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-glow" checked=""><span class="slider"></span></label>
+                                    <label class="switch"><input type="checkbox" id="cms-toggle-glow"><span class="slider"></span></label>
                                 </div>
                                 <div class="toggle-row" style="flex: 1; min-width: 200px;">
                                     <span style="font-weight: bold; font-size: 0.9rem;">Анимации (Fade)</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-anim" checked=""><span class="slider"></span></label>
+                                    <label class="switch"><input type="checkbox" id="cms-toggle-anim"><span class="slider"></span></label>
                                 </div>
                             </div>
                         </div>
@@ -661,9 +661,9 @@ let siteDB = {
         "alertText": "Администрация не несет ответственности за использование данного функционала.",
         "alertTitleColor": "#f43f5e",
         "alertTextColor": "#94a3b8",
-        "showGrid": true,
-        "showGlow": true,
-        "showAnim": true,
+        "showGrid": false,
+        "showGlow": false,
+        "showAnim": false,
         "font": "'Inter', sans-serif",
         "maxWidth": "1200px",
         "borderRadius": "28px",
