@@ -85,8 +85,6 @@
         /* === ЭКРАН ВХОДА === */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; width: 100%; z-index: 100; }
         .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 32px; border: 1px solid var(--card-border); box-shadow: var(--card-shadow), 0 0 60px var(--primary-glow); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); text-align: center; max-width: 420px; width: 90%; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; }
-        .login-box::after { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--primary-glow), transparent 30%); animation: rotate 4s linear infinite; z-index: -1; opacity: 0.1; }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
 
         .lock-icon { width: 70px; height: 70px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.05)); border-radius: 50%; border: 1px solid rgba(99, 102, 241, 0.5); display: flex; align-items: center; justify-content: center; margin-bottom: 25px; color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); animation: pulse-lock 2s infinite alternate; }
         @keyframes pulse-lock { 0% { transform: scale(0.95); box-shadow: 0 0 20px var(--primary-glow); } 100% { transform: scale(1.05); box-shadow: 0 0 40px var(--primary-glow); } }
@@ -267,10 +265,10 @@
         </div></div><div id="block-menu"><div id="dashboard-container"><div class="menu-label">Популярные правила</div><div class="menu-grid"><a class="menu-btn" id="btn-0-0" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-yellow">updata 03.02.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" id="btn-1-0" onclick="openUserSettings()(); return false;"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc"></span></div></a><a class="menu-btn" id="btn-1-1" onclick="requestAdminAccess()(); return false;"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div></div><div id="block-timer"><div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
-                <div class="timer-box"><span class="t-val" id="t-d">4</span><span class="t-label">DAYS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-h">21</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">01</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">13</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-d">6</span><span class="t-label">DAYS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-h">23</span><span class="t-label">HOURS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">17</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">37</span><span class="t-label">SECS</span></div>
             </div>
         </div></div><div id="block-footer"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
 
@@ -412,6 +410,20 @@
             <input type="number" class="cms-input k-mins" value="0" style="margin:0; text-align:center;" placeholder="Мин">
         </div>
         <button class="btn-del" onclick="this.parentElement.remove()" style="height:48px; width:48px; padding:0; display:flex; align-items:center; justify-content:center;">✕</button>
+    </div><div class="cms-group-row key-row" style="margin-bottom: 10px;">
+        <div class="cms-group-col" style="flex: 2;">
+            <input type="text" class="cms-input k-hash" value="ad95d5fa651ba86d8923fe1238d24a4f1988a752acfe426ac72ac7c04471bc17" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly="">
+        </div>
+        <div class="cms-group-col" style="flex: 0 0 70px;">
+            <input type="number" class="cms-input k-days" value="30" style="margin:0; text-align:center;" placeholder="Дни">
+        </div>
+        <div class="cms-group-col" style="flex: 0 0 70px;">
+            <input type="number" class="cms-input k-hours" value="0" style="margin:0; text-align:center;" placeholder="Часы">
+        </div>
+        <div class="cms-group-col" style="flex: 0 0 70px;">
+            <input type="number" class="cms-input k-mins" value="0" style="margin:0; text-align:center;" placeholder="Мин">
+        </div>
+        <button class="btn-del" onclick="this.parentElement.remove()" style="height:48px; width:48px; padding:0; display:flex; align-items:center; justify-content:center;">✕</button>
     </div></div>
                             <button class="btn-add" onclick="createNewKey()" style="margin-top:10px; background: rgba(168, 85, 247, 0.1); border-color: #a855f7; color: #a855f7;">➕ СОЗДАТЬ НОВЫЙ КЛЮЧ</button>
                             
@@ -496,11 +508,11 @@
                             <div class="cms-group-row" style="flex-wrap: wrap;">
                                 <div class="toggle-row" style="flex: 1; min-width: 200px;">
                                     <span style="font-weight: bold; font-size: 0.9rem;">Сетка на фоне (Grid)</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-grid" checked=""><span class="slider"></span></label>
+                                    <label class="switch"><input type="checkbox" id="cms-toggle-grid"><span class="slider"></span></label>
                                 </div>
                                 <div class="toggle-row" style="flex: 1; min-width: 200px;">
                                     <span style="font-weight: bold; font-size: 0.9rem;">Свечение (Glow)</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-glow" checked=""><span class="slider"></span></label>
+                                    <label class="switch"><input type="checkbox" id="cms-toggle-glow"><span class="slider"></span></label>
                                 </div>
                                 <div class="toggle-row" style="flex: 1; min-width: 200px;">
                                     <span style="font-weight: bold; font-size: 0.9rem;">Анимации (Fade)</span>
@@ -655,6 +667,12 @@ let siteDB = {
                 "days": 7,
                 "hours": 0,
                 "mins": 0
+            },
+            {
+                "hash": "ad95d5fa651ba86d8923fe1238d24a4f1988a752acfe426ac72ac7c04471bc17",
+                "days": 0,
+                "hours": 0,
+                "mins": 1
             }
         ],
         "showAlert": true,
@@ -1546,5 +1564,6 @@ function duplicateCategory(cat) {
 
 document.addEventListener('DOMContentLoaded', checkAuth);
 </script>
+
 
 </body></html>
