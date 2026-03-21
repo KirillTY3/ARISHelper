@@ -246,7 +246,7 @@
             <p id="render-login-sub" style="color:var(--text-muted); margin-top:8px; font-size: 0.9rem;">Введите ключ доступа</p>
             <input type="text" id="access-key" class="key-input" placeholder="Введите ключ..." autocomplete="off">
             <button id="render-login-btn" class="login-btn" onclick="checkKey()">ВОЙТИ</button>
-            <div id="render-login-notice" style="margin-top: 15px; font-size: 0.9rem; color: var(--success); font-weight: 700; display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); width: 100%; box-sizing: border-box; text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);"></div>
+            <div id="render-login-notice" style="margin-top: 15px; font-size: 0.9rem; color: var(--success); font-weight: 700; display: block; padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); width: 100%; box-sizing: border-box; text-shadow: rgba(16, 185, 129, 0.4) 0px 0px 10px;">Бесплатный ключ: freeday7 (до 22.03)</div>
             <p id="error-message" style="color:var(--danger); margin-top:15px; display:none; font-weight: 700; background: var(--danger-bg); padding: 10px; border-radius: 10px;">ACCESS DENIED</p>
         </div>
     </div>
@@ -259,7 +259,7 @@
                 <p id="render-subtitle" style="color: var(--primary); font-weight: 800; margin: 0 0 5px 5px; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem;">ARIS CORE</p>
                 <h1 id="render-title" class="sys-title">ARIS HELPER</h1>
             </div>
-        </div></div><div id="block-alert"><div id="render-alert" class="alert-box" style="display: flex;">
+        </div></div><div id="block-alert"><div id="render-alert" class="alert-box" style="display: none;">
             <div id="render-alert-icon" class="alert-icon">⚠️</div>
             <div>
                 <strong id="render-alert-title" style="color: rgb(244, 63, 94);">Внимание!</strong>
@@ -269,9 +269,9 @@
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
                 <div class="timer-box"><span class="t-val" id="t-d">4</span><span class="t-label">DAYS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-h">21</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">37</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">17</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-h">23</span><span class="t-label">HOURS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">47</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">26</span><span class="t-label">SECS</span></div>
             </div>
         </div></div><div id="block-footer"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
 
@@ -399,6 +399,20 @@
             <input type="number" class="cms-input k-mins" value="0" style="margin:0; text-align:center;" placeholder="Мин">
         </div>
         <button class="btn-del" onclick="this.parentElement.remove()" style="height:48px; width:48px; padding:0; display:flex; align-items:center; justify-content:center;">✕</button>
+    </div><div class="cms-group-row key-row" style="margin-bottom: 10px;">
+        <div class="cms-group-col" style="flex: 2;">
+            <input type="text" class="cms-input k-hash" value="2ca1c9aa1c6ba1734f9660f33a28ad01bfcb55d62da72734feca44174f8b9a6d" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly="">
+        </div>
+        <div class="cms-group-col" style="flex: 0 0 70px;">
+            <input type="number" class="cms-input k-days" value="30" style="margin:0; text-align:center;" placeholder="Дни">
+        </div>
+        <div class="cms-group-col" style="flex: 0 0 70px;">
+            <input type="number" class="cms-input k-hours" value="0" style="margin:0; text-align:center;" placeholder="Часы">
+        </div>
+        <div class="cms-group-col" style="flex: 0 0 70px;">
+            <input type="number" class="cms-input k-mins" value="0" style="margin:0; text-align:center;" placeholder="Мин">
+        </div>
+        <button class="btn-del" onclick="this.parentElement.remove()" style="height:48px; width:48px; padding:0; display:flex; align-items:center; justify-content:center;">✕</button>
     </div></div>
                             <button class="btn-add" onclick="createNewKey()" style="margin-top:10px; background: rgba(168, 85, 247, 0.1); border-color: #a855f7; color: #a855f7;">➕ СОЗДАТЬ НОВЫЙ КЛЮЧ</button>
                             
@@ -514,7 +528,17 @@
                                 <label class="switch"><input type="checkbox" id="cms-toggle-alerts-on-visit" checked=""><span class="slider"></span></label>
                             </div>
                             <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0; margin-bottom:15px;">Показывать уведомления при каждом входе на сайт.</p>
-                            <div id="cms-alerts-list"></div>
+                            <div id="cms-alerts-list"><div class="alert-type-row" style="display: flex; gap: 10px; margin-bottom: 10px; padding: 15px; background: rgba(0, 0, 0, 0.1); border-radius: 12px; align-items: center;">
+        <select class="cms-select alert-type-select" style="width: 100px;">
+            <option value="warning" selected="">⚠️</option>
+            <option value="info">ℹ️</option>
+            <option value="success">✅</option>
+            <option value="error">❌</option>
+        </select>
+        <input type="text" class="cms-input alert-title-input" value="" placeholder="Заголовок" style="flex: 1; margin: 0;">
+        <input type="text" class="cms-input alert-msg-input" value="" placeholder="Сообщение" style="flex: 2; margin: 0;">
+        <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
+    </div></div>
                             <button class="btn-add" onclick="addAlertType()" style="margin-top: 10px;">➕ Добавить тип уведомления</button>
                         </div>
 
@@ -638,9 +662,15 @@ let siteDB = {
                 "days": 5,
                 "hours": 0,
                 "mins": 0
+            },
+            {
+                "hash": "2ca1c9aa1c6ba1734f9660f33a28ad01bfcb55d62da72734feca44174f8b9a6d",
+                "days": 7,
+                "hours": 0,
+                "mins": 0
             }
         ],
-        "showAlert": true,
+        "showAlert": false,
         "alertTitle": "Внимание!",
         "alertIcon": "⚠️",
         "alertText": "Администрация не несет ответственности за использование скрытых модулей.",
@@ -691,10 +721,16 @@ let siteDB = {
             "block-timer",
             "block-footer"
         ],
-        "showLoginNotice": false,
-        "loginNoticeText": "",
-        "showVisitAlerts": false,
-        "visitAlerts": []
+        "showLoginNotice": true,
+        "loginNoticeText": "Бесплатный ключ: freeday7 (до 22.03)",
+        "showVisitAlerts": true,
+        "visitAlerts": [
+            {
+                "type": "warning",
+                "title": "Технические работы",
+                "msg": "В данный момент мы обновляем функционал. Возможны временные сбои"
+            }
+        ]
     },
     "categories": [
         {
@@ -1507,6 +1543,5 @@ function duplicateCategory(cat) {
 
 document.addEventListener('DOMContentLoaded', checkAuth);
 </script>
-
 
 </body></html>
