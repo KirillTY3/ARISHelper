@@ -11,9 +11,9 @@
             --primary: #6366f1; 
             --primary-hover: #4f46e5;
             --primary-glow: rgba(99, 102, 241, 0.6); 
-            --bg-grad-1: #09090b; 
-            --bg-grad-2: #1e1b4b; 
-            --bg-grad-3: #020617;
+            --bg-grad-1: #0f172a; 
+            --bg-grad-2: #312e81; 
+            --bg-grad-3: #172554;
             --card-bg: rgba(20, 25, 40, 0.5); 
             --card-hover: rgba(30, 40, 60, 0.7);
             --card-border: rgba(255, 255, 255, 0.08);
@@ -53,25 +53,15 @@
         /* --- 3. АНИМИРОВАННЫЙ ФОН --- */
         body { 
             font-family: 'Inter', sans-serif; 
-            background: linear-gradient(-45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3));
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: radial-gradient(circle at top, var(--bg-grad-1), var(--bg-grad-2));
+            background-attachment: fixed;
+            background-size: cover;
             color: var(--text-main); 
             margin: 0; padding: 0; 
             min-height: 100vh; 
             transition: color 0.5s ease; 
             position: relative;
             display: none; /* Скрыто до проверки авторизации */
-        }
-
-        body.grid-bg::before {
-            content: "";
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1; pointer-events: none;
         }
 
         @keyframes gradientBG {
@@ -81,7 +71,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 40px 20px;
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -93,29 +83,11 @@
         }
 
         /* --- 4. ШАПКА И ТЕКСТ --- */
-        .page-header {
-            display: flex; flex-direction: column; align-items: center; margin-bottom: 40px;
-        }
+        .sys-header { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; text-align: center; }
+        .sys-title { margin: 0; font-weight: 900; font-size: 3rem; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; line-height: 1; text-transform: uppercase; }
+        [data-theme="light"] .sys-title { background: linear-gradient(90deg, #475569, #0f172a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        h1 {
-            font-weight: 900;
-            font-size: 3rem;
-            margin: 0 0 10px 0;
-            background: linear-gradient(135deg, #fff, var(--primary), #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            text-align: center;
-        }
-        
-        [data-theme="light"] h1 {
-            background: linear-gradient(135deg, #0f172a, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; margin-top: 15px; }
 
         kbd {
             background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 8px;
@@ -172,7 +144,7 @@
             transform: translateY(-3px) scale(1.01);
             background: var(--card-hover);
             border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.4), 0 0 35px var(--primary-glow);
             z-index: 10; position: relative;
         }
 
@@ -202,7 +174,7 @@
         .modal-content {
             background: var(--card-bg); width: 90%; max-width: 700px;
             border-radius: 24px; border: 1px solid var(--card-border);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 0 50px var(--primary-glow);
             overflow: hidden; display: flex; flex-direction: column; max-height: 75vh;
             backdrop-filter: blur(25px);
         }
@@ -240,12 +212,30 @@
         .fab-search:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 15px 40px var(--primary-glow); }
         .fab-icon { font-size: 26px; }
 
+        /* --- 7. МОБИЛЬНАЯ ОПТИМИЗАЦИЯ (NO LAG) --- */
+        @media screen and (max-width: 768px) {
+            body {
+                animation: none !important;
+            }
+            
+            /* Отключаем тяжелый блюр и тени */
+            .back-btn, .rule-row, .modal-content, .search-header, .fab-search {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: none !important;
+                transform: none !important;
+            }
+            
+            /* Делаем фон плашек непрозрачным для читаемости */
+            .rule-row { background: var(--bg-grad-3) !important; border: 1px solid var(--card-border) !important; }
+            .modal-content { background: var(--bg-grad-2) !important; }
+            .category-block { background: transparent !important; border: none !important; padding: 10px 0 !important; }
+        }
     </style>
 </head>
 <body>
 
 <script>
-    // --- ЗАЩИТА СТРАНИЦЫ (Auth Guard) ---
     // Версия должна совпадать с index.html
     const SESSION_VERSION = "1.3"; 
 
@@ -280,15 +270,37 @@
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         document.body.setAttribute('data-theme', savedTheme);
 
-        const isGlow = localStorage.getItem('showGlow') !== 'false';
-        if (!isGlow) {
-            document.documentElement.style.setProperty('--primary-glow', 'rgba(0, 0, 0, 0)');
+        // Загрузка цветов и фона из localStorage (синхронизация с index.html)
+        const savedColors = localStorage.getItem('siteColors');
+        if (savedColors) {
+            try {
+                const c = JSON.parse(savedColors);
+                const root = document.documentElement;
+                if(c.primary) root.style.setProperty('--primary', c.primary);
+                if(c.bg1) root.style.setProperty('--bg-grad-1', c.bg1);
+                if(c.bg2) root.style.setProperty('--bg-grad-2', c.bg2);
+                if(c.bg3) root.style.setProperty('--bg-grad-3', c.bg3);
+            } catch(e) {}
+        }
+        const savedBg = localStorage.getItem('siteBg');
+        if (savedBg) {
+            try {
+                const bg = JSON.parse(savedBg);
+                if (bg.image) {
+                    document.body.style.backgroundImage = `url(${bg.image})`;
+                    document.body.style.backgroundSize = bg.size;
+                    document.body.style.backgroundPosition = bg.pos;
+                    document.body.style.backgroundRepeat = bg.repeat;
+                }
+            } catch(e) {}
         }
 
-        if (localStorage.getItem('showGrid') !== 'false') document.body.classList.add('grid-bg');
-
-        if (localStorage.getItem('showAnim') === 'false') {
-            document.body.style.animation = 'none';
+        const isGlow = localStorage.getItem('showGlow') !== 'false';
+        if (!isGlow) {
+            document.body.style.setProperty('--primary-glow', 'transparent');
+        } else {
+            // Установка пустого значения удаляет инлайн-свойство, даже если оно было с !important
+            document.body.style.setProperty('--primary-glow', '');
         }
 
         // --- АВТОМАТИЧЕСКИЙ ВЫБРОС (Real-time Check) ---
@@ -308,9 +320,12 @@
         
         <button class="back-btn" onclick="window.location.href='index.html'">⬅ Меню</button>
 
-        <div class="page-header">
-            <h1>Админ Регламент</h1>
-            <div class="subtitle">Используйте <kbd>Ctrl</kbd> + <kbd>F</kbd> для вызова умного поиска</div>
+        <div class="sys-header">
+            <div>
+                <p style="color: var(--primary); font-weight: 800; margin: 0 0 5px 0; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; text-align: center;">СПРАВОЧНИК</p>
+                <h1 class="sys-title">Админ Регламент</h1>
+                <div class="subtitle">Используйте <kbd>Ctrl</kbd> + <kbd>F</kbd> для вызова умного поиска</div>
+            </div>
         </div>
 
         <div id="rules-container"></div>
