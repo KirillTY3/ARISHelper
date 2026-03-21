@@ -1441,6 +1441,12 @@ function generateAndDownloadCMS() {
     showApp(auth ? JSON.parse(auth).expiry : null); 
     closeCMS();
 
+    // Очистка динамических элементов перед сохранением (чтобы не дублировались в коде)
+    const notifyEl = document.getElementById('notify-container');
+    if (notifyEl) notifyEl.remove();
+    const socialEl = document.getElementById('social-footer-block');
+    if (socialEl) socialEl.remove();
+
     let htmlContent = document.documentElement.outerHTML;
     const jsonStr = JSON.stringify(siteDB, null, 4).replace(/<\/script>/g, '<\\/script>');
     const newScriptData = `let siteDB = ${jsonStr};`;
