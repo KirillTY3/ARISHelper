@@ -976,8 +976,6 @@ function showApp(expiryTime) {
         document.getElementById('timer-container').style.display = 'none';
     }
     
-    // ==================== НОВЫЕ ФУНКЦИИ РЕНДЕРИНГА ====================
-    
     // Применение фонового изображения
     if (siteDB.settings.bgImage) {
         document.body.style.backgroundImage = `url(${siteDB.settings.bgImage})`;
@@ -1012,8 +1010,7 @@ function showApp(expiryTime) {
     if (siteDB.settings.metaKeywords) {
         metaKeywords.content = siteDB.settings.metaKeywords;
     }
-    
-    // === ЛОГИКА ВСПЛЫВАЮЩИХ УВЕДОМЛЕНИЙ (VISIT ALERTS) ===
+
     // Показывает уведомления из админки при входе на сайт
     if (siteDB.settings.showVisitAlerts && siteDB.settings.visitAlerts && siteDB.settings.visitAlerts.length > 0) {
         setTimeout(() => {
@@ -1480,8 +1477,6 @@ function importJson() {
     }
 }
 
-// ==================== НОВЫЕ ФУНКЦИИ ====================
-
 // Экспорт в файл
 function exportToFile() {
     if(currentMode === 'tab-code') { 
@@ -1532,7 +1527,6 @@ function addAlertType(type = 'warning', title = '', msg = '') {
     `;
     list.appendChild(div);
 }
-
 
 // Дублирование кнопки
 function duplicateButton(btn) {
