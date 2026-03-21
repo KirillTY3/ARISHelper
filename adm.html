@@ -64,7 +64,7 @@
             display: none; /* Скрыто до проверки авторизации */
         }
 
-        body::before {
+        body.grid-bg::before {
             content: "";
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -280,9 +280,15 @@
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         document.body.setAttribute('data-theme', savedTheme);
 
-        const isGlow = localStorage.getItem('glowEffect') !== 'false';
+        const isGlow = localStorage.getItem('showGlow') !== 'false';
         if (!isGlow) {
             document.documentElement.style.setProperty('--primary-glow', 'rgba(0, 0, 0, 0)');
+        }
+
+        if (localStorage.getItem('showGrid') !== 'false') document.body.classList.add('grid-bg');
+
+        if (localStorage.getItem('showAnim') === 'false') {
+            document.body.style.animation = 'none';
         }
 
         // --- АВТОМАТИЧЕСКИЙ ВЫБРОС (Real-time Check) ---
