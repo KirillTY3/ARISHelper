@@ -259,19 +259,19 @@
                 <p id="render-subtitle" style="color: var(--primary); font-weight: 800; margin: 0 0 5px 5px; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem;">ARIS CORE</p>
                 <h1 id="render-title" class="sys-title">ARIS HELPER</h1>
             </div>
-        </div></div><div id="block-alert"><div id="render-alert" class="alert-box" style="display: none;">
+        </div></div><div id="block-alert"><div id="render-alert" class="alert-box" style="display: flex;">
             <div id="render-alert-icon" class="alert-icon">⚠️</div>
             <div>
                 <strong id="render-alert-title" style="color: rgb(244, 63, 94);">Внимание!</strong>
-                <p id="render-alert-text" style="color: rgb(148, 163, 184);">Администрация не несет ответственности за использование скрытых модулей.</p>
+                <p id="render-alert-text" style="color: rgb(148, 163, 184);">Администрация не несет ответственности за использование данного функционала.</p>
             </div>
-        </div></div><div id="block-menu"><div id="dashboard-container"><div class="menu-label">Популярные правила</div><div class="menu-grid"><a class="menu-btn" id="btn-0-0" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-green">updata 03.02.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" id="btn-1-0" onclick="openUserSettings()(); return false;"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc"></span></div></a><a class="menu-btn" id="btn-1-1" onclick="requestAdminAccess()(); return false;"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div></div><div id="block-timer"><div id="timer-container" style="display: block;">
+        </div></div><div id="block-menu"><div id="dashboard-container"><div class="menu-label">Популярные правила</div><div class="menu-grid"><a class="menu-btn" id="btn-0-0" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-yellow">updata 03.02.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" id="btn-1-0" onclick="openUserSettings()(); return false;"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc"></span></div></a><a class="menu-btn" id="btn-1-1" onclick="requestAdminAccess()(); return false;"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div></div><div id="block-timer"><div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
-                <div class="timer-box"><span class="t-val" id="t-d">4</span><span class="t-label">DAYS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-h">23</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">47</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">26</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-d">2</span><span class="t-label">DAYS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-h">10</span><span class="t-label">HOURS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">33</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">56</span><span class="t-label">SECS</span></div>
             </div>
         </div></div><div id="block-footer"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
 
@@ -404,7 +404,7 @@
             <input type="text" class="cms-input k-hash" value="2ca1c9aa1c6ba1734f9660f33a28ad01bfcb55d62da72734feca44174f8b9a6d" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly="">
         </div>
         <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-days" value="30" style="margin:0; text-align:center;" placeholder="Дни">
+            <input type="number" class="cms-input k-days" value="7" style="margin:0; text-align:center;" placeholder="Дни">
         </div>
         <div class="cms-group-col" style="flex: 0 0 70px;">
             <input type="number" class="cms-input k-hours" value="0" style="margin:0; text-align:center;" placeholder="Часы">
@@ -535,8 +535,8 @@
             <option value="success">✅</option>
             <option value="error">❌</option>
         </select>
-        <input type="text" class="cms-input alert-title-input" value="" placeholder="Заголовок" style="flex: 1; margin: 0;">
-        <input type="text" class="cms-input alert-msg-input" value="" placeholder="Сообщение" style="flex: 2; margin: 0;">
+        <input type="text" class="cms-input alert-title-input" value="Технические работы" placeholder="Заголовок" style="flex: 1; margin: 0;">
+        <input type="text" class="cms-input alert-msg-input" value="В данный момент мы обновляем функционал. Возможны временные сбои" placeholder="Сообщение" style="flex: 2; margin: 0;">
         <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
     </div></div>
                             <button class="btn-add" onclick="addAlertType()" style="margin-top: 10px;">➕ Добавить тип уведомления</button>
@@ -670,10 +670,10 @@ let siteDB = {
                 "mins": 0
             }
         ],
-        "showAlert": false,
+        "showAlert": true,
         "alertTitle": "Внимание!",
         "alertIcon": "⚠️",
-        "alertText": "Администрация не несет ответственности за использование скрытых модулей.",
+        "alertText": "Администрация не несет ответственности за использование данного функционала.",
         "alertTitleColor": "#f43f5e",
         "alertTextColor": "#94a3b8",
         "showGrid": true,
@@ -742,7 +742,7 @@ let siteDB = {
                     "desc": "Правила проекта",
                     "link": "adm.html",
                     "badge": "updata 03.02.2026",
-                    "badgeColor": "green"
+                    "badgeColor": "yellow"
                 }
             ]
         },
