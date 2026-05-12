@@ -283,10 +283,10 @@
     </div><div id="block-menu"><div id="dashboard-container"><div class="menu-label">Популярные правила</div><div class="menu-grid"><a class="menu-btn" id="btn-0-0" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-yellow">update 03.02.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта [all]</span></div></a></div><div class="menu-label">Государственные структуры || Нелегалы [25]</div><div class="menu-grid"><a class="menu-btn" id="btn-1-0" href="#"><div class="btn-top"><div class="btn-icon">👑</div><div class="badge badge-red">В разработке</div></div><div class="btn-title">Пра-во <span class="btn-desc">Government || Правительство</span></div></a><a class="menu-btn" id="btn-1-1" href="#"><div class="btn-top"><div class="btn-icon">🚔</div><div class="badge badge-red">В разработке</div></div><div class="btn-title">МЮ <span class="btn-desc">Department of Justice || Мин. Юстиции</span></div></a><a class="menu-btn" id="btn-1-2" href="#"><div class="btn-top"><div class="btn-icon">⚔️</div><div class="badge badge-red">В разработке</div></div><div class="btn-title">МО <span class="btn-desc">Department of Defense || Мин. Обороны</span></div></a><a class="menu-btn" id="btn-1-3" href="#"><div class="btn-top"><div class="btn-icon">🏥</div><div class="badge badge-red">В разработке</div></div><div class="btn-title">МЗ <span class="btn-desc">Department of Social Policy || Мин. Соц. Политики</span></div></a></div><div class="menu-label">Государственные структуры || Нелегалы [19]</div><div class="menu-grid"><a class="menu-btn" id="btn-2-0" href="myu.html"><div class="btn-top"><div class="btn-icon">🚔</div><div class="badge badge-green">update 04.04.2026</div></div><div class="btn-title">МЮ <span class="btn-desc">Department of Justice || Мин. Юстиции</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" id="btn-3-0" onclick="openUserSettings()(); return false;"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc">Общий</span></div></a><a class="menu-btn" id="btn-3-1" onclick="requestAdminAccess()(); return false;"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div></div><div id="block-timer"><div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
-                <div class="timer-box"><span class="t-val" id="t-d">29</span><span class="t-label">DAYS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-h">23</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">16</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">46</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-d">28</span><span class="t-label">DAYS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-h">00</span><span class="t-label">HOURS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">28</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">54</span><span class="t-label">SECS</span></div>
             </div>
         </div></div><div id="block-footer"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
 
@@ -324,7 +324,7 @@
             <p style="color:var(--text-muted); margin-top:5px; font-size: 0.85rem;">Подтвердите права доступа</p>
             <input type="password" id="admin-key-input" class="key-input" placeholder="Пароль..." autocomplete="off" style="margin: 20px 0; font-size: 1.2rem;">
             <button class="login-btn" onclick="verifyAdminKey()" style="background: linear-gradient(135deg, var(--danger), #be123c); box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.5);">РАЗБЛОКИРОВАТЬ</button>
-            <p id="admin-error" style="color: var(--danger); margin-top: 15px; display: block; font-weight: 700; font-size: 0.9rem;">⛔ ДОСТУП ЗАПРЕЩЕН</p>
+            <p id="admin-error" style="color: var(--danger); margin-top: 15px; display: none; font-weight: 700; font-size: 0.9rem;">⛔ ДОСТУП ЗАПРЕЩЕН</p>
         </div>
     </div>
 
@@ -507,17 +507,7 @@
                                 <label class="switch"><input type="checkbox" id="cms-toggle-alerts-on-visit" checked=""><span class="slider"></span></label>
                             </div>
                             <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0; margin-bottom:15px;">Показывать уведомления при каждом входе на сайт.</p>
-                            <div id="cms-alerts-list"><div class="alert-type-row" style="display: flex; gap: 10px; margin-bottom: 10px; padding: 15px; background: rgba(0, 0, 0, 0.1); border-radius: 12px; align-items: center;">
-        <select class="cms-select alert-type-select" style="width: 100px;">
-            <option value="warning" selected="">⚠️</option>
-            <option value="info">ℹ️</option>
-            <option value="success">✅</option>
-            <option value="error">❌</option>
-        </select>
-        <input type="text" class="cms-input alert-title-input" value="Технические работы" placeholder="Заголовок" style="flex: 1; margin: 0;">
-        <input type="text" class="cms-input alert-msg-input" value="Возможны временные сбои" placeholder="Сообщение" style="flex: 2; margin: 0;">
-        <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
-    </div></div>
+                            <div id="cms-alerts-list"></div>
                             <button class="btn-add" onclick="addAlertType()" style="margin-top: 10px;">➕ Добавить тип уведомления</button>
                         </div>
 
@@ -690,14 +680,8 @@ let siteDB = {
         ],
         "showLoginNotice": false,
         "loginNoticeText": "",
-        "showVisitAlerts": true,
-        "visitAlerts": [
-            {
-                "type": "warning",
-                "title": "Технические работы",
-                "msg": "Возможны временные сбои"
-            }
-        ]
+        "showVisitAlerts": false,
+        "visitAlerts": []
     },
     "categories": [
         {
