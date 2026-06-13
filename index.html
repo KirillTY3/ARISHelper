@@ -283,10 +283,10 @@
     </div><div id="block-menu"><div id="dashboard-container"><div class="menu-label">Популярные правила</div><div class="menu-grid"><a class="menu-btn" id="btn-0-0" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-green">update 16.05.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта [all]</span></div></a></div><div class="menu-label">Государственные структуры || Нелегалы [19]</div><div class="menu-grid"><a class="menu-btn" id="btn-1-0" href="myu.html"><div class="btn-top"><div class="btn-icon">🚔</div><div class="badge badge-green">update 04.04.2026</div></div><div class="btn-title">МЮ <span class="btn-desc">Department of Justice || Мин. Юстиции</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" id="btn-2-0" onclick="openUserSettings()(); return false;"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc">Общий</span></div></a><a class="menu-btn" id="btn-2-1" onclick="requestAdminAccess()(); return false;"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div></div><div id="block-timer"><div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
-                <div class="timer-box"><span class="t-val" id="t-d">22</span><span class="t-label">DAYS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-h">22</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">11</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">49</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-d">29</span><span class="t-label">DAYS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-h">23</span><span class="t-label">HOURS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">59</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">44</span><span class="t-label">SECS</span></div>
             </div>
         </div></div><div id="block-footer"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
 
@@ -507,27 +507,7 @@
                                 <label class="switch"><input type="checkbox" id="cms-toggle-alerts-on-visit" checked=""><span class="slider"></span></label>
                             </div>
                             <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0; margin-bottom:15px;">Показывать уведомления при каждом входе на сайт.</p>
-                            <div id="cms-alerts-list"><div class="alert-type-row" style="display: flex; gap: 10px; margin-bottom: 10px; padding: 15px; background: rgba(0, 0, 0, 0.1); border-radius: 12px; align-items: center;">
-        <select class="cms-select alert-type-select" style="width: 100px;">
-            <option value="warning" selected="">⚠️</option>
-            <option value="info">ℹ️</option>
-            <option value="success">✅</option>
-            <option value="error">❌</option>
-        </select>
-        <input type="text" class="cms-input alert-title-input" value="Оповещение " placeholder="Заголовок" style="flex: 1; margin: 0;">
-        <input type="text" class="cms-input alert-msg-input" value="Друзья, создатель сайта уходит с Arizona RP на Majestic RP. Текущие правила «Аризоны» теперь будут обновляться гораздо реже, ЕСЛИ кто-то из вас не захочет помочь с их актуализацией. Желающие заняться разделом — пишите в дс 5kirill5 " placeholder="Сообщение" style="flex: 2; margin: 0;">
-        <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
-    </div><div class="alert-type-row" style="display: flex; gap: 10px; margin-bottom: 10px; padding: 15px; background: rgba(0, 0, 0, 0.1); border-radius: 12px; align-items: center;">
-        <select class="cms-select alert-type-select" style="width: 100px;">
-            <option value="warning" selected="">⚠️</option>
-            <option value="info">ℹ️</option>
-            <option value="success">✅</option>
-            <option value="error">❌</option>
-        </select>
-        <input type="text" class="cms-input alert-title-input" value="Оповещение " placeholder="Заголовок" style="flex: 1; margin: 0;">
-        <input type="text" class="cms-input alert-msg-input" value="Глобальный апдейт самого сайта под Majestic RP ожидайте уже с 1 июня!" placeholder="Сообщение" style="flex: 2; margin: 0;">
-        <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
-    </div></div>
+                            <div id="cms-alerts-list"></div>
                             <button class="btn-add" onclick="addAlertType()" style="margin-top: 10px;">➕ Добавить тип уведомления</button>
                         </div>
 
@@ -700,19 +680,8 @@ let siteDB = {
         ],
         "showLoginNotice": false,
         "loginNoticeText": "",
-        "showVisitAlerts": true,
-        "visitAlerts": [
-            {
-                "type": "warning",
-                "title": "Оповещение ",
-                "msg": "Друзья, создатель сайта уходит с Arizona RP на Majestic RP. Текущие правила «Аризоны» теперь будут обновляться гораздо реже, ЕСЛИ кто-то из вас не захочет помочь с их актуализацией. Желающие заняться разделом — пишите в дс 5kirill5 "
-            },
-            {
-                "type": "warning",
-                "title": "Оповещение ",
-                "msg": "Глобальный апдейт самого сайта под Majestic RP ожидайте уже с 1 июня!"
-            }
-        ]
+        "showVisitAlerts": false,
+        "visitAlerts": []
     },
     "categories": [
         {
