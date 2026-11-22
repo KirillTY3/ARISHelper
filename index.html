@@ -188,8 +188,44 @@
         .btn-move { background: rgba(0,0,0,0.1); border: 1px solid var(--card-border); color: var(--text-muted); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; padding: 4px; }
         .btn-move:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
+        /* Ключи */
+        .key-row, .key-head { display: grid; grid-template-columns: 2fr 1.3fr 64px 64px 64px 150px 56px 44px; gap: 8px; align-items: center; margin-bottom: 10px; }
+        .key-head { margin-bottom: 5px; padding: 0 5px; }
+        .key-head div { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; text-align: center; }
+        .key-head div:nth-child(1), .key-head div:nth-child(2) { text-align: left; }
+
+        /* Порядок блоков */
+        .layout-item { display: flex; align-items: center; gap: 12px; padding: 10px 15px; background: rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 8px; font-weight: 700; }
+        .layout-item .move-col { display: flex; gap: 4px; }
+
+        /* Фон */
+        .bg-preview { height: 90px; border-radius: 12px; border: 1px dashed var(--card-border); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px; }
+
+        /* Кнопка выхода */
+        .logout-btn { background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 22px; border-radius: 12px; cursor: pointer; font-weight: 700; font-family: inherit; margin-top: 40px; transition: 0.2s; }
+        .logout-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+        /* Админка на телефоне */
+        @media screen and (max-width: 900px) {
+            .cms-panel { flex-direction: column; width: 100%; height: 95vh; border-radius: 16px; }
+            .cms-sidebar { width: auto; flex-direction: row; overflow-x: auto; padding: 10px; gap: 6px; border-right: none; border-bottom: 1px solid var(--card-border); flex-shrink: 0; }
+            .cms-sidebar > div { display: none; }
+            .cms-tab-btn, .cms-tab-btn:nth-child(4), .cms-tab-btn:nth-child(5) { white-space: nowrap; padding: 10px 12px; margin-top: 0; border-top: none; }
+            .cms-body { padding: 15px; }
+            .cms-header, .cms-footer { padding: 12px 15px; }
+            .cms-group { padding: 15px; }
+            .cms-group-row { flex-wrap: wrap; gap: 10px; }
+            .cms-group-col { min-width: 140px; }
+            .btn-box { grid-template-columns: 1fr 1fr; }
+            .btn-box > div:first-child { grid-column: 1 / -1; flex-direction: row !important; }
+            .key-head { display: none; }
+            .key-row { grid-template-columns: 1fr 1fr 1fr; padding-bottom: 10px; border-bottom: 1px dashed var(--card-border); }
+            .key-row > .k-hash, .key-row > .k-label { grid-column: 1 / -1; }
+            .alert-type-row { flex-wrap: wrap; }
+        }
+
         .cat-box { background: rgba(0,0,0,0.05); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; margin-bottom: 25px; }
-        .btn-box { display: grid; grid-template-columns: auto 1fr 2fr 2fr 2fr 1fr auto; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 10px; align-items: center;}
+        .btn-box { display: grid; grid-template-columns: auto 1fr 2fr 2fr 2fr 1fr auto auto; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 10px; align-items: center;}
         .cms-select { padding: 12px; background: var(--bg-grad-2); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; outline: none; }
         .settings-btn { border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; font-size: 1rem; }
         .settings-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
@@ -251,7 +287,16 @@
         }
     </style>
 <meta name="description"><meta name="keywords"></head>
-<body class="" data-theme="default" style="animation: 15s ease 0s 1 normal none running none;">
+<body class="" data-theme="default">
+
+    <div id="maint-screen" style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 85vh; width: 100%;">
+        <div class="login-box">
+            <div class="lock-icon" style="font-size: 32px;">🚧</div>
+            <h2 id="render-maint-title" style="margin:0; font-size: 1.8rem; font-weight: 900;">Технические работы</h2>
+            <p id="render-maint-text" style="color:var(--text-muted); margin-top:10px; line-height: 1.5;">Сайт временно недоступен. Скоро вернёмся!</p>
+        </div>
+        <button onclick="requestAdminAccess()" title="Админ" style="margin-top: 20px; background: transparent; border: none; color: var(--text-muted); opacity: 0.25; cursor: pointer; font-size: 1rem;">🛠</button>
+    </div>
 
     <div id="login-screen" style="display: none;">
         <div class="login-box">
@@ -262,12 +307,12 @@
             <p id="render-login-sub" style="color:var(--text-muted); margin-top:8px; font-size: 0.9rem;">Введите ключ доступа</p>
             <input type="text" id="access-key" class="key-input" placeholder="Введите ключ..." autocomplete="off">
             <button id="render-login-btn" class="login-btn" onclick="checkKey()">ВОЙТИ</button>
-            <div id="render-login-notice" style="margin-top: 15px; font-size: 0.9rem; color: var(--success); font-weight: 700; display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); width: 100%; box-sizing: border-box; text-shadow: rgba(16, 185, 129, 0.4) 0px 0px 10px;">Free key: msdmka до 25.06</div>
+            <div id="render-login-notice" style="margin-top: 15px; font-size: 0.9rem; color: var(--success); font-weight: 700; display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); width: 100%; box-sizing: border-box; text-shadow: rgba(16, 185, 129, 0.4) 0px 0px 10px;"></div>
             <p id="error-message" style="color: var(--danger); margin-top: 15px; display: none; font-weight: 700; background: var(--danger-bg); padding: 10px; border-radius: 10px;">Неверный ключ доступа!</p>
         </div>
     </div>
 
-    <div id="app-content" style="display: block;">
+    <div id="app-content" style="display: none;">
         
       
     <div id="block-header"><div class="sys-header" style="justify-content: center;">
@@ -280,15 +325,15 @@
             <span style="color:#ff6b6b; font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;"><span id="render-alert-icon">⚠️</span> <span id="render-alert-title" style="color: rgb(244, 63, 94);">Внимание!</span></span>
             <p id="render-alert-text" style="color: rgb(148, 163, 184); font-size: 0.95rem; line-height: 1.5;">Использование данного функционала может нарушать правила сервера. Администрация сайта не несет ответственности за блокировки.</p>
         </div>
-    </div><div id="block-menu"><div id="dashboard-container"><div class="menu-label">Популярные правила</div><div class="menu-grid"><a class="menu-btn" id="btn-0-0" href="adm.html"><div class="btn-top"><div class="btn-icon">🛡️</div><div class="badge badge-red">update 16.05.2026</div></div><div class="btn-title">Справочник <span class="btn-desc">Правила проекта [all]</span></div></a></div><div class="menu-label">Государственные структуры || Нелегалы [19]</div><div class="menu-grid"><a class="menu-btn" id="btn-1-0" href="myu.html"><div class="btn-top"><div class="btn-icon">🚔</div><div class="badge badge-red">update 04.04.2026</div></div><div class="btn-title">МЮ <span class="btn-desc">Department of Justice || Мин. Юстиции</span></div></a></div><div class="menu-label">Настройки Сайта</div><div class="menu-grid"><a class="menu-btn" id="btn-2-0" onclick="openUserSettings()(); return false;"><div class="btn-top"><div class="btn-icon">🔧</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">Темы <span class="btn-desc">Общий</span></div></a><a class="menu-btn" id="btn-2-1" onclick="requestAdminAccess()(); return false;"><div class="btn-top"><div class="btn-icon">🛠️</div><div class="badge badge-blue">Настройки</div></div><div class="btn-title">ADMIN <span class="btn-desc"></span></div></a></div></div></div><div id="block-timer"><div id="timer-container" style="display: block;">
+    </div><div id="block-menu"><div id="dashboard-container"></div></div><div id="block-timer"><div id="timer-container" style="display: block;">
             <div id="render-timer-title" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; text-align: center; font-weight: 800;">Лицензия действительна</div>
             <div class="timer-wrapper">
-                <div class="timer-box"><span class="t-val" id="t-d">29</span><span class="t-label">DAYS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-h">23</span><span class="t-label">HOURS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-m">52</span><span class="t-label">MINS</span></div>
-                <div class="timer-box"><span class="t-val" id="t-s">09</span><span class="t-label">SECS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-d">25</span><span class="t-label">DAYS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-h">05</span><span class="t-label">HOURS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-m">01</span><span class="t-label">MINS</span></div>
+                <div class="timer-box"><span class="t-val" id="t-s">13</span><span class="t-label">SECS</span></div>
             </div>
-        </div></div><div id="block-footer"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
+        </div></div><div id="block-footer" style="text-align: center;"><div id="render-footer" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; opacity: 0.5;">© 2026 ARIS Project</div></div></div>
 
     <!-- USER SETTINGS MODAL -->
     <div id="user-settings-modal" class="cms-overlay" style="display: none; z-index: 2000;">
@@ -338,8 +383,8 @@
                     <div style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff 30%, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px var(--primary-glow));">2026</div>
                     <div style="font-size: 0.75rem; color: var(--text-muted); opacity: 0.7; margin-top: 5px;">Powered by ARIS CORE</div>
                 </div>
-                <button class="cms-tab-btn active" onclick="switchCmsTab('tab-buttons')" id="btn-tab-buttons">📱 Редактор Кнопок</button>
-                <button class="cms-tab-btn" onclick="switchCmsTab('tab-site')" id="btn-tab-site">🎨 Дизайн и Сайт</button>
+                <button class="cms-tab-btn" onclick="switchCmsTab('tab-buttons')" id="btn-tab-buttons">📱 Редактор Кнопок</button>
+                <button class="cms-tab-btn active" onclick="switchCmsTab('tab-site')" id="btn-tab-site">🎨 Дизайн и Сайт</button>
                 <button class="cms-tab-btn" onclick="switchCmsTab('tab-code')" id="btn-tab-code">👨‍💻 База и Скрипты</button>
                 <button class="cms-tab-btn" onclick="switchCmsTab('tab-seo')" id="btn-tab-seo">🔗 SEO и Ссылки</button>
                 
@@ -358,13 +403,23 @@
 
                 <div class="cms-body">
                     
-                    <div id="tab-buttons" class="cms-tab-content" style="display: block;">
-                        <div id="cms-categories-list"><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;"><div style="display:flex; flex-direction:column; gap:4px;"><button class="btn-move" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg></button><button class="btn-move" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></div><input type="text" class="cms-input cat-name" value="Популярные правила" style="margin:0; font-weight:bold; font-size:1.1rem; flex:1;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><div style="display:flex; flex-direction:column; gap:4px; height:100%; justify-content:center;"><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg></button><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></div><input type="text" class="cms-input b-icon" value="🛡️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Справочник" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="Правила проекта [all]" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="adm.html" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="update 16.05.2026" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red" selected="">Красн</option><option value="yellow">Желт</option><option value="blue">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;"><div style="display:flex; flex-direction:column; gap:4px;"><button class="btn-move" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg></button><button class="btn-move" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></div><input type="text" class="cms-input cat-name" value="Государственные структуры || Нелегалы [19]" style="margin:0; font-weight:bold; font-size:1.1rem; flex:1;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><div style="display:flex; flex-direction:column; gap:4px; height:100%; justify-content:center;"><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg></button><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></div><input type="text" class="cms-input b-icon" value="🚔" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="МЮ" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="Department of Justice || Мин. Юстиции" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="myu.html" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="update 04.04.2026" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red" selected="">Красн</option><option value="yellow">Желт</option><option value="blue">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div><div class="cat-box"><div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;"><div style="display:flex; flex-direction:column; gap:4px;"><button class="btn-move" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg></button><button class="btn-move" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></div><input type="text" class="cms-input cat-name" value="Настройки Сайта" style="margin:0; font-weight:bold; font-size:1.1rem; flex:1;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"><div class="btn-box"><div style="display:flex; flex-direction:column; gap:4px; height:100%; justify-content:center;"><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg></button><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></div><input type="text" class="cms-input b-icon" value="🔧" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="Темы" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="Общий" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:openUserSettings()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div><div class="btn-box"><div style="display:flex; flex-direction:column; gap:4px; height:100%; justify-content:center;"><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg></button><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></div><input type="text" class="cms-input b-icon" value="🛠️" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="ADMIN" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="javascript:requestAdminAccess()" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="Настройки" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none">Нет</option><option value="green">Зел</option><option value="red">Красн</option><option value="yellow">Желт</option><option value="blue" selected="">Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button></div></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button></div></div>
+                    <div id="tab-buttons" class="cms-tab-content" style="display: none;">
+                        <div id="cms-categories-list"></div>
                         <button class="btn-add" onclick="addCMSCategory()" style="margin-top: 20px; padding: 25px; font-size: 1.1rem;">➕ СОЗДАТЬ НОВЫЙ БЛОК МЕНЮ</button>
                     </div>
 
-                    <div id="tab-site" class="cms-tab-content" style="display: none;">
-                        
+                    <div id="tab-site" class="cms-tab-content" style="display: block;">
+
+                        <div class="cms-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span class="cms-label" style="margin:0;">🚧 Режим техработ</span>
+                                <label class="switch"><input type="checkbox" id="cms-toggle-maint"><span class="slider"></span></label>
+                            </div>
+                            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0; margin-bottom:15px;">Сайт закрывается для всех, даже для вошедших. Вход в админку — через незаметный значок 🛠 под окном техработ.</p>
+                            <input type="text" id="cms-maint-title" class="cms-input" placeholder="Заголовок (Технические работы)">
+                            <textarea id="cms-maint-text" class="cms-textarea" style="min-height: 60px;" placeholder="Текст (Сайт временно недоступен. Скоро вернёмся!)"></textarea>
+                        </div>
+
                         <div class="cms-group">
                             <span class="cms-label">📝 Тексты Главного Экрана</span>
                             <div class="cms-group-row">
@@ -396,33 +451,20 @@
                                 <span class="cms-label" style="margin:0;">🔑 БАЗА КЛЮЧЕЙ (SHA-256)</span>
                                 <label class="switch"><input type="checkbox" id="cms-toggle-timer" checked=""><span class="slider"></span></label>
                             </div>
-                            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0; margin-bottom:15px;">Время действия привязывается к каждому ключу индивидуально.</p>
-                            
+                            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0; margin-bottom:15px; line-height:1.5;">
+                                • <b>Дни / Часы / Мин</b> — срок с момента входа.<br>
+                                • <b>До даты</b> — жёсткий предел: после этой даты ключ не работает ни у кого.<br>
+                                • Всё по нулям и нет даты — <b>бессрочный</b> ключ.<br>
+                                • Тумблер выключен — ключ <b>заблокирован</b> (выкинет даже тех, кто уже вошёл). Тумблер в шапке группы скрывает таймер.
+                            </p>
+
                             <input type="text" id="cms-timer-title" class="cms-input" placeholder="Текст над таймером (Лицензия действительна)">
-                            
-                            <div style="display:flex; gap:10px; margin-bottom:5px; padding: 0 5px;">
-                                <div style="flex:2; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">Зашифрованный Хэш</div>
-                                <div style="flex:0 0 70px; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; text-align:center;">Дни</div>
-                                <div style="flex:0 0 70px; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; text-align:center;">Часы</div>
-                                <div style="flex:0 0 70px; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; text-align:center;">Мин</div>
-                                <div style="width:48px;"></div>
+
+                            <div class="key-head">
+                                <div>Хэш ключа</div><div>Метка</div><div>Дни</div><div>Часы</div><div>Мин</div><div>До даты</div><div>Вкл</div><div></div>
                             </div>
-                            
-                            <div id="cms-keys-list"><div class="cms-group-row key-row" style="margin-bottom: 10px;">
-        <div class="cms-group-col" style="flex: 2;">
-            <input type="text" class="cms-input k-hash" value="c9e7d6914083068f7db2a1efe3c4673e47195c9b1d1ed05ab998b9ce0ed246d5" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly="">
-        </div>
-        <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-days" value="30" style="margin:0; text-align:center;" placeholder="Дни">
-        </div>
-        <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-hours" value="0" style="margin:0; text-align:center;" placeholder="Часы">
-        </div>
-        <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-mins" value="0" style="margin:0; text-align:center;" placeholder="Мин">
-        </div>
-        <button class="btn-del" onclick="this.parentElement.remove()" style="height:48px; width:48px; padding:0; display:flex; align-items:center; justify-content:center;">✕</button>
-    </div></div>
+
+                            <div id="cms-keys-list"></div>
                             <button class="btn-add" onclick="createNewKey()" style="margin-top:10px; background: rgba(168, 85, 247, 0.1); border-color: #a855f7; color: #a855f7;">➕ СОЗДАТЬ НОВЫЙ КЛЮЧ</button>
                             
                         </div>
@@ -441,6 +483,11 @@
                                 <div class="cms-group-col"><span style="font-size: 0.8rem; color: var(--text-muted);">Цвет текста</span><input type="color" id="cms-alert-text-color" class="color-picker"></div>
                             </div>
                             <textarea id="cms-alert-text" class="cms-textarea" style="min-height: 60px;" placeholder="Текст уведомления..."></textarea>
+                        </div>
+
+                        <div class="cms-group">
+                            <span class="cms-label">🧱 Порядок блоков на главной</span>
+                            <div id="cms-layout-list"></div>
                         </div>
 
                         <div class="cms-group">
@@ -502,6 +549,40 @@
                         </div>
 
                         <div class="cms-group">
+                            <span class="cms-label">🖼️ Фоновая картинка</span>
+                            <div id="bg-preview" class="bg-preview" style="background-image: none;">Нет фона</div>
+                            <div class="cms-group-row">
+                                <div class="cms-group-col" style="flex: 3;"><input type="text" id="cms-bg-image" class="cms-input" placeholder="Ссылка на картинку (https://...)" oninput="updateBgPreview()"></div>
+                                <div class="cms-group-col" style="flex: 1; display: flex; gap: 8px;">
+                                    <label class="btn-add" style="margin: 0 0 15px 0; text-align: center; padding: 14px 10px;">📂 Файл<input type="file" accept="image/*" style="display:none" onchange="handleImageUpload(this, 'cms-bg-image')"></label>
+                                    <button class="btn-del" onclick="document.getElementById('cms-bg-image').value=''; updateBgPreview();" style="margin-bottom: 15px;">✕</button>
+                                </div>
+                            </div>
+                            <div class="cms-group-row">
+                                <div class="cms-group-col">
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">Размер</span>
+                                    <select id="cms-bg-size" class="cms-select" style="width: 100%;">
+                                        <option value="cover">Заполнить экран</option>
+                                        <option value="contain">Вписать целиком</option>
+                                        <option value="auto">Оригинальный размер</option>
+                                    </select>
+                                </div>
+                                <div class="cms-group-col">
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">Позиция</span>
+                                    <select id="cms-bg-pos" class="cms-select" style="width: 100%;">
+                                        <option value="center">По центру</option>
+                                        <option value="top">Сверху</option>
+                                        <option value="bottom">Снизу</option>
+                                    </select>
+                                </div>
+                                <div class="cms-group-col">
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">Затемнение (<span id="dim-val">0.4</span>)</span>
+                                    <input type="range" id="cms-bg-dim" min="0" max="0.9" step="0.05" value="0.4" style="width: 100%;" oninput="document.getElementById('dim-val').innerText=this.value">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cms-group">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                 <span class="cms-label" style="margin:0;">🔔 Уведомлений (при входе)</span>
                                 <label class="switch"><input type="checkbox" id="cms-toggle-alerts-on-visit" checked=""><span class="slider"></span></label>
@@ -526,20 +607,12 @@ function customFunction() {
 }"></textarea>
                         </div>
                         <div class="cms-group">
-                            <span class="cms-label">⚡ Настройки Производительности</span>
-                            <div class="cms-group-row" style="flex-wrap: wrap;">
-                                <div class="toggle-row" style="flex: 1; min-width: 200px;">
-                                    <span style="font-weight: bold; font-size: 0.9rem;">Ленивая загрузка (Lazy Load)</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-lazy" checked=""><span class="slider"></span></label>
-                                </div>
-                                <div class="toggle-row" style="flex: 1; min-width: 200px;">
-                                    <span style="font-weight: bold; font-size: 0.9rem;">Кэширование</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-cache"><span class="slider"></span></label>
-                                </div>
-                                <div class="toggle-row" style="flex: 1; min-width: 200px;">
-                                    <span style="font-weight: bold; font-size: 0.9rem;">Минификация CSS/JS</span>
-                                    <label class="switch"><input type="checkbox" id="cms-toggle-minify"><span class="slider"></span></label>
-                                </div>
+                            <span class="cms-label">🛡️ Пароль админки</span>
+                            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0; margin-bottom:15px;">Новый пароль начнёт работать в скачанном файле (кнопка СКАЧАТЬ).</p>
+                            <div class="cms-group-row">
+                                <div class="cms-group-col"><input type="password" id="cms-admin-pass" class="cms-input" placeholder="Новый пароль (мин. 6 символов)" autocomplete="new-password"></div>
+                                <div class="cms-group-col"><input type="password" id="cms-admin-pass2" class="cms-input" placeholder="Повторите пароль" autocomplete="new-password"></div>
+                                <div class="cms-group-col" style="flex: 0 0 auto;"><button class="btn-action" onclick="changeAdminPassword()" style="height: 50px;">Сменить</button></div>
                             </div>
                         </div>
                         <div class="cms-group">
@@ -547,6 +620,7 @@ function customFunction() {
                             <textarea id="cms-raw-json" class="cms-textarea" style="height: 300px;"></textarea>
                             <div style="display: flex; gap: 10px; margin-top: 10px;">
                                 <button class="btn-add" onclick="importJson()" style="flex: 1;">⬇️ ПРИМЕНИТЬ (IMPORT)</button>
+                                <label class="btn-add" style="flex: 1; text-align: center;">📂 ИЗ ФАЙЛА<input type="file" accept=".json,application/json" style="display:none" onchange="importJsonFile(this)"></label>
                                 <button class="btn-action" onclick="navigator.clipboard.writeText(document.getElementById('cms-raw-json').value); alert('JSON скопирован!');" style="flex: 1;">📋 КОПИРОВАТЬ</button>
                                 <button class="btn-action" onclick="exportToFile()" style="flex: 1; background: var(--stealth);">💾 СКАЧАТЬ ФАЙЛ</button>
                             </div>
@@ -568,6 +642,8 @@ function customFunction() {
                                 </div>
                             </div>
                             <input type="text" id="cms-meta-keywords" class="cms-input" placeholder="Ключевые слова (через запятую)">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Иконка вкладки (Favicon)</span>
+                            <input type="text" id="cms-favicon" class="cms-input" placeholder="Эмодзи (например 🛡️) или ссылка на картинку">
                         </div>
 
                         <div class="cms-group">
@@ -575,7 +651,7 @@ function customFunction() {
                             <div class="cms-group-row">
                                 <div class="cms-group-col">
                                     <span style="font-size: 0.75rem; color: var(--text-muted);">Telegram</span>
-                                    <input type="text" id="cms-social-tg" class="cms-input" placeholder="@username">
+                                    <input type="text" id="cms-social-tg" class="cms-input" placeholder="@username или ссылка">
                                 </div>
                                 <div class="cms-group-col">
                                     <span style="font-size: 0.75rem; color: var(--text-muted);">VKontakte</span>
@@ -628,9 +704,21 @@ let siteDB = {
         "accessKeys": [
             {
                 "hash": "c9e7d6914083068f7db2a1efe3c4673e47195c9b1d1ed05ab998b9ce0ed246d5",
+                "label": "",
                 "days": 30,
                 "hours": 0,
-                "mins": 0
+                "mins": 0,
+                "until": "",
+                "blocked": false
+            },
+            {
+                "hash": "3a720135d987b8bd564223fe5435cf45bcc5c33718924f6b4a460a6d8a69cc94",
+                "label": "",
+                "days": 20,
+                "hours": 0,
+                "mins": 0,
+                "until": "2026-12-02",
+                "blocked": false
             }
         ],
         "showAlert": true,
@@ -678,10 +766,17 @@ let siteDB = {
             "block-timer",
             "block-footer"
         ],
-        "showLoginNotice": false,
-        "loginNoticeText": "",
+        "showLoginNotice": true,
+        "loginNoticeText": "Бесплатный ключ: FREE20D на 20 дней до 02.12",
         "showVisitAlerts": false,
-        "visitAlerts": []
+        "visitAlerts": [],
+        "maintenance": {
+            "enabled": false,
+            "title": "",
+            "text": ""
+        },
+        "bgDim": 0.4,
+        "favicon": ""
     },
     "categories": [
         {
@@ -692,8 +787,8 @@ let siteDB = {
                     "title": "Справочник",
                     "desc": "Правила проекта [all]",
                     "link": "adm.html",
-                    "badge": "update 16.05.2026",
-                    "badgeColor": "red"
+                    "badge": "update 22.11.2026",
+                    "badgeColor": "green"
                 }
             ]
         },
@@ -740,37 +835,75 @@ let siteDB = {
 const SESSION_VERSION = "1.3"; 
 let timerInterval = null;
 
-function checkAuth() {
-    const savedAuth = localStorage.getItem('authData');
-    applyEarlySettings(); 
-    
-    if (savedAuth) {
-        try {
-            const authData = JSON.parse(savedAuth);
-            const now = new Date().getTime();
-            if (authData.version === SESSION_VERSION && now < authData.expiry) {
-                showApp(authData.expiry);
-            } else {
-                localStorage.removeItem('authData');
-                showLogin();
-            }
-        } catch (e) {
-            localStorage.removeItem('authData'); 
-            showLogin();
-        }
-    } else {
-        showLogin();
+const DEFAULT_ADMIN_HASH = "b23be4f06e614470bb8b009ea09fe4154a0b0ec91b9d55da6722691c5fdbdeb7";
+const LIFETIME_MS = 100 * 365 * 24 * 60 * 60 * 1000; // "бессрочно" = 100 лет
+
+async function sha256(text) {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function escAttr(s) {
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+// Конец дня "до даты" у ключа (0 = нет ограничения)
+function keyUntilTs(k) {
+    if (!k || !k.until) return 0;
+    const t = new Date(k.until + 'T23:59:59').getTime();
+    return isNaN(t) ? 0 : t;
+}
+
+function findKey(hash) {
+    return (siteDB.settings.accessKeys || []).find(k => (k.hash || '').toLowerCase() === String(hash).toLowerCase());
+}
+
+// Сессия валидна, только если её ключ всё ещё есть в базе, не заблокирован и не истёк
+function getValidSession() {
+    try {
+        const a = JSON.parse(localStorage.getItem('authData') || 'null');
+        const now = Date.now();
+        if (!a || a.version !== SESSION_VERSION || !a.key || now >= a.expiry) throw 0;
+        const k = findKey(a.key);
+        if (!k || k.blocked) throw 0;
+        const until = keyUntilTs(k);
+        if (until && now > until) throw 0;
+        return a;
+    } catch (e) {
+        localStorage.removeItem('authData');
+        return null;
     }
 }
 
-function showLogin() {
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('app-content').style.display = 'none';
-    const settingsBtn = document.querySelector('.fab-cms');
-    if (settingsBtn) settingsBtn.style.display = 'none';
+function checkAuth() {
+    applyEarlySettings();
+    if (siteDB.settings.maintenance?.enabled) { showMaintenance(); return; }
+    const session = getValidSession();
+    if (session) showApp(session.expiry);
+    else showLogin();
 }
 
-// === 2. ПРОВЕРКА КЛЮЧА И ВХОД (НОВАЯ ЛОГИКА) ===
+function showLogin() {
+    document.getElementById('maint-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app-content').style.display = 'none';
+}
+
+function showMaintenance() {
+    const m = siteDB.settings.maintenance || {};
+    document.getElementById('render-maint-title').innerText = m.title || 'Технические работы';
+    document.getElementById('render-maint-text').innerText = m.text || 'Сайт временно недоступен. Скоро вернёмся!';
+    document.getElementById('maint-screen').style.display = 'flex';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-content').style.display = 'none';
+}
+
+function logout() {
+    localStorage.removeItem('authData');
+    location.reload();
+}
+
+// === 2. ПРОВЕРКА КЛЮЧА И ВХОД ===
 async function checkKey() {
     const inputField = document.getElementById('access-key');
     const input = inputField.value.trim();
@@ -779,36 +912,26 @@ async function checkKey() {
     if (!input) return;
 
     try {
-        const msgBuffer = new TextEncoder().encode(input);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        const inputHash = await sha256(input);
+        const matchedKey = findKey(inputHash);
 
-        let matchedKey = null;
+        if (!matchedKey) throw { userMsg: "Неверный ключ доступа!" };
+        if (matchedKey.blocked) throw { userMsg: "⛔ Этот ключ заблокирован" };
 
-        const keys = siteDB.settings.accessKeys || [];
+        const now = Date.now();
+        const until = keyUntilTs(matchedKey);
+        if (until && now > until) throw { userMsg: "⌛ Срок действия ключа истёк" };
 
-        for (let i = 0; i < keys.length; i++) {
-            if (keys[i].hash && keys[i].hash.toLowerCase() === inputHash.toLowerCase()) {
-                matchedKey = keys[i];
-                break;
-            }
-        }
+        const durationMs = (parseInt(matchedKey.days || 0) * 24 * 60 * 60 * 1000) + (parseInt(matchedKey.hours || 0) * 60 * 60 * 1000) + (parseInt(matchedKey.mins || 0) * 60 * 1000);
+        let expiry = durationMs > 0 ? now + durationMs : (until || now + LIFETIME_MS);
+        if (until) expiry = Math.min(expiry, until);
 
-        if (matchedKey) {
-            const now = new Date().getTime();
-            const durationMs = (parseInt(matchedKey.days || 0) * 24 * 60 * 60 * 1000) + (parseInt(matchedKey.hours || 0) * 60 * 60 * 1000) + (parseInt(matchedKey.mins || 0) * 60 * 1000);
-            const expiryTimestamp = now + durationMs;
-            
-            localStorage.setItem('authData', JSON.stringify({ expiry: expiryTimestamp, version: SESSION_VERSION }));
-            errorMsg.style.display = 'none';
-            showApp(expiryTimestamp);
-        } else {
-            throw new Error("Wrong key");
-        }
+        localStorage.setItem('authData', JSON.stringify({ expiry: expiry, version: SESSION_VERSION, key: inputHash }));
+        errorMsg.style.display = 'none';
+        showApp(expiry);
     } catch (e) {
         errorMsg.style.display = 'block';
-        errorMsg.innerText = "Неверный ключ доступа!";
+        errorMsg.innerText = (e && e.userMsg) || "Неверный ключ доступа!";
         inputField.style.borderColor = '#ef4444';
         inputField.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' }], { duration: 300 });
     }
@@ -870,15 +993,61 @@ function applyEarlySettings() {
         document.body.style.setProperty('--primary-glow', '');
     }
     localStorage.setItem('showGlow', isGlow); // Синхронизация с adm.html
+
+    applyBackground();
+    applyFavicon();
+}
+
+// Фоновая картинка (с !important, чтобы работала и на телефоне)
+function applyBackground() {
+    const s = siteDB.settings;
+    const bs = document.body.style;
+    const props = ['background-image', 'background-size', 'background-position', 'background-repeat', 'background-attachment'];
+    if (s.bgImage) {
+        const dim = s.bgDim ?? 0.4;
+        bs.setProperty('background-image', `linear-gradient(rgba(0,0,0,${dim}), rgba(0,0,0,${dim})), url("${s.bgImage}")`, 'important');
+        bs.setProperty('background-size', s.bgSize || 'cover', 'important');
+        bs.setProperty('background-position', s.bgPosition || 'center', 'important');
+        bs.setProperty('background-repeat', 'no-repeat', 'important');
+        bs.setProperty('background-attachment', 'fixed', 'important');
+    } else {
+        props.forEach(p => bs.removeProperty(p));
+    }
+}
+
+function applyFavicon() {
+    const fav = (siteDB.settings.favicon || '').trim();
+    let link = document.getElementById('site-favicon');
+    if (!fav) { if (link) link.remove(); return; }
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        link.id = 'site-favicon';
+        document.head.appendChild(link);
+    }
+    const isUrl = /^(https?:|data:|\.|\/)/i.test(fav) || /\.(png|ico|svg|jpe?g|gif|webp)$/i.test(fav);
+    link.href = isUrl ? fav : 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${fav}</text></svg>`);
+}
+
+// Telegram "@user" -> https://t.me/user и т.д.
+function normalizeSocialUrl(type, v) {
+    v = (v || '').trim();
+    if (!v) return '';
+    if (/^https?:\/\//i.test(v)) return v;
+    const bare = v.replace(/^@/, '');
+    if (type === 'telegram' && !v.includes('.')) return 'https://t.me/' + bare;
+    if (type === 'vk' && !v.includes('.')) return 'https://vk.com/' + bare;
+    if (type === 'discord' && !v.includes('.')) return 'https://discord.gg/' + bare;
+    if (type === 'github' && !v.includes('.')) return 'https://github.com/' + bare;
+    if (type === 'youtube' && v.startsWith('@')) return 'https://youtube.com/' + v;
+    return 'https://' + v;
 }
 
 // === 4. РЕНДЕР ГЛАВНОГО МЕНЮ ===
 function showApp(expiryTime) {
+    document.getElementById('maint-screen').style.display = 'none';
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-content').style.display = 'block';
-    
-    const settingsBtn = document.querySelector('.fab-cms');
-    if (settingsBtn) settingsBtn.style.display = 'flex';
 
     applyEarlySettings();
 
@@ -916,8 +1085,12 @@ function showApp(expiryTime) {
             a.className = 'menu-btn';
             a.id = `btn-${catIdx}-${btnIdx}`;
             
-            if (btn.link && btn.link.startsWith('javascript:')) {
-                a.setAttribute('onclick', btn.link.replace('javascript:', '') + '(); return false;');
+            if (btn.link && /^javascript:/i.test(btn.link)) {
+                // "javascript:openUserSettings()" -> onclick="openUserSettings(); return false;"
+                let code = btn.link.replace(/^javascript:/i, '').trim();
+                if (/^[\w$.]+$/.test(code)) code += '()';
+                a.href = '#';
+                a.setAttribute('onclick', code + '; return false;');
             } else if (btn.link && btn.link.trim()) {
                 a.href = btn.link;
             } else {
@@ -938,7 +1111,10 @@ function showApp(expiryTime) {
         
         const updateTimer = () => {
             const diff = expiryTime - new Date().getTime();
-            if (diff > 0) {
+            if (diff > 50 * 365 * 24 * 60 * 60 * 1000) { // бессрочный ключ
+                document.getElementById('t-d').innerText = '∞';
+                ['t-h', 't-m', 't-s'].forEach(id => document.getElementById(id).innerText = '--');
+            } else if (diff > 0) {
                 document.getElementById('t-d').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
                 document.getElementById('t-h').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
                 document.getElementById('t-m').innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
@@ -953,14 +1129,6 @@ function showApp(expiryTime) {
         timerInterval = setInterval(updateTimer, 1000); 
     } else {
         document.getElementById('timer-container').style.display = 'none';
-    }
-    
-    // Применение фонового изображения
-    if (siteDB.settings.bgImage) {
-        document.body.style.backgroundImage = `url(${siteDB.settings.bgImage})`;
-        document.body.style.backgroundSize = siteDB.settings.bgSize || 'cover';
-        document.body.style.backgroundPosition = siteDB.settings.bgPosition || 'center';
-        document.body.style.backgroundRepeat = siteDB.settings.bgRepeat || 'no-repeat';
     }
     
     // Применение Meta тегов
@@ -1041,12 +1209,12 @@ function showApp(expiryTime) {
         
         let socialHtml = '';
         const socialStyle = 'color: var(--text-muted); font-size: 1.5rem; text-decoration: none; transition: all 0.3s; padding: 10px; border-radius: 10px; background: var(--card-bg); display: flex; align-items: center; justify-content: center;';
-        if (siteDB.settings.social.telegram && siteDB.settings.social.telegram.trim()) socialHtml += `<a href="${siteDB.settings.social.telegram}" target="_blank" style="${socialStyle}" title="Telegram">📱</a>`;
-        if (siteDB.settings.social.vk && siteDB.settings.social.vk.trim()) socialHtml += `<a href="${siteDB.settings.social.vk}" target="_blank" style="${socialStyle}" title="VK">📘</a>`;
-        if (siteDB.settings.social.discord && siteDB.settings.social.discord.trim()) socialHtml += `<a href="${siteDB.settings.social.discord}" target="_blank" style="${socialStyle}" title="Discord">🎮</a>`;
-        if (siteDB.settings.social.youtube && siteDB.settings.social.youtube.trim()) socialHtml += `<a href="${siteDB.settings.social.youtube}" target="_blank" style="${socialStyle}" title="YouTube">📺</a>`;
-        if (siteDB.settings.social.github && siteDB.settings.social.github.trim()) socialHtml += `<a href="${siteDB.settings.social.github}" target="_blank" style="${socialStyle}" title="GitHub">💻</a>`;
-        
+        const socials = [['telegram', 'Telegram', '📱'], ['vk', 'VK', '📘'], ['discord', 'Discord', '🎮'], ['youtube', 'YouTube', '📺'], ['github', 'GitHub', '💻']];
+        socials.forEach(([type, name, icon]) => {
+            const url = normalizeSocialUrl(type, siteDB.settings.social[type]);
+            if (url) socialHtml += `<a href="${escAttr(url)}" target="_blank" rel="noopener" style="${socialStyle}" title="${name}">${icon}</a>`;
+        });
+
         socialBlock.innerHTML = socialHtml;
     } else {
         // Удаляем блок если соцсети отключены
@@ -1095,7 +1263,10 @@ function toggleUserGlow() {
 }
 
 // === 5. NEXUS CONTROL PANEL ===
-let currentMode = 'tab-buttons';
+let currentMode = null;
+let cmsDirty = false;      // есть изменения в форме, не применённые через ТЕСТ/СКАЧАТЬ
+let fileDirty = false;     // есть изменения, не сохранённые в файл
+let rawJsonEdited = false; // RAW JSON правили руками
 
 // === ADMIN ACCESS ===
 function requestAdminAccess() {
@@ -1120,13 +1291,10 @@ async function verifyAdminKey() {
     const input = document.getElementById('admin-key-input').value;
     if (!input) return;
 
-    const msgBuffer = new TextEncoder().encode(input);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashHex = await sha256(input);
 
-   // Панель управление
-    if (hashHex === "b23be4f06e614470bb8b009ea09fe4154a0b0ec91b9d55da6722691c5fdbdeb7") {
+    // Панель управления
+    if (hashHex === (siteDB.settings.adminHash || DEFAULT_ADMIN_HASH).toLowerCase()) {
         closeAdminAuth();
         openCMS();
     } else {
@@ -1145,66 +1313,148 @@ async function verifyAdminKey() {
 
 function openCMS() {
     document.getElementById('cms-modal').style.display = 'flex';
+    currentMode = null; // чтобы не подтянуть устаревший RAW JSON с прошлого раза
+    rawJsonEdited = false;
     buildCMSInterface();
-    switchCmsTab('tab-site'); 
+    switchCmsTab('tab-site');
+    cmsDirty = false;
 }
 
-function closeCMS() { document.getElementById('cms-modal').style.display = 'none'; }
+function closeCMS(force) {
+    if (!force && cmsDirty && !confirm('Есть изменения, которые не применены (ТЕСТ) и не скачаны. Закрыть панель?')) return;
+    cmsDirty = false;
+    document.getElementById('cms-modal').style.display = 'none';
+}
+
+function normalizeDB(db) {
+    if (!db || typeof db !== 'object') throw new Error('Пустой или неверный JSON');
+    db.settings = db.settings || {};
+    db.settings.colors = db.settings.colors || {};
+    db.categories = Array.isArray(db.categories) ? db.categories : [];
+    return db;
+}
+
+// Забирает актуальное состояние в siteDB: из RAW JSON (если его правили) или из формы
+function pullFormState() {
+    if (currentMode === 'tab-code' && rawJsonEdited) {
+        siteDB = normalizeDB(JSON.parse(document.getElementById('cms-raw-json').value));
+        rawJsonEdited = false;
+        buildCMSInterface();
+    } else if (currentMode) {
+        syncCMStoDB();
+    }
+}
 
 function switchCmsTab(tabId) {
+    try { pullFormState(); } catch (e) { alert('Ошибка в JSON: ' + e.message); return; }
+
     document.querySelectorAll('.cms-tab-content').forEach(t => t.style.display = 'none');
     document.querySelectorAll('.cms-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).style.display = 'block';
     document.getElementById('btn-' + tabId).classList.add('active');
-    
-    if(tabId === 'tab-code') {
-        syncCMStoDB();
+
+    if (tabId === 'tab-code') {
         document.getElementById('cms-raw-json').value = JSON.stringify(siteDB, null, 4);
-    } else if (currentMode === 'tab-code') {
-        try { siteDB = JSON.parse(document.getElementById('cms-raw-json').value); buildCMSInterface(); } 
-        catch(e) { switchCmsTab('tab-code'); }
+        rawJsonEdited = false;
     }
     currentMode = tabId;
 }
 
-// ГЕНЕРАТОР КЛЮЧЕЙ 
-async function createNewKey() {
-    const userInput = prompt("Введите желаемый пароль для нового ключа.\n\n(Оставьте поле пустым, чтобы сгенерировать случайный надежный пароль):");
-    if (userInput === null) return; 
-
-    const rawKey = userInput.trim() !== '' ? userInput.trim() : 'ARIS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-    
-    const msgBuffer = new TextEncoder().encode(rawKey);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    
-    prompt("✅ КЛЮЧ УСПЕШНО СОЗДАН И ЗАШИФРОВАН!\n\nОбязательно скопируйте этот пароль и передайте его. В админке сохранен только хэш.\n\nВАШ ПАРОЛЬ:", rawKey);
-    
-    renderKeyRow(hashHex, 30, 0, 0);
+// ГЕНЕРАТОР КЛЮЧЕЙ
+function randomKey() {
+    const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 32 символа, без похожих O/0, I/1
+    const bytes = crypto.getRandomValues(new Uint8Array(8));
+    let s = '';
+    for (let i = 0; i < 8; i++) {
+        s += abc[bytes[i] % abc.length];
+        if (i === 3) s += '-';
+    }
+    return 'ARIS-' + s;
 }
 
-function renderKeyRow(hash, days, hours, mins) {
+async function createNewKey() {
+    const userInput = prompt("Введите пароль для нового ключа.\n\n(Оставьте пустым — будет сгенерирован случайный надёжный ключ):");
+    if (userInput === null) return;
+
+    const rawKey = userInput.trim() || randomKey();
+    const hashHex = await sha256(rawKey);
+
+    const exists = [...document.querySelectorAll('#cms-keys-list .k-hash')].some(i => i.value.toLowerCase() === hashHex);
+    if (exists) return alert('⚠️ Такой ключ уже есть в базе.');
+
+    const label = prompt('Метка для ключа (кому выдан) — необязательно:', '') || '';
+    prompt("✅ КЛЮЧ СОЗДАН!\n\nСкопируйте его сейчас — в базе хранится только хэш, восстановить ключ потом будет нельзя.\n\nВАШ КЛЮЧ:", rawKey);
+
+    renderKeyRow({ hash: hashHex, label: label.trim(), days: 30, hours: 0, mins: 0 });
+    cmsDirty = fileDirty = true;
+}
+
+function renderKeyRow(k = {}) {
     const wrap = document.getElementById('cms-keys-list');
     const div = document.createElement('div');
-    div.className = 'cms-group-row key-row';
-    div.style.marginBottom = '10px';
+    div.className = 'key-row';
     div.innerHTML = `
-        <div class="cms-group-col" style="flex: 2;">
-            <input type="text" class="cms-input k-hash" value="${hash}" style="margin:0; font-family:monospace; font-size:0.75rem; color:#a855f7;" placeholder="SHA-256" readonly>
-        </div>
-        <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-days" value="${days}" style="margin:0; text-align:center;" placeholder="Дни">
-        </div>
-        <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-hours" value="${hours}" style="margin:0; text-align:center;" placeholder="Часы">
-        </div>
-        <div class="cms-group-col" style="flex: 0 0 70px;">
-            <input type="number" class="cms-input k-mins" value="${mins || 0}" style="margin:0; text-align:center;" placeholder="Мин">
-        </div>
-        <button class="btn-del" onclick="this.parentElement.remove()" style="height:48px; width:48px; padding:0; display:flex; align-items:center; justify-content:center;">✕</button>
+        <input type="text" class="cms-input k-hash" value="${escAttr(k.hash)}" title="${escAttr(k.hash)}" style="margin:0; font-family:monospace; font-size:0.72rem; color:#a855f7;" placeholder="SHA-256" readonly>
+        <input type="text" class="cms-input k-label" value="${escAttr(k.label)}" style="margin:0;" placeholder="Метка (кому выдан)">
+        <input type="number" min="0" class="cms-input k-days" value="${parseInt(k.days) || 0}" title="Дни" placeholder="Дни" style="margin:0; text-align:center; padding:12px 6px;">
+        <input type="number" min="0" class="cms-input k-hours" value="${parseInt(k.hours) || 0}" title="Часы" placeholder="Часы" style="margin:0; text-align:center; padding:12px 6px;">
+        <input type="number" min="0" class="cms-input k-mins" value="${parseInt(k.mins) || 0}" title="Минуты" placeholder="Мин" style="margin:0; text-align:center; padding:12px 6px;">
+        <input type="date" class="cms-input k-until" value="${escAttr(k.until)}" title="Действует до даты (необязательно)" style="margin:0; padding:12px 8px; color-scheme: dark;">
+        <label class="switch" title="Ключ активен"><input type="checkbox" class="k-active" ${k.blocked ? '' : 'checked'}><span class="slider"></span></label>
+        <button class="btn-del" onclick="this.parentElement.remove()" style="height:44px; width:44px; padding:0;">✕</button>
     `;
     wrap.appendChild(div);
+}
+
+// ПОРЯДОК БЛОКОВ
+const LAYOUT_NAMES = {
+    'block-header': '🏷️ Заголовок',
+    'block-alert': '⚠️ Предупреждение (Alert)',
+    'block-menu': '📱 Меню кнопок',
+    'block-timer': '⏳ Таймер лицензии',
+    'block-footer': '📄 Подвал (копирайт)'
+};
+
+function renderLayoutList() {
+    const wrap = document.getElementById('cms-layout-list');
+    wrap.innerHTML = '';
+    const order = (siteDB.settings.layout || []).filter(id => LAYOUT_NAMES[id]);
+    Object.keys(LAYOUT_NAMES).forEach(id => { if (!order.includes(id)) order.push(id); });
+    order.forEach(id => {
+        const d = document.createElement('div');
+        d.className = 'layout-item';
+        d.dataset.id = id;
+        d.innerHTML = `<div class="move-col">
+            <button class="btn-move" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
+            <button class="btn-move" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        </div><span>${LAYOUT_NAMES[id]}</span>`;
+        wrap.appendChild(d);
+    });
+}
+
+// ФОН
+function updateBgPreview() {
+    const v = document.getElementById('cms-bg-image').value.trim();
+    const p = document.getElementById('bg-preview');
+    p.style.backgroundImage = v ? `url("${v}")` : 'none';
+    p.textContent = v ? '' : 'Нет фона';
+}
+
+// ПАРОЛЬ АДМИНКИ
+async function changeAdminPassword() {
+    const p1 = document.getElementById('cms-admin-pass').value;
+    const p2 = document.getElementById('cms-admin-pass2').value;
+    if (p1.length < 6) return alert('Пароль должен быть минимум 6 символов.');
+    if (p1 !== p2) return alert('Пароли не совпадают.');
+    try { pullFormState(); } catch (e) { return alert('Сначала исправьте ошибку в JSON: ' + e.message); }
+
+    siteDB.settings.adminHash = await sha256(p1);
+    document.getElementById('cms-admin-pass').value = '';
+    document.getElementById('cms-admin-pass2').value = '';
+    document.getElementById('cms-raw-json').value = JSON.stringify(siteDB, null, 4);
+    rawJsonEdited = false;
+    cmsDirty = fileDirty = true;
+    alert('✅ Пароль изменён.\n\nНажмите СКАЧАТЬ и замените index.html — новый пароль заработает в нём. Старый пароль после этого перестанет работать.');
 }
 
 function buildCMSInterface() {
@@ -1230,7 +1480,27 @@ function buildCMSInterface() {
     const keysList = document.getElementById('cms-keys-list');
     keysList.innerHTML = '';
     const keys = siteDB.settings.accessKeys || [];
-    keys.forEach(k => renderKeyRow(k.hash, k.days, k.hours, k.mins));
+    keys.forEach(k => renderKeyRow(k));
+
+    // Техработы
+    const maint = siteDB.settings.maintenance || {};
+    document.getElementById('cms-toggle-maint').checked = !!maint.enabled;
+    document.getElementById('cms-maint-title').value = maint.title || "";
+    document.getElementById('cms-maint-text').value = maint.text || "";
+
+    // Порядок блоков
+    renderLayoutList();
+
+    // Фон
+    document.getElementById('cms-bg-image').value = siteDB.settings.bgImage || "";
+    document.getElementById('cms-bg-size').value = siteDB.settings.bgSize || "cover";
+    document.getElementById('cms-bg-pos').value = siteDB.settings.bgPosition || "center";
+    document.getElementById('cms-bg-dim').value = siteDB.settings.bgDim ?? 0.4;
+    document.getElementById('dim-val').innerText = siteDB.settings.bgDim ?? 0.4;
+    updateBgPreview();
+
+    // Favicon
+    document.getElementById('cms-favicon').value = siteDB.settings.favicon || "";
 
     document.getElementById('cms-site-font').value = siteDB.settings.font || "'Inter', sans-serif";
     document.getElementById('cms-site-width').value = siteDB.settings.maxWidth || "1200px";
@@ -1241,8 +1511,11 @@ function buildCMSInterface() {
     document.getElementById('cms-color-bg2').value = siteDB.settings.colors?.bg2 || "#1e1b4b";
     document.getElementById('cms-color-bg3').value = siteDB.settings.colors?.bg3 || "#020617";
     document.getElementById('cms-blur-range').value = siteDB.settings.cardBlur || 20;
+    document.getElementById('blur-val').innerText = siteDB.settings.cardBlur || 20;
     document.getElementById('cms-opacity-range').value = siteDB.settings.cardOpacity || 0.4;
+    document.getElementById('op-val').innerText = siteDB.settings.cardOpacity || 0.4;
     document.getElementById('cms-custom-css').value = siteDB.settings.customCSS || "";
+    document.getElementById('cms-custom-js').value = siteDB.settings.customJS || "";
     
     // Загрузка типов уведомлений (Alerts on visit)
     document.getElementById('cms-toggle-alerts-on-visit').checked = siteDB.settings.showVisitAlerts ?? true;
@@ -1266,18 +1539,13 @@ function buildCMSInterface() {
     document.getElementById('cms-social-yt').value = siteDB.settings.social?.youtube || "";
     document.getElementById('cms-social-gh').value = siteDB.settings.social?.github || "";
     
-    // Тумблеры
-    document.getElementById('cms-toggle-lazy').checked = siteDB.settings.lazyLoad ?? true;
-    document.getElementById('cms-toggle-cache').checked = siteDB.settings.enableCache ?? false;
-    document.getElementById('cms-toggle-minify').checked = siteDB.settings.minify ?? false;
-    
     const catList = document.getElementById('cms-categories-list');
     catList.innerHTML = '';
     if(siteDB.categories) {
         siteDB.categories.forEach(cat => {
             const catBlock = createCMSCategory(cat.name);
             const btnWrap = catBlock.querySelector('.cms-btns-wrap');
-            cat.buttons.forEach(b => addCMSButton(btnWrap, b));
+            (cat.buttons || []).forEach(b => addCMSButton(btnWrap, b));
             catList.appendChild(catBlock);
         });
     }
@@ -1287,19 +1555,47 @@ function addCMSCategory() { document.getElementById('cms-categories-list').appen
 function createCMSCategory(name) {
     const div = document.createElement('div');
     div.className = 'cat-box';
-    div.innerHTML = `<div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;"><div style="display:flex; flex-direction:column; gap:4px;"><button class="btn-move" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button><button class="btn-move" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div><input type="text" class="cms-input cat-name" value="${name}" style="margin:0; font-weight:bold; font-size:1.1rem; flex:1;" placeholder="Имя категории"><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button>`;
+    div.innerHTML = `<div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;"><div style="display:flex; flex-direction:column; gap:4px;"><button class="btn-move" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button><button class="btn-move" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div><input type="text" class="cms-input cat-name" value="${escAttr(name)}" style="margin:0; font-weight:bold; font-size:1.1rem; flex:1;" placeholder="Имя категории"><button class="btn-move" onclick="dupCMSCategory(this)" title="Дублировать категорию" style="padding:10px 12px;">⧉</button><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️ Удалить</button></div><div class="cms-btns-wrap"></div><button class="btn-add" onclick="addCMSButton(this.previousElementSibling)">+ Добавить кнопку</button>`;
     return div;
 }
 
-function addCMSButton(wrap, data = {icon:"📄", title:"", desc:"", link:"#", badge:"", badgeColor:"none"}) {
+function addCMSButton(wrap, data) {
+    data = Object.assign({icon:"📄", title:"", desc:"", link:"#", badge:"", badgeColor:"none"}, data || {});
+    ['icon', 'title', 'desc', 'link', 'badge'].forEach(f => data[f] = escAttr(data[f]));
     const div = document.createElement('div');
     div.className = 'btn-box';
-    div.innerHTML = `<div style="display:flex; flex-direction:column; gap:4px; height:100%; justify-content:center;"><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div><input type="text" class="cms-input b-icon" value="${data.icon}" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="${data.title.replace(/"/g,'&quot;')}" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="${data.desc.replace(/"/g,'&quot;')}" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="${data.link.replace(/"/g,'&quot;')}" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="${data.badge}" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none" ${data.badgeColor=='none'?'selected':''}>Нет</option><option value="green" ${data.badgeColor=='green'?'selected':''}>Зел</option><option value="red" ${data.badgeColor=='red'?'selected':''}>Красн</option><option value="yellow" ${data.badgeColor=='yellow'?'selected':''}>Желт</option><option value="blue" ${data.badgeColor=='blue'?'selected':''}>Син</option></select></div><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button>`;
+    div.innerHTML = `<div style="display:flex; flex-direction:column; gap:4px; height:100%; justify-content:center;"><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, -1)" title="Вверх"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button><button class="btn-move" style="flex:1;" onclick="moveCMSItem(this, 1)" title="Вниз"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div><input type="text" class="cms-input b-icon" value="${data.icon}" placeholder="Иконка" style="margin:0; text-align:center;"><input type="text" class="cms-input b-title" value="${data.title.replace(/"/g,'&quot;')}" placeholder="Заголовок" style="margin:0;"><input type="text" class="cms-input b-desc" value="${data.desc.replace(/"/g,'&quot;')}" placeholder="Описание" style="margin:0;"><input type="text" class="cms-input b-link" value="${data.link.replace(/"/g,'&quot;')}" placeholder="Ссылка / JS" style="margin:0;"><div style="display:flex; flex-direction:column; gap:5px;"><input type="text" class="cms-input b-badge" value="${data.badge}" placeholder="Бейдж" style="margin:0; padding:5px; font-size:0.8rem;"><select class="cms-select b-color" style="padding:5px;"><option value="none" ${data.badgeColor=='none'?'selected':''}>Нет</option><option value="green" ${data.badgeColor=='green'?'selected':''}>Зел</option><option value="red" ${data.badgeColor=='red'?'selected':''}>Красн</option><option value="yellow" ${data.badgeColor=='yellow'?'selected':''}>Желт</option><option value="blue" ${data.badgeColor=='blue'?'selected':''}>Син</option></select></div><button class="btn-move" onclick="dupCMSButton(this)" title="Дублировать кнопку" style="height:100%; padding:0 10px;">⧉</button><button class="btn-del" onclick="this.parentElement.remove()" style="height:100%;">✕</button>`;
     wrap.appendChild(div);
+    return div;
+}
+
+function readBtnBox(bBox) {
+    return {
+        icon: bBox.querySelector('.b-icon').value.trim(),
+        title: bBox.querySelector('.b-title').value.trim(),
+        desc: bBox.querySelector('.b-desc').value.trim(),
+        link: bBox.querySelector('.b-link').value.trim(),
+        badge: bBox.querySelector('.b-badge').value.trim(),
+        badgeColor: bBox.querySelector('.b-color').value
+    };
+}
+
+function dupCMSButton(el) {
+    const box = el.closest('.btn-box');
+    const copy = addCMSButton(box.parentElement, readBtnBox(box));
+    box.after(copy);
+}
+
+function dupCMSCategory(el) {
+    const cat = el.closest('.cat-box');
+    const copy = createCMSCategory(cat.querySelector('.cat-name').value + ' (копия)');
+    const wrap = copy.querySelector('.cms-btns-wrap');
+    cat.querySelectorAll('.btn-box').forEach(b => addCMSButton(wrap, readBtnBox(b)));
+    cat.after(copy);
 }
 
 function moveCMSItem(btn, dir) {
-    const item = btn.closest('.btn-box') || btn.closest('.cat-box');
+    const item = btn.closest('.btn-box, .cat-box, .layout-item');
     if (!item) return;
     const parent = item.parentElement;
     if (dir === -1 && item.previousElementSibling) {
@@ -1328,16 +1624,37 @@ function syncCMStoDB() {
     siteDB.settings.showTimer = document.getElementById('cms-toggle-timer').checked;
     siteDB.settings.timerTitle = document.getElementById('cms-timer-title').value.trim();
     
-    siteDB.settings.accessKeys = [];
-    document.querySelectorAll('.key-row').forEach(row => {
-        siteDB.settings.accessKeys.push({
-            hash: row.querySelector('.k-hash').value.trim(),
-            days: parseInt(row.querySelector('.k-days').value) || 0,
-            hours: parseInt(row.querySelector('.k-hours').value) || 0,
-            mins: parseInt(row.querySelector('.k-mins').value) || 0
-        });
-    });
+    siteDB.settings.accessKeys = [...document.querySelectorAll('#cms-keys-list .key-row')].map(row => ({
+        hash: row.querySelector('.k-hash').value.trim().toLowerCase(),
+        label: row.querySelector('.k-label').value.trim(),
+        days: Math.max(0, parseInt(row.querySelector('.k-days').value) || 0),
+        hours: Math.max(0, parseInt(row.querySelector('.k-hours').value) || 0),
+        mins: Math.max(0, parseInt(row.querySelector('.k-mins').value) || 0),
+        until: row.querySelector('.k-until').value || '',
+        blocked: !row.querySelector('.k-active').checked
+    }));
 
+    // Техработы
+    siteDB.settings.maintenance = {
+        enabled: document.getElementById('cms-toggle-maint').checked,
+        title: document.getElementById('cms-maint-title').value.trim(),
+        text: document.getElementById('cms-maint-text').value.trim()
+    };
+
+    // Порядок блоков
+    const layoutItems = [...document.querySelectorAll('#cms-layout-list .layout-item')].map(e => e.dataset.id);
+    if (layoutItems.length) siteDB.settings.layout = layoutItems;
+
+    // Фон
+    siteDB.settings.bgImage = document.getElementById('cms-bg-image').value.trim();
+    siteDB.settings.bgSize = document.getElementById('cms-bg-size').value;
+    siteDB.settings.bgPosition = document.getElementById('cms-bg-pos').value;
+    siteDB.settings.bgDim = parseFloat(document.getElementById('cms-bg-dim').value);
+
+    // Favicon
+    siteDB.settings.favicon = document.getElementById('cms-favicon').value.trim();
+
+    if (!siteDB.settings.colors) siteDB.settings.colors = {};
     siteDB.settings.font = document.getElementById('cms-site-font').value;
     siteDB.settings.maxWidth = document.getElementById('cms-site-width').value;
     siteDB.settings.borderRadius = document.getElementById('cms-site-radius').value;
@@ -1376,54 +1693,45 @@ function syncCMStoDB() {
     siteDB.settings.social.youtube = document.getElementById('cms-social-yt').value;
     siteDB.settings.social.github = document.getElementById('cms-social-gh').value;
     
-    // Тумблеры
-    siteDB.settings.lazyLoad = document.getElementById('cms-toggle-lazy').checked;
-    siteDB.settings.enableCache = document.getElementById('cms-toggle-cache').checked;
-    siteDB.settings.minify = document.getElementById('cms-toggle-minify').checked;
-    
-    // Meta теги сохраняются в JSON
-
     siteDB.categories = [];
-    document.querySelectorAll('.cat-box').forEach(cBox => {
+    document.querySelectorAll('#cms-categories-list .cat-box').forEach(cBox => {
         const catName = cBox.querySelector('.cat-name').value.trim();
-        const btns = [];
-        cBox.querySelectorAll('.btn-box').forEach(bBox => {
-            btns.push({
-                icon: bBox.querySelector('.b-icon').value.trim(), title: bBox.querySelector('.b-title').value.trim(), desc: bBox.querySelector('.b-desc').value.trim(), link: bBox.querySelector('.b-link').value.trim(), badge: bBox.querySelector('.b-badge').value.trim(), badgeColor: bBox.querySelector('.b-color').value
-            });
-        });
+        const btns = [...cBox.querySelectorAll('.btn-box')].map(readBtnBox);
         if(catName || btns.length > 0) siteDB.categories.push({ name: catName, buttons: btns });
     });
 }
 
-function testCMSChanges() {
-    if(currentMode === 'tab-code') { 
-        try { siteDB = JSON.parse(document.getElementById('cms-raw-json').value); } 
-        catch(e) { return alert('Ошибка в JSON: ' + e.message); } 
-    } else { 
-        syncCMStoDB(); 
-    }
+function currentExpiry() {
+    try { const a = JSON.parse(localStorage.getItem('authData') || 'null'); return a ? a.expiry : null; }
+    catch (e) { return null; }
+}
 
-    const auth = localStorage.getItem('authData');
-    showApp(auth ? JSON.parse(auth).expiry : null); 
-    closeCMS();
+function testCMSChanges() {
+    try { pullFormState(); } catch (e) { return alert('Ошибка в JSON: ' + e.message); }
+    cmsDirty = false;
+    fileDirty = true;
+    showApp(currentExpiry());
+    closeCMS(true);
 }
 
 function generateAndDownloadCMS() {
-    if(currentMode === 'tab-code') { try { siteDB = JSON.parse(document.getElementById('cms-raw-json').value); } catch(e) { return alert("Ошибка в JSON: " + e.message); } } 
-    else { syncCMStoDB(); }
-    
-    const auth = localStorage.getItem('authData');
-    showApp(auth ? JSON.parse(auth).expiry : null); 
-    closeCMS();
+    try { pullFormState(); } catch (e) { return alert('Ошибка в JSON: ' + e.message); }
 
-    // Очистка динамических элементов перед сохранением (чтобы не дублировались в коде)
-    const notifyEl = document.getElementById('notify-container');
-    if (notifyEl) notifyEl.remove();
-    const socialEl = document.getElementById('social-footer-block');
-    if (socialEl) socialEl.remove();
+    showApp(currentExpiry());
+    closeCMS(true);
 
-    let htmlContent = document.documentElement.outerHTML;
+    // Сохраняем КОПИЮ страницы в "закрытом" виде: без отрисованного меню, ключей и открытого контента
+    const doc = document.documentElement.cloneNode(true);
+    const q = s => doc.querySelector(s);
+    ['#notify-container', '#social-footer-block'].forEach(s => { const e = q(s); if (e) e.remove(); });
+    ['#login-screen', '#app-content', '#maint-screen', '#cms-modal', '#admin-auth-modal', '#user-settings-modal'].forEach(s => { const e = q(s); if (e) e.style.display = 'none'; });
+    ['#dashboard-container', '#cms-categories-list', '#cms-keys-list', '#cms-alerts-list', '#cms-layout-list'].forEach(s => { const e = q(s); if (e) e.innerHTML = ''; });
+    const notice = q('#render-login-notice');
+    if (notice) { notice.textContent = ''; notice.style.display = 'none'; }
+    const body = q('body');
+    if (body) body.removeAttribute('style');
+
+    let htmlContent = doc.outerHTML;
     const jsonStr = JSON.stringify(siteDB, null, 4).replace(/<\/script>/g, '<\\/script>');
     const newScriptData = `let siteDB = ${jsonStr};`;
     const regex = /(<script[^>]*id=["']?nexus-db["']?[^>]*>)[\s\S]*?(<\/script>)/i;
@@ -1441,28 +1749,41 @@ function generateAndDownloadCMS() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    cmsDirty = fileDirty = false;
 }
 
 function importJson() {
     try {
         const val = document.getElementById('cms-raw-json').value;
         if (!val.trim()) return alert('Введите JSON!');
-        
-        siteDB = JSON.parse(val);
+
+        siteDB = normalizeDB(JSON.parse(val));
+        rawJsonEdited = false;
         buildCMSInterface();
+        document.getElementById('cms-raw-json').value = JSON.stringify(siteDB, null, 4);
+        cmsDirty = fileDirty = true;
         alert('Настройки успешно обновлены из JSON!');
     } catch (e) {
         alert('Ошибка JSON: ' + e.message);
     }
 }
 
+function importJsonFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById('cms-raw-json').value = e.target.result;
+        importJson();
+        input.value = '';
+    };
+    reader.readAsText(file);
+}
+
 // Экспорт в файл
 function exportToFile() {
-    if(currentMode === 'tab-code') { 
-        try { siteDB = JSON.parse(document.getElementById('cms-raw-json').value); } 
-        catch(e) { return alert('Ошибка JSON!'); } 
-    }
-    
+    try { pullFormState(); } catch (e) { return alert('Ошибка JSON: ' + e.message); }
+
     const blob = new Blob([JSON.stringify(siteDB, null, 4)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1476,13 +1797,17 @@ function exportToFile() {
 function handleImageUpload(input, targetId) {
     const file = input.files[0];
     if (!file) return;
-    
+    if (file.size > 1.5 * 1024 * 1024 && !confirm('Картинка больше 1.5 МБ. Она встроится прямо в index.html, и сайт будет грузиться медленнее.\n\nЛучше вставить ссылку на картинку. Всё равно продолжить?')) {
+        input.value = '';
+        return;
+    }
+
     const reader = new FileReader();
     reader.onload = function(e) {
         document.getElementById(targetId).value = e.target.result;
-        if (targetId === 'cms-bg-image') {
-            document.getElementById('bg-preview').style.backgroundImage = `url(${e.target.result})`;
-        }
+        if (targetId === 'cms-bg-image') updateBgPreview();
+        cmsDirty = fileDirty = true;
+        input.value = '';
     };
     reader.readAsDataURL(file);
 }
@@ -1507,21 +1832,22 @@ function addAlertType(type = 'warning', title = '', msg = '') {
     list.appendChild(div);
 }
 
-// Дублирование кнопки
-function duplicateButton(btn) {
-    const clone = btn.cloneNode(true);
-    const wrap = btn.parentElement;
-    wrap.parentElement.insertBefore(clone, wrap.nextSibling);
-}
-
-// Дублирование категории
-function duplicateCategory(cat) {
-    const clone = cat.cloneNode(true);
-    cat.parentElement.insertBefore(clone, cat.nextSibling);
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
+
+    // Отслеживание несохранённых изменений в админке
+    const cmsModal = document.getElementById('cms-modal');
+    const markDirty = () => { cmsDirty = fileDirty = true; };
+    cmsModal.addEventListener('input', markDirty);
+    cmsModal.addEventListener('change', markDirty);
+    cmsModal.addEventListener('click', e => {
+        if (e.target.closest('.btn-del, .btn-add, .btn-move')) markDirty();
+    });
+    document.getElementById('cms-raw-json').addEventListener('input', () => { rawJsonEdited = true; });
+    window.addEventListener('beforeunload', e => {
+        if (fileDirty) { e.preventDefault(); e.returnValue = ''; }
+    });
+
     const keyInput = document.getElementById('access-key');
     if (keyInput) {
         keyInput.addEventListener('keydown', function(e) {
