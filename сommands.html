@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Helper: Справочник</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. ПЕРЕМЕННЫЕ И ТЕМЫ (2026 EDITION) --- */
+        :root { 
+            --primary: #6366f1; 
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.6); 
+            --bg-grad-1: #0f172a; 
+            --bg-grad-2: #312e81; 
+            --bg-grad-3: #172554;
+            --card-bg: rgba(20, 25, 40, 0.5); 
+            --card-hover: rgba(30, 40, 60, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 10px 30px -10px rgba(0,0,0,0.5);
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --warning: #fbbf24;
+            --warning-bg: rgba(251, 191, 36, 0.15);
+            --danger: #f43f5e; 
+            --danger-bg: rgba(244, 63, 94, 0.15); 
+        }
+
+        [data-theme="light"] { 
+            --bg-grad-1: #f1f5f9; --bg-grad-2: #e2e8f0; --bg-grad-3: #cbd5e1;
+            --card-bg: rgba(255, 255, 255, 0.7); 
+            --card-hover: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.05);
+            --card-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 10px 30px -10px rgba(0,0,0,0.1);
+            --text-main: #0f172a; --text-muted: #64748b; 
+            --primary-glow: rgba(99, 102, 241, 0.25); 
+            --warning: #d97706;
+            --warning-bg: rgba(217, 119, 6, 0.1);
+        }
+
+        [data-theme="black"] { 
+            --bg-grad-1: #000000; --bg-grad-2: #000000; --bg-grad-3: #050505;
+            --card-bg: rgba(10, 10, 10, 0.8); 
+            --card-hover: #1a1a1a;
+            --text-main: #ffffff; --text-muted: #737373; 
+        }
+
+        /* --- 2. СКРЫВАЕМ ПОЛОСУ ПРОКРУТКИ --- */
+        ::-webkit-scrollbar { width: 0; background: transparent; }
+        html { scrollbar-width: none; }
+        body { -ms-overflow-style: none; }
+
+        /* --- 3. АНИМИРОВАННЫЙ ФОН --- */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: radial-gradient(circle at top, var(--bg-grad-1), var(--bg-grad-2));
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--text-main); 
+            margin: 0; padding: 0; 
+            min-height: 100vh; 
+            transition: color 0.5s ease; 
+            position: relative;
+            display: none; /* Скрыто до проверки авторизации */
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        /* --- 4. ШАПКА И ТЕКСТ --- */
+        .sys-header { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; text-align: center; }
+        .sys-title { margin: 0; font-weight: 900; font-size: 3rem; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; line-height: 1; text-transform: uppercase; }
+        [data-theme="light"] .sys-title { background: linear-gradient(90deg, #475569, #0f172a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; margin-top: 15px; }
+
+        kbd {
+            background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2); font-family: monospace;
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3); font-weight: bold;
+        }
+        [data-theme="light"] kbd { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1); }
+
+        /* Кнопка Назад */
+        .back-btn {
+            background: var(--card-bg); color: var(--text-main);
+            border: 1px solid var(--card-border); padding: 12px 24px;
+            border-radius: 14px; cursor: pointer; font-weight: 700;
+            transition: all 0.3s; margin-bottom: 30px; align-self: flex-start;
+            backdrop-filter: blur(10px); box-shadow: var(--card-shadow);
+        }
+        .back-btn:hover { background: var(--primary); border-color: var(--primary); transform: translateX(-5px); color: white; }
+
+        /* --- 5. КАТЕГОРИИ И ПРАВИЛА --- */
+        .category-block { 
+            margin-bottom: 50px; 
+            background: rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .category-title {
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .category-title::before {
+            content: ""; display: block; width: 12px; height: 12px;
+            background: var(--primary); border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .rule-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); margin-bottom: 12px;
+            border-radius: 16px; padding: 18px 24px;
+            border: 1px solid var(--card-border); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(15px); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        
+        .rule-row:hover {
+            transform: translateY(-3px) scale(1.01);
+            background: var(--card-hover);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.4), 0 0 35px var(--primary-glow);
+            z-index: 10; position: relative;
+        }
+
+        .rule-name { flex: 1; padding-right: 20px; font-weight: 600; line-height: 1.5; font-size: 0.95rem; }
+
+        .rule-punishment {
+            flex: 0 0 auto; text-align: right; color: var(--warning);
+            font-size: 0.85rem; font-weight: 800; background: var(--warning-bg);
+            padding: 8px 16px; border-radius: 10px; white-space: pre-wrap; max-width: 40%;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .severe {
+            color: var(--danger); background: var(--danger-bg);
+            border-color: rgba(244, 63, 94, 0.3);
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
+        }
+
+        /* --- 6. ПОИСК --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 80px;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-content {
+            background: var(--card-bg); width: 90%; max-width: 700px;
+            border-radius: 24px; border: 1px solid var(--card-border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 0 50px var(--primary-glow);
+            overflow: hidden; display: flex; flex-direction: column; max-height: 75vh;
+            backdrop-filter: blur(25px);
+        }
+
+        .search-header { padding: 25px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--card-border); position: relative;}
+        
+        input#search-input {
+            width: 100%; background: transparent; border: none; color: var(--text-main);
+            font-size: 1.5rem; outline: none; font-family: 'Inter', sans-serif; font-weight: 800;
+        }
+        input#search-input::placeholder { color: var(--text-muted); opacity: 0.5; font-weight: 600;}
+
+        .search-results { overflow-y: auto; padding: 10px; }
+
+        .result-item {
+            padding: 18px 25px; border-radius: 16px; margin-bottom: 5px;
+            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+        }
+        .result-item:hover { background: rgba(255,255,255,0.05); border-color: var(--card-border); transform: translateX(5px);}
+        .result-category { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; margin-bottom: 6px; font-weight: 800; letter-spacing: 1px;}
+        
+        .result-highlight { background: rgba(99, 102, 241, 0.4); color: #fff; border-radius: 4px; padding: 0 4px; }
+        [data-theme="light"] .result-highlight { color: #000; }
+
+        .empty-state { padding: 40px; text-align: center; color: var(--text-muted); font-weight: 600; }
+        
+        /* Кнопка FAB */
+        .fab-search {
+            position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px var(--primary-glow); cursor: pointer; z-index: 900;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .fab-search:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 15px 40px var(--primary-glow); }
+        .fab-icon { font-size: 26px; }
+
+        /* --- 7. МОБИЛЬНАЯ ОПТИМИЗАЦИЯ (NO LAG) --- */
+        @media screen and (max-width: 768px) {
+            body {
+                animation: none !important;
+            }
+            
+            /* Отключаем тяжелый блюр и тени */
+            .back-btn, .rule-row, .modal-content, .search-header, .fab-search {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: none !important;
+                transform: none !important;
+            }
+            
+            /* Делаем фон плашек непрозрачным для читаемости */
+            .rule-row { background: var(--bg-grad-3) !important; border: 1px solid var(--card-border) !important; }
+            .modal-content { background: var(--bg-grad-2) !important; }
+            .category-block { background: transparent !important; border: none !important; padding: 10px 0 !important; }
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    // Версия должна совпадать с index.html
+    const SESSION_VERSION = "1.3"; 
+
+    (function() {
+        const savedAuth = localStorage.getItem('authData');
+        
+        if (!savedAuth) {
+            window.location.href = 'index.html'; 
+            return;
+        }
+        
+        try {
+            const authData = JSON.parse(savedAuth);
+            const now = new Date().getTime();
+            
+            // Сверяем версию и время
+            if (authData.version !== SESSION_VERSION || now > authData.expiry) {
+                localStorage.removeItem('authData');
+                window.location.href = 'index.html';
+                return;
+            }
+        } catch (e) {
+            localStorage.removeItem('authData');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Показываем страницу
+        document.body.style.display = 'block';
+
+        // Загрузка темы
+        const savedTheme = localStorage.getItem('siteTheme') || 'default';
+        document.body.setAttribute('data-theme', savedTheme);
+
+        // Загрузка цветов и фона из localStorage (синхронизация с index.html)
+        const savedColors = localStorage.getItem('siteColors');
+        if (savedColors) {
+            try {
+                const c = JSON.parse(savedColors);
+                const root = document.documentElement;
+                if(c.primary) root.style.setProperty('--primary', c.primary);
+                if(c.bg1) root.style.setProperty('--bg-grad-1', c.bg1);
+                if(c.bg2) root.style.setProperty('--bg-grad-2', c.bg2);
+                if(c.bg3) root.style.setProperty('--bg-grad-3', c.bg3);
+            } catch(e) {}
+        }
+        const savedBg = localStorage.getItem('siteBg');
+        if (savedBg) {
+            try {
+                const bg = JSON.parse(savedBg);
+                if (bg.image) {
+                    document.body.style.backgroundImage = `url(${bg.image})`;
+                    document.body.style.backgroundSize = bg.size;
+                    document.body.style.backgroundPosition = bg.pos;
+                    document.body.style.backgroundRepeat = bg.repeat;
+                }
+            } catch(e) {}
+        }
+
+        const isGlow = localStorage.getItem('showGlow') !== 'false';
+        if (!isGlow) {
+            document.body.style.setProperty('--primary-glow', 'transparent');
+        } else {
+            // Установка пустого значения удаляет инлайн-свойство, даже если оно было с !important
+            document.body.style.setProperty('--primary-glow', '');
+        }
+
+        // --- АВТОМАТИЧЕСКИЙ ВЫБРОС (Real-time Check) ---
+        setInterval(() => {
+            try {
+                const checkAuth = JSON.parse(localStorage.getItem('authData'));
+                if (!checkAuth || new Date().getTime() > checkAuth.expiry) {
+                    localStorage.removeItem('authData');
+                    window.location.href = 'index.html';
+                }
+            } catch (e) { window.location.href = 'index.html'; }
+        }, 2000); // Проверка каждые 2 секунды
+    })();
+</script>
+
+    <div class="container">
+        
+        <button class="back-btn" onclick="window.location.href='index.html'">⬅ Меню</button>
+
+        <div class="sys-header">
+            <div>
+                <p style="color: var(--primary); font-weight: 800; margin: 0 0 5px 0; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; text-align: center;">СПРАВОЧНИК</p>
+                <h1 class="sys-title">Команды сервера</h1>
+                <div class="subtitle">Используйте <kbd>Ctrl</kbd> + <kbd>F</kbd> для вызова умного поиска</div>
+            </div>
+        </div>
+
+        <div id="rules-container"></div>
+    </div>
+
+    <div id="search-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="Поиск по базе данных..." autocomplete="off">
+            </div>
+            <div id="search-results" class="search-results">
+                <div class="empty-state">Введите запрос для поиска...</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // БАЗА ДАННЫХ КОМАНД
+    const rulesData = [
+{
+    category: "Команды сервера",
+    items: [
+        ["ЧС частной фермы", "/farmbl"],
+        ["Уволить из частной фермы", "/farmuninvite"],
+        ["Рация ФБР при маскировке", "/rm /rbm /fm /fbm"],
+        ["Отменить ставку в кости (казино)", "/redice"],
+        ["Показать паспорт", "/showpass"],
+        ["Показать лицензии", "/showlic"],
+        ["Показать медицинскую карту", "/showmc"],
+        ["Показать выписку из тира", "/showskill"],
+        ["Показать удостоверение", "/showbadge"],
+        ["Показать историю наказаний", "/showpunish"],
+        ["Поцеловать игрока", "/kiss"],
+        ["Редактировать объявление", "/newsredak"],
+        ["Поздороваться с игроком или помахать рукой", "/hi"],
+        ["Передать игроку деньги", "/pay"],
+        ["Предложить обмен игроку", "/trade"],
+        ["Передать оружие игроку", "/giveweapon"],
+        ["Подарить цветы", "/flowers"],
+        ["Передать игроку ключи от личного автомобиля", "/givekey"],
+        ["Напугать игрока маской демона", "/scare"],
+        ["Предложить игроку дуэль на деньги", "/duel"],
+        ["Отменить игру в Орла и Решку", "/or_cancel"],
+        ["Продать транспорт государству", "/sellcar"],
+        ["Продать транспорт игроку", "/sellcarto"],
+        ["Обменяться транспортом", "/tradecar"],
+        ["Выкинуть игрока из транспорта", "/eject"],
+        ["Вернуть автомобиль на место парковки", "/fixmycar"],
+        ["Открыть/закрыть личный транспорт", "/lock"],
+        ["Открыть/закрыть личный транспорт по ID", "/lockid"],
+        ["Открыть/закрыть рабочий транспорт", "/jlock"],
+        ["Открыть/закрыть фракционный транспорт", "/olock"],
+        ["Припарковать транспорт", "/park"],
+        ["Починить транспорт при помощи рем-комплекта", "/repcar"],
+        ["Заправить автомобиль при помощи канистры", "/fillcar"],
+        ["Список личного транспорта", "/cars"],
+        ["Узнать навык вождения автомобилем", "/carskill"],
+        ["Взломать дверь автомобиля", "/jackcar"],
+        ["Вытащить/вставить ключи в замок зажигания", "/key"],
+        ["Включить/выключить фары", "/lights"],
+        ["Завести автомобиль (либо N)", "/engine"],
+        ["Заправить автомобиль на заправке", "/fill"],
+        ["Установить/отключить лимит скорости", "/limit"],
+        ["Включить/отключить сигнализацию", "/alarm"],
+        ["Открыть/закрыть багажник", "/trunk"],
+        ["Сменить стиль езды", "/style"],
+        ["Очистить гараж от автомобилей предыдущих владельцев", "/gclear"],
+        ["Создать и продать оружие", "/sellgun"],
+        ["Создать оружие из материалов (или /cr)", "/creategun"],
+        ["Узнать навык владения оружием", "/skill"],
+        ["Надеть/снять бронежилет (или /arm)", "/armour"],
+        ["Надеть/снять маску", "/mask"],
+        ["Включить/выключить радио", "/radio"],
+        ["Курить сигарету", "/smoke"],
+        ["Разжечь костёр", "/firewood"],
+        ["Потушить костёр", "/unfirewood"],
+        ["Посмотреть на часы", "/time"],
+        ["Взломать наручники", "/break"],
+        ["Достать телефон", "/phone"],
+        ["Достать доску для сёрфинга", "/surf"],
+        ["Достать скейт-борд", "/skate"],
+        ["Запустить фейерверк", "/fireworks"],
+        ["Сделать бомбу", "/createbomb"],
+        ["Заложить бомбу", "/bomb"],
+        ["Разминировать бомбу (FBI: 2 | Police: 6)", "/removebomb"],
+        ["Запустить игрушку на радиоуправлении", "/rcveh"],
+        ["Поставить переносную палатку (ларёк)", "/lavka"],
+        ["Включить колонку/бумбокс", "/boom"],
+        ["Посадить дерево", "/seat"],
+        ["Использовать оружие из инвентаря (аксессуар, патроны)", "/gun"],
+        ["VIP чат", "/vr"],
+        ["Кушать что-либо", "/eat"],
+        ["Выпить спранк (газировка)", "/sprunk"],
+        ["Выпить пиво", "/beer"],
+        ["Кушать жаренную рыбу", "/jfish"],
+        ["Кушать жаренное мясо", "/jmeat"],
+        ["Готовить еду", "/cook"],
+        ["Кушать чипсы", "/cheeps"],
+        ["Помощь по работе", "/jobhelp"],
+        ["Уволиться с работы", "/quitjob"],
+        ["Посмотреть список игроков, находящихся в КПЗ", "/zeks"],
+        ["Взяться за дело игрока, находящегося в ИПЗ", "/free"],
+        ["Чинить автомобиль игрока", "/repare"],
+        ["Мониторинг всех заправок", "/azsmonitor"],
+        ["Заправить автомобиль игрока", "/filscar"],
+        ["Посмотреть карту с участками повреждений", "/repairs"],
+        ["Нанять игрока на работу (ферма/завод)", "/jobinvite"],
+        ["Посмотреть число работников под вашим руководством", "/jobmembers"],
+        ["Слова, совмещённые с действием", "/todo"],
+        ["Действие вашего персонажа, когда не известен результат (Удачно/Неудачно)", "/try"],
+        ["Действие от третьего лица", "/do"],
+        ["Шептать что-то", "/c"],
+        ["OOC/NonRP чат", "/n"],
+        ["OOC/NonRP чат", "/b"],
+        ["Кричать что-то", "/s"],
+        ["Рация заключённых", "/rjail"],
+        ["IC/RP чат (рация) гос-организации", "/r"],
+        ["OOC/NonRP чат гос-организации", "/rb"],
+        ["IC/RP чат (рация) нелегальной организации", "/f"],
+        ["OOC/NonRP чат нелегальной организации", "/fb"],
+        ["Количество членов организации в сети", "/members"],
+        ["Занести игрока в чёрный список [ 9+ ранг]", "/blacklist"],
+        ["Вынести игрока из чёрного списка [ 9+ ранг]", "/unblacklist"],
+        ["Пригласить игрока в организацию [ 9+ ранг]", "/invite"],
+        ["Выгнать игрока из организации [ 9+ ранг]", "/uninvite"],
+        ["Повысить/понизить игрока во фракции [ 9+ ранг]", "/giverank"],
+        ["Рация департамента гос-организаций", "/d"],
+        ["Подать волну гос. новостей [ Кроме СМИ и нелегальных организаций ]", "/gov"],
+        ["Полицейский мегафон", "/m"],
+        ["Выгнать игрока из здания (в организации)", "/expel"],
+        ["Выдать премии сотрудникам [ 9+ ранг]", "/premium"],
+        ["Запихать игрока в транспорт [ МЮ, Мафии ]", "/incar"],
+        ["Вытащить игрока из машины [ МЮ, Мафии ]", "/pull"],
+        ["История просмотра ящика/шкафа организации", "/chistory"],
+        ["Заглушить рацию игроку во фракции [ 9+ ранг]", "/fmute"],
+        ["Назначить игроку одежду[ 9+ ранг]", "/giveskin"],
+        ["Управление экономикой [ Губернатор ]", "/ekonom"],
+        ["Провести свадьбу", "/wedding"],
+        ["Открыть свой бизнес", "/bizopen"],
+        ["Закрыть свой бизнес", "/bizlock"],
+        ["Изменить кредитную ставку", "/credit"],
+        ["Выдать игроку лицензию", "/givelicense"],
+        ["Поднять тяжело раненого игрока", "/cure"],
+        ["Выписать рецепт игроку", "/recept"],
+        ["Надеть наручники на игрока", "/cuff"],
+        ["Снять наручники с игрока", "/uncuff"],
+        ["Обыскать игрока", "/frisk"],
+        ["Список игроков, находящихся в розыске", "/wanted"],
+        ["Тащить игрока за собой", "/gotome"],
+        ["Перестать тащить игрока за собой", "/ungotome"],
+        ["Отобрать скрепки", "/bot"],
+        ["Установить жучок", "/scutes"],
+        ["Вызвать подкрепление", "/bk"],
+        ["Пометить игрока", "/z"],
+        ["Начать погоню за игроком", "/pursuit"],
+        ["Сорвать маску с игрока", "/unmask"],
+        ["Найти игрока с розыском", "/find"],
+        ["Выписать игроку штраф", "/ticket"],
+        ["Посмотреть состояние склада МЮ", "/carm"],
+        ["Посмотреть взвод", "/platoon"],
+        ["Выпустить игрока из ТСР", "/unpunish"],
+        ["Освободить игрока из подвала фракции", "/unsteal"],
+        ["Начать войну за территорию", "/capture"],
+        ["Статистика войн", "/captstats"],
+        ["Положить деньги на счёт притона", "/putmoney"],
+        ["Снять деньги со счёта притона", "/getmoney"],
+        ["Установить цену за укроп в притоне", "/setdbuy"],
+        ["Установить цену скупки в притоне", "/setdsell"],
+        ["Выгрузить материалы из фуры", "/dropmats"],
+        ["Продать территорию другой банде", "/sellgangzone"],
+        ["Передать крышу за мафию", "/givebiz"],
+        ["Связать игрока", "/tie"],
+        ["Развязать игрока", "/untie"],
+        ["Надеть мешок на голову игроку", "/bag"],
+        ["Снять мешок с головы игрока", "/unbag"],
+        ["Тащить игрока за собой", "/lead"],
+        ["Перестать тащить игрока за собой", "/unlead"],
+        ["Отметить корабль", "/govess"],
+        ["Начать войну за бизнес", "/bizwar"],
+        ["Вставить кляп игроку", "/gag"],
+        ["Вытащить кляп игроку", "/ungag"],
+        ["Предложить попрошайничество", "/minvite"],
+        ["Список подконтрольных бизнесов", "/mbiz"],
+        ["Использовать аптечку", "/usemed"],
+        ["Использовать таблетки от укропозависимости", "/usebad"],
+        ["Использовать адреналин", "/adrenaline"],
+        ["Открыть меню дома", "/house"],
+        ["Открыть меню дома", "/home"],
+        ["Открыть меню дома", "/hmenu"],
+        ["Открыть меню номера в отеле", "/hotel"],
+        ["Выбрать место появления персонажа", "/setspawn"],
+        ["Открыть меню трейлера", "/trmenu"],
+        ["(или /report, /ask) отправить жалобу/задать вопрос администрации", "/rep"],
+        ["Просить деньги", "/beg"],
+        ["Узнать навык Фермера", "/ffarm"],
+        ["Заплатить налог за игрока", "/bail"],
+        ["Посмотреть активные квесты", "/quest"],
+        ["Узнать информацию о игроке (ID, Ник, Пинг, Клиент, Packetloss, UID, АРК)", "/id"],
+        ["Узнать мобильный номер игрока", "/number"],
+        ["Открыть панель СМС в телефоне", "/sms"],
+        ["Посмотреть состояние голода", "/satiety"],
+        ["Посмотреть список работников центра лицензирования в сети", "/licensers"],
+        ["Самоубийство, использовать яд", "/killme"],
+        ["Помощь по игре", "/help"],
+        ["Посмотреть список собеседований", "/sobes"],
+        ["Посмотреть статистику персонажа", "/stats"],
+        ["Поставить метку на МП «Собиратели»", "/findcollectors"],
+        ["Посмотреть инвентарь", "/invent"],
+        ["Подать объявление", "/ad"],
+        ["Посмотреть список \\VIP-игроков онлайн", "/vipplayers"],
+        ["Посмотреть список рефералов", "/referals"],
+        ["Поменять стиль боя", "/fightstyle"],
+        ["Меню концертного зала", "/lzal"],
+        ["Открыть меню семьи", "/fammenu"],
+        ["Принять игрока в семью", "/faminvite"],
+        ["Выгнать игрока из семьи", "/famuninvite"],
+        ["Выдать заглушку рации семьи игроку", "/fammute"],
+        ["Снять заглушку рации семьи с игрока", "/famunmute"],
+        ["Чат/рация семьи", "/fam"],
+        ["Выгнать члена семьи в оффлайне", "/famoffkick"],
+        ["Список членов семьи", "/fmembers"],
+        ["Открыть панель управления бизнесом", "/bizinfo"],
+        ["Показать статистику прибыли за неделю", "/showbizinfo"],
+        ["Купить бизнес, находящийся в государственной собственности", "/buybiz"],
+        ["Открыть настройки персонажа", "/settings"],
+        ["Сменить пароль от аккаунта", "/passwd"],
+        ["Отключить/включить повороты головой", "/headmove"],
+        ["Изменить размер чата", "/fontsize"],
+        ["Изменить количество строк чата", "/pagesize"],
+        ["Время в чате", "/timestamp"],
+        ["Прекратить аренду автомобиля", "/unrentcar"],
+        ["Рабочая рация", "/j"],
+        ["Уволится (для Titan VIP и выше)", "/out"],
+        ["Убрать объект у дома или бизнеса", "/pobject"],
+        ["Показать паспорт на авто", "/carpass"],
+        ["Покрасить машину", "/balon"],
+        ["Собрать воздушный шар", "/balloon"],
+        ["Искать транспорт", "/findcar"],
+        ["Удалить семейный тюнинг", "/delftun"],
+        ["Список анимаций", "/anims"],
+        ["Действие игрока", "/me"],
+        ["Список лидеров онлайн", "/leaders"],
+        ["Список заместителей онлайн", "/zams"],
+        ["Положить оружие на землю", "/dropgun"],
+        ["Адвокаты онлайн", "/advokats"],
+        ["Объявить игрока в розыск", "/su"],
+        ["Очистить розыск игрока", "/clear"],
+        ["Отобрать что либо", "/take"],
+        ["Поставить ограждение/предмет", "/putobject"],
+        ["Арестовать преступников", "/arrest"],
+        ["Поставить машину на штрафстоянку", "/strafs"],
+        ["Прицепить машину (в эвакуаторе)", "/tow"],
+        ["Уволить гос-служащего", "/demoute"],
+        ["Подразделения организации", "/unit"],
+        ["Удалить игрока из ЧС в оффлайне", "/unblacklistoff"],
+        ["Снять запрет на вступление", "/undemoute"],
+        ["Дать игроку выговор", "/fwarn"],
+        ["Снять игроку выговор", "/unfwarn"],
+        ["Снять мут игроку", "/funmute"],
+        ["Показать вашу успеваемость в организации", "/jobprogress"],
+        ["Проверить успеваемость игрока в организации", "/checkjobprogress"],
+        ["Выдать мед. карту", "/medcard"],
+        ["Провести мед. осмотр", "/medcheck"],
+        ["Вылечить пациента", "/heal"],
+        ["Принять донора на Дне донорства", "/takeblood"],
+        ["Осмотр пациента на грипп", "/flucheck"],
+        ["Вакцинация от гриппа", "/fluvaccine"],
+        ["Лечение гриппа", "/fluheal"],
+        ["Назначение курса противогриппозных таблеток", "/flurecept"],
+        ["Принять вызов НПС-носителя гриппа", "/flucall"],
+        ["Лечение ближайшего НПС-носителя гриппа", "/flunpc"],
+        ["Статистика эпидемии гриппа", "/flustats"],
+        ["Лечить от укропозависимости", "/healbad"],
+        ["Повысить срок заключенному", "/punish"],
+        ["Просмотреть наказание заключенного", "/getjail"],
+        ["Список надводных нефтевышек", "/oillist"],
+        ["Список наземных нефтевышек", "/oilgroundlist"],
+        ["Положить укроп", "/putdrugs"],
+        ["Забрать укроп", "/getdrugs"],
+        ["Продать укроп боту", "/selldrugs"],
+        ["Посадить укроп", "/drug"],
+        ["Донат-меню / Игровой магазин", "/donate"],
+        ["Употребить укроп (или /dr)", "/usedrugs"],
+        ["Создать оружие из материалов", "/cr"],
+        ["Посмотреть текущие капты в гетто", "/cap"],
+        ["Продать укроп игроку", "/selldrug"],
+        ["Изменить уровень розыска", "/unsu"],
+        ["Информация об увольнении и получении выговоров", "/history"],
+        ["Отбирать выданный пропуск в ФБР", "/taketicket"],
+        ["Зайти в интерьер лодки", "/enterc"],
+        ["Узнать с какого клиента подключён игрок", "/cl"],
+        ["Ввод кода от разработчика", "/present"],
+        ["Меню боевого пропуска", "/battlepass"],
+        ["Принять какое-либо предложение от другого игрока", "/offer"],
+        ["Показать визитку адвоката", "/showvisit"],
+        ["Предложить игроку выйти из подвала мафии", "/unlock"],
+        ["Использовать талоны для сокращения исправительных работ в TCP", "/useantijail"],
+        ["Меню управления гидравликой автомобиля", "/hydraulics"],
+        ["Предложить игроку услуги (страховая)", "/insurance"],
+        ["Посмотреть текущий этап рассмотрения заявления (страховая)", "/insurhelp"],
+        ["Отменить рассмотрение заявления сотрудником (страховая)", "/cancelticket"],
+        ["Удалить заявление (страховая)", "/removeticket"],
+        ["Выдать сотруднику палатку (страховая)", "/giveinsurtent"],
+        ["Раздать укроп/патроны в радиусе", "/giveall"],
+        ["Предложить игроку автоматическое объявление (СМИ)", "/autoad"],
+        ["Вернуть доступ к редакции (СМИ)", "/unblockredak"],
+        ["Забрать доступ к редакции (СМИ)", "/blockredak"],
+        ["Выдать сотруднику палатку с газетами (СМИ)", "/givenewstent"],
+        ["Окончить интервью с игроком (СМИ)", "/endlive"],
+        ["Взять интервью у игрока (СМИ)", "/live"],
+        ["Выпустить игрока из карцера (ТСР)", "/uncarcer"],
+        ["Пересадить игрока в другой карцер (ТСР)", "/setcarcer"],
+        ["Посадить игрока в карцер (ТСР)", "/carcer"],
+        ["Изменить стоимость заезда в подземный паркинг (правительство)", "/setparkprice"],
+        ["Выдать рабочую визу на Вайс Сити (правительство)", "/givevisa"],
+        ["Выдать паспорт игроку/сделать сертификат на авто (правительство)", "/givepass"],
+        ["Выдать медицинскую страховку (больница)", "/givemedinsurance"],
+        ["Поиск пострадавших (больница)", "/gohelp"],
+        ["Принять вызов от очевидцев (больница)", "/godeath"],
+        ["Выдать антибиотики (больница)", "/antibiotik"],
+        ["Вылечить охранника пациента (больница)", "/healactor"],
+        ["Уволить сотрудника любой гос. фракции (ФБР)", "/dismiss"],
+        ["Выдать пропуск в офис (ФБР)", "/giveticket"],
+        ["Установить уникальный тэг игроку", "/settag"],
+        ["Установить красный маркер фракции", "/point"],
+        ["Установить транспорту ранг доступа", "/carrank"],
+        ["Установить маркировку на авто", "/vdesc"],
+        ["Удалить маркировку с авто", "/delvdesc"],
+        ["Посмотреть трудовую книжку", "/wbook"],
+        ["Предложить взятку", "/bribe"],
+        ["Узнать государственную стоимость угнанного авто", "/getprice"],
+        ["Справить нужду (пописать)", "/piss"],
+        ["Закончить работу", "/stopjob"],
+        ["Запустить новостной эфир", "/news"],
+        ["Чат альянса семей", "/al"],
+        ["Меню заказов у механика", "/morders"],
+        ["Техническая информация об авто", "/dl"],
+        ["Отблагодарить администратора", "/thanks"],
+        ["Открыть/закрыть капот", "/bonnet"],
+        ["Выдать выговор игроку в семье", "/famwarn"],
+        ["Снять выговор игроку в семье", "/unfamwarn"],
+        ["Изменить тэг игрока в чате", "/famtag"],
+        ["Убрать тэг игрока в чате", "/unfamtag"],
+        ["Уволиться с должности маркетолога", "/marketerout"],
+        ["Повторить танец игрока", "/takedance"],
+        ["Использовать домкрат", "/domkrat"],
+        ["Найти место контрабанды (аирдроп)", "/smug"],
+        ["Меню лидера или заместителя", "/lmenu"],
+        ["Игра в орла и решку (Кинуть за решку)", "/reshka"],
+        ["Игра в орла и решку (кинуть за орла)", "/orel"],
+        ["Меню биндера", "/binder"],
+        ["Принять приглашение в семью", "/acceptfam"],
+        ["Подтвердить почту", "/acepttrade"],
+        ["Заспавнить семейный транспорт", "/famspawn"],
+        ["Выдать разрешение на установку номеров для транспорта", "/giveplate"],
+        ["Посмотреть список активных стримеров", "/streamers"],
+        ["Изменить дальность видимости тумана", "/fogdist"],
+        ["Выдать повестку в армию", "/agenda"],
+        ["Внести залог за разбан игрока", "/pledge"],
+        ["Выдать подтверждение участия в РП мероприятии", "/fractionrp"],
+        ["Посмотреть гео-позицию, которую прислали через контакты", "/showgeo"],
+        ["Предложить игроку защиту от похищений (8+ ранг)", "/getsecurity"],
+        ["Предложить игроку защиту от похищений", "/givesecurity"],
+        ["Открыть список глобальных/ежедневных достижений", "/rewards"],
+        ["Выдать криминальный кодекс игроку", "/givecbook"],
+        ["Найти семейную территорию по ID", "/findfamzone"],
+        ["Обследование на военный билет", "/mticket"],
+        ["Меню удилища (рыбалка)", "/fishrod"],
+        ["Играть на гитаре", "/guitar"],
+        ["Завершить работу", "/endwork"],
+        ["Выдать похвалу", "/praise"],
+        ["Достать тайзер", "/taser"],
+        ["Добавить игрока в черный список семьи", "/famblacklist"],
+        ["Добавить игрока в черный список семьи (в оффлайне)", "/famblacklistoff"],
+        ["Вынести игрока из черного списка семьи (в оффлайне)", "/famunblacklistoff"],
+        ["Выдать лицензию адвоката", "/givelicadvokat"],
+        ["Установить ранг в семье", "/setfrank"],
+        ["Проверить страховку", "/insured"],
+        ["Сделать ставку в кости", "/dice"],
+        ["Посмотреть свой навык пилота", "/pilotskill"],
+        ["Открыть хранилище личных предметов", "/storage"],
+        ["Продать уменьшенную комиссию на работу пилота", "/sellfly"],
+        ["Занести в черный список казино", "/blcasino"],
+        ["Вынести из черного списка казино", "/unblcasino"],
+        ["Продать увеличенные лимиты ставки AZ-coins в казино", "/selldice"],
+        ["Продажа семейную территорию", "/sellfamter"],
+        ["Продать семейный флаг", "/sellfamflag"],
+        ["Снять трейлер с продажи", "/stopsell"],
+        ["Изменить ранг доступа к семейному авто", "/fcarrank"],
+        ["Выдача одноразовых премий в семье", "/fpremium"],
+        ["Посмотреть список семей онлайн (владельцы и заместители)", "/fams"],
+        ["Установить цену на продажу хот-догов", "/hotdogprice"],
+        ["Открыть старое меню дома (через диалог)", "/houseold"],
+        ["Список пожаров для работы пожарника", "/fires"],
+        ["Выдать военный билет (Армия)", "/givemilitary"],
+        ["Изменить текущий дом при ограблении (Банды)", "/setrobhouse"],
+        ["Поиск домов, бизнесов, транспорта и переносных лавок по ID", "/findi"],
+        ["Поиск дома по ID", "/findihouse"],
+        ["Поиск бизнеса по ID", "/findibiz"],
+        ["Поиск лавки по ID", "/findilavka"],
+        ["Установить метку на завод", "/factory"],
+        ["Меню судьи", "/court"],
+        ["Общий чат мафий и гетто (чат коалиции)", "/gd"],
+        ["Меню сдачи своего транспорта в аренду", "/carsrent"],
+        ["Развестись", "/unwedding"],
+        ["Включить/выключить дрифт мод", "/driftmode"],
+        ["Пожертвования для мероприятий", "/mpdonate"],
+        ["Узнать мнение человека о правительстве (для квеста)", "/opinion"],
+        ["Открыть криминальный кодекс", "/cbook"],
+        ["Поставить метку для участников семьи", "/fampoint"],
+        ["Исправление овального прицела на круглый", "/hudscalefix"],
+        ["Надеть/снять щит на спине", "/shield"],
+        ["Выдать выговор сотруднику оффлайн", "/fwarnoff"],
+        ["Снять выговор сотруднику оффлайн", "/unfwarnoff"],
+        ["Дать денег бомжу", "/bomjpay"],
+        ["Закрыть дом (находясь рядом с ним)", "/hlock"],
+        ["Наглядно посмотреть сет игрока рядом", "/viewplayer"],
+        ["Открыть хранилище призов с еженедельного розыгрыша", "/giveawayprizes"],
+        ["Включить/Отключить сообщения аудиострима в чате", "/audiomsg"],
+        ["Найти свой трейлер", "/findtrailer"],
+        ["Специальный выговор от ФБР", "/gwarn"],
+        ["Снять специальный выговор от ФБР", "/ungwarn"],
+        ["Пробить номера авто", "/vnsearch"],
+        ["Статистика убийств за нефтевышки / притон", "/battlestats"],
+        ["Забрать лицензию адвоката", "/takelicadvokat"],
+        ["Показать кому выданы копии ключей от машины", "/keys"],
+        ["Принять звонок в эфире СМИ", "/acceptcall"],
+        ["Отклонить звонок/отключить от звонка в эфире СМИ", "/cancelcall"],
+        ["Поиск угнанных авто (Для МЮ)", "/theft"],
+        ["Убрать объекты (Для МЮ)", "/delobject"],
+        ["Написать в чат группы", "/g"],
+        ["Выдать/забрать доступ к /d (Для губернатора и его заместителя)", "/blockdep"],
+        ["Выдать социальное жильё (Мэрия)", "/givesocial"],
+        ["Включить/отключить список убийств (киллист)", "/killlist"],
+        ["Угнать автомобиль (гетто и мафии)", "/robbingcar"],
+        ["Выдать гражданство игроку (Мэрия)", "/givecitizen"],
+        ["Съесть мясо с мешка (аксессуар)", "/meatbag"],
+        ["Установить ограничение кадров в секунду", "/fpslimit"],
+        ["Запретить отправку объявлений игроку на 30 минут", "/blockad"],
+        ["Надеть безумный бронежилет", "/barmor"],
+        ["Сбросить шипы с полицейского авто", "/spikes"]
+    ]
+        },
+    ];
+
+    // ГЕНЕРАЦИЯ СПИСКА
+    const container = document.getElementById('rules-container');
+    
+    rulesData.forEach(cat => {
+        const catDiv = document.createElement('div');
+        catDiv.className = 'category-block';
+        
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.textContent = cat.category;
+        catDiv.appendChild(title);
+
+        cat.items.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'rule-row';
+            
+            const isSevere = false && (item[1].toLowerCase().includes('2000') || 
+                             item[1].toLowerCase().includes('бан') || 
+                             item[1].toLowerCase().includes('чс') ||
+                             item[1].toLowerCase().includes('снятие'));
+                             
+            const punishClass = isSevere ? 'rule-punishment severe' : 'rule-punishment';
+
+            row.innerHTML = `
+                <div class="rule-name">${item[0]}</div>
+                <div class="${punishClass}">${item[1]}</div>
+            `;
+            catDiv.appendChild(row);
+        });
+
+        container.appendChild(catDiv);
+    });
+
+    // ПОИСК
+    const modal = document.getElementById('search-modal');
+    const input = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('search-results');
+
+    function openSearch() {
+        modal.style.display = 'flex';
+        input.focus();
+    }
+
+    function performSearch(query) {
+        resultsContainer.innerHTML = '';
+        if (!query) {
+            resultsContainer.innerHTML = '<div class="empty-state">Введите запрос для поиска...</div>';
+            return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+        let count = 0;
+
+        rulesData.forEach(cat => {
+            cat.items.forEach(item => {
+                const name = item[0];
+                const punish = item[1];
+                
+                if (name.toLowerCase().includes(lowerQuery) || punish.toLowerCase().includes(lowerQuery)) {
+                    const el = document.createElement('div');
+                    el.className = 'result-item';
+                    
+                    const highlight = (text) => {
+                        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        return text.replace(regex, '<span class="result-highlight">$1</span>');
+                    };
+
+                    el.innerHTML = `
+                        <div class="result-category">${cat.category}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:600; margin-right:15px; font-size: 0.95rem;">${highlight(name)}</span>
+                            <span style="color:var(--warning); font-size:0.85rem; font-weight:800;">${highlight(punish)}</span>
+                        </div>
+                    `;
+                    
+                    el.onclick = () => {
+                        modal.style.display = 'none';
+                        const elements = document.querySelectorAll('.rule-name');
+                        for (let elem of elements) {
+                            if (elem.innerText === name) {
+                                elem.scrollIntoView({behavior: "smooth", block: "center"});
+                                elem.parentElement.style.borderColor = 'var(--primary)';
+                                elem.parentElement.style.boxShadow = '0 0 30px var(--primary-glow)';
+                                setTimeout(() => {
+                                    elem.parentElement.style.borderColor = 'rgba(255,255,255,0.08)';
+                                    elem.parentElement.style.boxShadow = 'inset 0 1px 1px rgba(255, 255, 255, 0.05)';
+                                }, 2000);
+                                break;
+                            }
+                        }
+                    };
+
+                    resultsContainer.appendChild(el);
+                    count++;
+                }
+            });
+        });
+
+        if (count === 0) {
+            resultsContainer.innerHTML = '<div class="empty-state">По вашему запросу ничего не найдено</div>';
+        }
+    }
+
+    input.addEventListener('input', (e) => performSearch(e.target.value));
+
+    // Hotkeys
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'а' || e.key === 'F')) {
+            e.preventDefault();
+            openSearch();
+        }
+        if (e.key === 'Escape') {
+            modal.style.display = 'none';
+            input.value = '';
+            performSearch('');
+        }
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
